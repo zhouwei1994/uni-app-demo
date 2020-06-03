@@ -1,0 +1,317 @@
+.input_form_box {
+	.input_title {
+		font-size: 32upx;
+		color: #333333;
+		padding: 30upx;
+		&.required::before {
+			content: '*';
+			font-size: 30upx;
+			color: #f73333;
+		}
+	}
+
+	.input_box {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		padding: 0 30upx;
+		background-color: #fff;
+		&.line {
+			border-top: 1upx solid #f7f7f7;
+		}
+		&.btm_line {
+			border-bottom: 1upx solid #f7f7f7;
+		}
+		.name {
+			font-size: 30upx;
+			color: #666666;
+			min-width: 120upx;
+			flex-shrink: 0;
+			padding: 30upx 0;
+
+			&.required::before {
+				content: '*';
+				font-size: 30upx;
+				color: #f73333;
+			}
+		}
+		.prompt {
+			width: 100%;
+			padding-bottom: 20upx;
+			font-size: 28upx;
+			color: #999999;
+			transform: translateY(-10upx);
+		}
+
+		picker {
+			flex: 1;
+		}
+	}
+	.input_info {
+		padding: 30upx 0;
+		display: flex;
+		flex: 1;
+		align-items: center;
+		> text {
+			font-size: 24upx;
+			color: #555555;
+			margin-left: 10upx;
+			flex-shrink: 0;
+		}
+		input {
+			width: 100%;
+			text-align: right;
+			font-size: 30upx;
+		}
+		button {
+			flex-shrink: 0;
+			min-width: 146upx;
+			padding: 0 30upx;
+			height: 60upx;
+			line-height: 60upx;
+			background-color: $themeColor;
+			border-radius: 8upx;
+			font-size: 24upx;
+			color: #ffffff;
+			margin-left: 20upx;
+		}
+	}
+	.switch {
+		flex: 1;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+	
+		&::after {
+			content: "";
+			@include bis('https://qn.kemean.cn/upload/201908/05/5f85ccc4de404cafb30b15dedef41e8b', 100% 100%);
+			width: 108upx;
+			height: 58upx;
+		}
+	
+		&.active::after {
+			background-image: url('https://qn.kemean.cn/upload/201908/05/eef318fa5c9f4692a1bd6ef6edd9be10');
+		}
+	}
+	.radio_box {
+		padding: 30upx 0;
+		flex: 1;
+		display: flex;
+		justify-content: flex-end;
+	
+		view {
+			display: flex;
+			align-items: center;
+			font-size: 28upx;
+			color: #333333;
+			margin-left: 90upx;
+	
+			&:first-child {
+				margin-left: 0;
+			}
+	
+			&::before {
+				content: '';
+				width: 38upx;
+				height: 38upx;
+				margin-right: 15upx;
+				border: 2upx solid #eee;
+				border-radius: 50%;
+				box-sizing: border-box;
+			}
+	
+			&.active::before {
+				border: 12upx solid $themeColor;
+			}
+		}
+	}
+	
+	.select_info {
+		padding: 30upx 0;
+		flex: 1;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+	
+		.value {
+			font-size: 30upx;
+			color: #333;
+			text-align: right;
+		}
+	
+		.select {
+			font-size: 30upx;
+			color: #999999;
+		}
+	
+		.head_img {
+			width: 100upx;
+			height: 100upx;
+			border-radius: 10upx;
+		}
+	
+		&::after {
+			content: '';
+			@include bis('http://qn.kemean.cn/upload/201907/23/me_lise_more.png', 100% 100%);
+			width: 15upx;
+			height: 26upx;
+			margin-left: 20upx;
+			flex-shrink: 0;
+		}
+	}
+	
+	.upload_info {
+		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		padding-bottom: 10upx;
+	
+		.upload_img {
+			width: 200upx;
+			height: 200upx;
+			background-color: #ffffff;
+			border-radius: 4upx;
+			margin-right: 16upx;
+			margin-bottom: 16upx;
+			overflow: hidden;
+			position: relative;
+	
+			&:nth-child(3n) {
+				margin-right: 0;
+			}
+	
+			image {
+				width: 100%;
+				height: 100%;
+			}
+	
+			.delete {
+				position: absolute;
+				top: 0upx;
+				right: 0upx;
+				width: 44upx;
+				height: 44upx;
+				background-image: url('https://qn.kemean.cn/upload/201908/05/df40b98b77fc4c42a5e0327c62975e29');
+				background-position: center center;
+				background-repeat: no-repeat;
+				background-size: 100% 100%;
+			}
+	
+			&.upload {
+				border: 1upx dashed #b2b2b2;
+				background-image: url('https://qn.kemean.cn/upload/201908/05/d68df2873cd04f18a70104e340a14884');
+				background-position: center center;
+				background-repeat: no-repeat;
+				background-size: 60% 60%;
+			}
+		}
+	}
+	.textarea_info {
+		width: 100%;
+		padding-bottom: 30upx;
+		font-size: 28upx;
+		color: #333;
+	
+		textarea {
+			width: 100%;
+			height: 154upx;
+			font-size: 30upx;
+			line-height: 150%;
+		}
+	}
+}
+
+.protocol {
+	margin-top: 20upx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 28upx;
+	color: #666;
+
+	text {
+		color: $themeColor;
+	}
+	view {
+		@include theme('unselected_img', './');
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-size: cover; 
+		width: 34upx;
+		height: 34upx;
+		margin-right: 10upx;
+		&.active {
+			@include theme('radio_img', './');
+		}
+	}
+}
+
+.form_but {
+	margin-top: 80upx;
+	padding: 30upx;
+	display: flex;
+	justify-content: center;
+	button {
+		flex: 1;
+		height: 88upx;
+		background-color: #f0f0f0;
+		border-radius: 8upx;
+		line-height: 88upx;
+		font-size: 34upx;
+		color: #cccccc;
+
+		&.active {
+			@include theme("btn_bg");
+			color: #ffffff;
+		}
+
+		&::after {
+			border: none;
+		}
+	}
+}
+// -----------------------导航条-------------------------------
+.cell_list {
+	background-color: #fff;
+	padding: 30upx;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1upx solid #f5f5f5;
+	&:active {
+		background-color: #f5f5f5;
+	}
+	&.interval {
+		margin-bottom: 20upx;
+		border-bottom: 0;
+	}
+	.cell_left {
+		font-size: 28upx;
+		color: #333333;
+		display: flex;
+		align-items: center;
+		image {
+			width: 30upx;
+			height: 30upx;
+			margin-right: 20upx;
+		}
+	}
+	.cell_right {
+		font-size: 28upx;
+		color: #333333;
+		display: flex;
+		align-items: center;
+		&.arrow::after {
+			content: '';
+			@include bis('./static/icon/me_lise_more.png', 100% 100%);
+			width: 12upx;
+			height: 22upx;
+			margin-left: 20upx;
+		}
+		image {
+			width: 36upx;
+			height: 36upx;
+			margin-left: 20upx;
+		}
+	}
+}

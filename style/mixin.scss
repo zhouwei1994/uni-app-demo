@@ -1,0 +1,49 @@
+@charset "utf-8";
+//主题色
+$themeColor: #ea552d;
+
+@mixin theme($type,$path:''){
+	@if $type == "btn_bg" {
+		background-image: linear-gradient(90deg, #ea552d 0%, #f19837 100%);
+	} @else if $type == "unselected_img" {
+		background-image: url($path + "static/icon/ic_gender_unselected.png");
+	} @else if $type == "check_img" {
+		background-image: url($path + "static/icon/ic_agreed.png");
+	} @else if $type == "radio_img" {
+		background-image: url($path + "static/icon/ic_gender_selected.png");
+	}
+}
+// 背景图片地址和大小
+@mixin bis($url, $size: cover) {
+  background-image: url($url);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: $size;
+}
+
+// 头像
+@mixin ic($width, $height) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  width: $width;
+  height: $height;
+}
+
+// 单行省略号
+@mixin toe() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+
+// 多行省略号
+@mixin bov($num:2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $num;
+  -webkit-box-orient: vertical;
+}

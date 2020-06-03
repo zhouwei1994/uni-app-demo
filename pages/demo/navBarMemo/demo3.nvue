@@ -1,0 +1,65 @@
+<template>
+	<view class="content">
+		<!-- 示例代码 开始-->
+		<nav-bar  type="transparentFixed" :scrollTop="scrollTop" fontColor="#FFF" transparentFixedFontColor="#FFF" :bgColor="['#f00','#00cdff']">透明固定导航
+			<view slot="right" class="search_box"></view>
+			<view slot="transparentFixedRight" class="search_transparent_box"></view>
+		</nav-bar>
+		<!---示例代码 结束---->
+		<image class="image" src="../../../static/demo/2.jpg" mode="widthFix"></image>
+		<image class="image" src="../../../static/demo/1.jpg" mode="widthFix"></image>
+		<image class="image" src="../../../static/demo/3.jpg" mode="widthFix"></image>
+		<image class="image" src="../../../static/demo/4.jpg" mode="widthFix"></image>
+		<image class="image" src="../../../static/demo/5.jpg" mode="widthFix"></image>
+		<image class="image" src="../../../static/demo/6.jpg" mode="widthFix"></image>
+	</view>
+</template>
+
+<script>
+	import navBar from "@/components/common/zhouWei-navBar/index"
+	export default {
+		components:{
+			navBar
+		},
+		data() {
+			return {
+				scrollTop:0
+			}
+		},
+		onLoad() {
+
+		},
+		methods: {
+
+		},
+		onPageScroll(e) {
+			this.scrollTop = e.scrollTop;
+		}
+	}
+</script>
+
+<style>
+	.image {
+		width: 750rpx;
+	}
+	/* #ifndef APP-NVUE */
+	.search_box {
+		width: 35upx;
+		height: 35upx;
+		background-image: url('../../../static/demo/home_ic_search.png');
+		background-position: center center;
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		margin-right: 15upx;
+	}
+	.search_transparent_box {
+		width: 35upx;
+		height: 35upx;
+		background-image: url('../../../static/demo/nav_search2.png');
+		background-position: center center;
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		margin-right: 30upx;
+	}
+	/* #endif */
+</style>

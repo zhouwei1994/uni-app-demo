@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar title="图片上传/文件上传"></nav-bar>
+		<nav-bar title="七牛云图片上传"></nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<view class="input_form_box">
@@ -12,16 +12,6 @@
 						<text class="delete" @click="onDeleteImg(index)"></text>
 					</view>
 					<view class="upload_img upload" @click="onImgsUpload" v-if="imgs.length < 9"></view>
-				</view>
-			</view>
-			<view class="input_box">
-				<view class="name">上传文件</view>
-				<view class="upload_file_info">
-					<view class="upload_file" v-for="(item, index) of files" :key="index">
-						<view class="upload_url">{{item}}</view>
-						<text class="delete" @click="onDeleteFiles(index)">删除</text>
-					</view>
-					<button type="default" class="upload_file_btn" @click="onFilesUpload" v-if="files.length < 9">上传文件</button>
 				</view>
 			</view>
 		</view>
@@ -65,34 +55,7 @@ export default {
 		//删除图片
 		onDeleteImg(index) {
 			this.imgs.splice(index, 1);
-		},
-		//上传文件
-		onFilesUpload() {
-			let count = 9 - this.files.length;
-			uni.chooseImage({
-				count: count, //默认9
-				sizeType:  ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-				sourceType: ['album', 'camera'], //从相册选择
-				success: (res) => {
-					this.$http.qnFileUpload("api/upload/v1/upload_file", {
-						files: res.tempFiles
-					},{
-						onEachUpdate: res => {
-							console.log("单张上传成功返回：",res);
-						},
-						onProgressUpdate: res => {
-							console.log("上传进度返回：",res);
-						}
-					}).then(res => {
-						this.files = this.files.concat(res);
-					});
-				}
-			});
-		},
-		//删除文件
-		onDeleteFiles(index) {
-			this.files.splice(index, 1);
-		},
+		}
 	},
 	//页面隐藏
 	onHide() {},

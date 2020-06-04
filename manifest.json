@@ -1,7 +1,7 @@
 {
-    "name" : "uni项目",
+    "name" : "uniApp-案例",
     "appid" : "__UNI__uniProject",
-    "description" : "uni项目",
+    "description" : "uniApp-案例",
     "transformPx" : false,
     "icons" : [
         {

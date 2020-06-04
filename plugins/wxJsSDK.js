@@ -60,6 +60,19 @@ export const setShare = (data, callback) => {
 		});
 	});
 }
+//微信扫一扫
+export const scanQRCode = ( callback,needResult = 0) => {
+	//配置校验成功后执行
+	jWeixin.ready(function () {
+		jWeixin.scanQRCode({
+		  needResult: needResult, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+		  scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+		  success: function (res) {
+			callback && callback(res);
+		  }
+		});
+	});
+}
 window.onload = function () {
 	// 配置文件里面没有publicAppId将不激活微信SDK功能
 	if (!base.publicAppId) {

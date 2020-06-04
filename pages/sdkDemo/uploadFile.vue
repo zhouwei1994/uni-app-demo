@@ -50,7 +50,7 @@ export default {
 		//上传图片
 		onImgsUpload() {
 			let count = 9 - this.imgs.length;
-			this.$http.urlImgUpload("api/upload/v1/upload_image",{ 
+			this.$http.urlImgUpload("api/common/v1/upload_image",{ 
 				count: count,
 				onEachUpdate: res => {
 					console.log("单张上传成功返回：",res);
@@ -74,7 +74,7 @@ export default {
 				sizeType:  ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
 				sourceType: ['album', 'camera'], //从相册选择
 				success: (res) => {
-					this.$http.urlFileUpload("api/upload/v1/upload_file", {
+					this.$http.urlFileUpload("api/common/v1/upload_file", {
 						files: res.tempFiles
 					},{
 						onEachUpdate: res => {

@@ -73,31 +73,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '@/style/mixin.scss';
-.upload_file_info {
-	width: 100%;
-	.upload_file {
-		border:2rpx dashed #ccc;
-		padding: 30rpx;
-		width: 100%;
-		display: flex;
-		align-items: center;
-		box-sizing: border-box;
-		margin-bottom: 20rpx;
-		.upload_url {
-			font-size: 28rpx;
-		}
-		.delete {
-			font-size: 26rpx;
-			color: #FFF;
-			background-color: #F00;
-			height: 30rpx;
-			line-height: 30rpx;
-			padding: 0 15rpx;
-			border-radius: 10rpx;
-			flex-shrink: 0;
-		}
-	}
-}
 .upload_file_btn {
 	height: 88rpx;
 	background-color: $themeColor;

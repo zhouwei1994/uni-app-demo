@@ -93,11 +93,13 @@
 		height: 100%;
 		background-color: #f5f5f5;
 	}
-	
 	/* #endif */
 	
 
 	/* #ifdef H5 */
+	body {
+		max-width: 750rpx;
+	}
 	//修复H5底部导航挡住内容bug
 	uni-app {
 		height: auto;

@@ -29,7 +29,7 @@
 
 <style>
 	.image {
-		width: 100%;
+		width: 750rpx;
 		display: block;
 	}
 </style>

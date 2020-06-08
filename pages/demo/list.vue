@@ -10,9 +10,14 @@
 					<text @click="onJumpWebview('http://www.mescroll.com/')">文档地址：http://www.mescroll.com/</text>
 				</view>
 			</view>	
-			<view class="news-li" v-for="news in dataList" :key="news.id">
-				<view>{{news.title}}</view>
-				<view class="new-content">{{news.content}}</view>
+			<view class="news_list" v-for="item in dataList" :key="item.id" @click="onJumpWebview(item.reprintUrl)">
+				<view class="title"><text>{{item.original ? "原创" : "转载"}}</text>{{item.title}}</view>
+				<view class="content">{{item.content}}</view>
+				<view class="content_state">
+					<text>浏览量：{{item.pageviews}}</text>
+					<text>点赞数：{{item.likes}}</text>
+					<text>评论数：{{item.comments}}</text>
+				</view>
 			</view>
 		</mescroll-body>
 	</view>
@@ -20,7 +25,6 @@
 
 <script>
 	import MescrollMixin from "@/components/common/mescroll-uni/mescroll-mixins.js";
-	import {apiNewList} from "@/api/mock.js"
 	export default {
 		mixins: [MescrollMixin], // 使用mixin (在main.js注册全局组件)
 		data() {
@@ -35,42 +39,56 @@
 			/*下拉刷新的回调 */
 			downCallback() {
 				//联网加载数据
-				apiNewList().then(data => {
-					//联网成功的回调,隐藏下拉刷新的状态
-					this.mescroll.endSuccess();
-					//设置列表数据
-					this.dataList.unshift(data[0]);
-				}).catch(()=>{
-					//联网失败的回调,隐藏下拉刷新的状态
-					this.mescroll.endErr();
-				})
+				this.loadData(1);
+				// apiNewList().then(data => {
+				// 	//联网成功的回调,隐藏下拉刷新的状态
+				// 	this.mescroll.endSuccess();
+				// 	//设置列表数据
+				// 	this.dataList.unshift(data[0]);
+				// }).catch(()=>{
+				// 	//联网失败的回调,隐藏下拉刷新的状态
+				// 	this.mescroll.endErr();
+				// })
 			},
 			/*上拉加载的回调: 其中page.num:当前页 从1开始, page.size:每页数据条数,默认10 */
 			upCallback(page) {
 				console.log(page);
 				//联网加载数据
-				apiNewList(page.num, page.size).then(curPageData=>{
-					//联网成功的回调,隐藏下拉刷新和上拉加载的状态;
-					//mescroll会根据传的参数,自动判断列表如果无任何数据,则提示空;列表无下一页数据,则提示无更多数据;
-					
-					//方法一(推荐): 后台接口有返回列表的总页数 totalPage
-					//this.mescroll.endByPage(curPageData.length, totalPage); //必传参数(当前页的数据个数, 总页数)
-					
-					//方法二(推荐): 后台接口有返回列表的总数据量 totalSize
-					//this.mescroll.endBySize(curPageData.length, totalSize); //必传参数(当前页的数据个数, 总数据量)
-					
-					//方法三(推荐): 您有其他方式知道是否有下一页 hasNext
-					//this.mescroll.endSuccess(curPageData.length, hasNext); //必传参数(当前页的数据个数, 是否有下一页true/false)
-					
-					//方法四 (不推荐),会存在一个小问题:比如列表共有20条数据,每页加载10条,共2页.如果只根据当前页的数据个数判断,则需翻到第三页才会知道无更多数据.
-					this.mescroll.endSuccess(curPageData.length);
-					
-					//设置列表数据
-					this.dataList=this.dataList.concat(curPageData);
-				}).catch(()=>{
-					//联网失败, 结束加载
-					this.mescroll.endErr();
-				})
+				this.loadData(page.num);
+			},
+			loadData(pageNo){
+				this.$http
+					.post('api/articles/v1/articles_list', {
+						pageNo: pageNo,
+						pageSize: 10
+					},{
+						load:false
+					}).then(res => {
+						uni.stopPullDownRefresh();
+						//联网成功的回调,隐藏下拉刷新和上拉加载的状态;
+						//mescroll会根据传的参数,自动判断列表如果无任何数据,则提示空;列表无下一页数据,则提示无更多数据;
+						
+						//方法一(推荐): 后台接口有返回列表的总页数 totalPage
+						this.mescroll.endByPage(res.length, res.pages); //必传参数(当前页的数据个数, 总页数)
+						
+						//方法二(推荐): 后台接口有返回列表的总数据量 totalSize
+						//this.mescroll.endBySize(res.length, res.count); //必传参数(当前页的数据个数, 总数据量)
+						
+						//方法三(推荐): 您有其他方式知道是否有下一页 hasNext
+						//this.mescroll.endSuccess(res.length, hasNext); //必传参数(当前页的数据个数, 是否有下一页true/false)
+						
+						//方法四 (不推荐),会存在一个小问题:比如列表共有20条数据,每页加载10条,共2页.如果只根据当前页的数据个数判断,则需翻到第三页才会知道无更多数据.
+						// this.mescroll.endSuccess(res.length);
+						
+						if (pageNo == 1) {
+							this.dataList = res.data;
+						} else {
+							this.dataList = this.dataList.concat(res.data);
+						}
+					}).catch(()=>{
+						//联网失败, 结束加载
+						this.mescroll.endErr();
+					});
 			},
 			onJumpWebview(url){
 				// #ifdef H5
@@ -88,7 +106,8 @@
 	}
 </script>
 
-<style>
+<style scoped lang="scss">
+	@import '@/style/mixin.scss';
 	/*说明*/
 	.notice{
 		font-size: 30upx;
@@ -97,15 +116,30 @@
 		text-align: center;
 	}
 	/*展示上拉加载的数据列表*/
-	.news-li{
-		font-size: 32upx;
-		padding: 32upx;
-		border-bottom: 1upx solid #eee;
-	}
-	.news-li .new-content{
-		font-size: 28upx;
-		margin-top: 10upx;
-		margin-left: 20upx;
-		color: #666;
+	.news_list {
+		padding: 30rpx;
+		background-color: #FFF;
+		margin-bottom: 20rpx;
+		.title {
+			font-size: 28rpx;
+			color: #333;
+			font-weight: bold;
+			@include bov(2);
+		}
+		.content {
+			margin-top: 10rpx;
+			font-size: 24rpx;
+			color: #999;
+			@include bov(3);
+		}
+		.content_state {
+			margin-top: 10rpx;
+			display: flex;
+			justify-content: space-between;
+			text {
+				font-size: 24rpx;
+				color: #666;
+			}
+		}
 	}
 </style>

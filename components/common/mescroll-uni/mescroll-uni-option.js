@@ -12,7 +12,7 @@ const GlobalOption = {
 	up: {
 		// 其他up的配置参数也可以写,这里只展示了常用的配置:
 		textLoading: '加载中 ...', // 加载中的提示文本
-		textNoMore: '-- END --', // 没有更多数据的提示文本
+		textNoMore: '没有更多了', // 没有更多数据的提示文本
 		offset: 80, // 距底部多远时,触发upCallback
 		isBounce: false, // 默认禁止橡皮筋的回弹效果, 必读事项: http://www.mescroll.com/qa.html?v=190725#q25
 		toTop: {

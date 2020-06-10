@@ -31,7 +31,7 @@ export const getServerNo = function(version,isPrompt = false, callback) {
 	 * version: 应用当前版本号（已自动获取）
 	 * type：平台（1101是安卓，1102是IOS）
 	 */
-	$http.get("api/common/v2/app_version", httpData,{
+	$http.get("api/common/v1/app_version", httpData,{
 		isPrompt: isPrompt
 	}).then(res => {
 		/* res的数据说明

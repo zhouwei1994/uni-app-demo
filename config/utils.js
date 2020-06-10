@@ -3,7 +3,7 @@ import store from '@/config/store';
 import base from '@/config/baseUrl';
 import { getAppWxLatLon } from '@/plugins/utils';
 // #ifdef H5
-import { getLatLonH5, publicShareFun, wxPublicPay } from '@/config/html5Utils';
+import { getLatLonH5, publicShareFun, wxPublicPay, getBrowser, appMutual } from '@/config/html5Utils';
 // 公众号分享
 export const publicShare = publicShareFun;
 // #endif
@@ -13,9 +13,9 @@ import appShareFun, {closeShare} from '@/plugins/share';
 export const appShare = function(data,callbcak){
 	return appShareFun({
 		shareTitle: data.shareTitle || base.share.title,
-		shareUrl: shareInfo.shareUrl || base.share.link,
-		shareContent: shareInfo.shareContent || base.share.desc,
-		shareImg: shareInfo.shareImg || base.share.imgUrl,
+		shareUrl: data.shareUrl || base.share.link,
+		shareContent: data.shareContent || base.share.desc,
+		shareImg: data.shareImg || base.share.imgUrl,
 	},callbcak);
 };
 export const closeAppShare = closeShare;
@@ -112,7 +112,7 @@ export const setPayAssign = function(orderInfo, callback) {
 	//支付
 	// #ifdef APP-PLUS
 	uni.navigateTo({
-		url: '/pages/home/weChatPay?orderNo=' + orderInfo.orderNo + '&price=' + orderInfo.price + '&title=' + orderInfo.title
+		url: '/pages/template/pay?orderNo=' + orderInfo.orderNo + '&price=' + orderInfo.price + '&title=' + orderInfo.title
 	});
 	// #endif 
 	// #ifdef MP-WEIXIN
@@ -127,6 +127,7 @@ export const setPayAssign = function(orderInfo, callback) {
 			orderNo: orderInfo.orderNo
 		});
 	} else {
+		// H5嵌套在APP里面，调用app支付方法
 		appMutual('setJumpPay', orderInfo);
 	}
 	// #endif

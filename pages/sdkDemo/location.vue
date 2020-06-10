@@ -47,6 +47,10 @@ export default {
 			// 成功后，经纬度会自动储存到vuex的config/store.js => currentAddress参数里面
 			const data = await getLatLon(true);
 			console.log("经纬度数据",data);
+			uni.showModal({
+				title:"经纬度",
+				content: "latitude="+ data.latitude + ", longitude=" + data.longitude
+			});
 		}
 	}
 };

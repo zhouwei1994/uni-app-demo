@@ -5,6 +5,9 @@ import { getLocation, setShare } from '@/plugins/wxJsSDK';
 
 /**
  * APP内嵌网页 -- 安卓IOS交互
+ * 交互区分名称：shangChengView
+ * 示例：appMutual("方法名称", "传递的参数")
+ * 相当与安卓交互：window.shangChengView["方法名称"]("传递的参数");
  */
 export const appMutual = (name, query = null, errCallback) => {
 	if (/android/i.test(navigator.userAgent)) {

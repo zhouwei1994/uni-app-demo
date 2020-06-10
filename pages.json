@@ -136,7 +136,8 @@
 		{
 			"path": "pages/template/webView",
 			"style": {
-				"navigationBarTitleText": ""
+				"navigationBarTitleText": "",
+				"navigationStyle": "default"
 			}
 		},
 		{
@@ -270,6 +271,12 @@
 			"path": "pages/sdkDemo/utils",
 			"style": {
 				"navigationBarTitleText": "常用工具"
+			}
+		},
+		{
+			"path": "pages/template/pay",
+			"style": {
+				"navigationBarTitleText": "支付"
 			}
 		}
 	],

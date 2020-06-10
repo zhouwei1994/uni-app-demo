@@ -123,35 +123,18 @@ $http.dataFactory = function(res) {
 			// 返回正确的结果(then接受数据)
 			res.resolve(httpData.data);
 		} else if (httpData.code == "1000" || httpData.code == "1001" || httpData.code == 1100) {
-			
-			
 			// 失败重发
-			if(res.method == "GET"){
-				$http.get(res.url, res.data, {
-					headers:res.headers
-				}).then(data => {
-					res.resolve(data);
-				});
-			}else if(res.method == "POST"){
-				$http.post(res.url, res.data, {
-					headers:res.headers
-				}).then(data => {
-					res.resolve(data);
-				});
-			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+			// $http.request({
+			// 	url: res.url,
+			// 	data: res.data,
+			// 	method: res.method,
+			// 	header: res.header,
+			// 	isPrompt: res.isPrompt,//（默认 true 说明：本接口抛出的错误是否提示）
+			// 	load: res.load,//（默认 true 说明：本接口是否提示加载动画）
+			// 	isFactory: res.isFactory, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数将失去作用）
+			// }).then(data => {
+			// 	res.resolve(data);
+			// });
 			store.commit("emptyUserInfo");
 			// #ifdef MP-WEIXIN
 			onLogin();

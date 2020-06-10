@@ -52,7 +52,11 @@ export default {
 	box-sizing: border-box;
 	width: 100%;
 	padding: 100rpx 50rpx;
-	text-align: center;
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
+	flex-direction: column;
+	align-items: center;
 }
 
 .mescroll-empty.empty-fixed {

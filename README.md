@@ -8,17 +8,18 @@
 3. HBuilder X要安装scss/sass编译插件
 4. 运行项目
 
-### QQ交流群 607391225
+### QQ交流群（加群持续更新） 607391225
 ![QQ交流群](http://qn.kemean.cn//upload/202004/14/15868301778472k7oubi6.png)
 
 ### 本项目开源准备了好久，为了不用mock.js模拟数据保持原味接口，买了个服务器写的后台接口
-![微信打赏二维码](http://qn.kemean.cn/upload/202006/10/1591782897171i5fbakj6.png)
-![支付宝打赏二维码](http://qn.kemean.cn/upload/202006/10/1591782885459jaw1xper.jpg)
+![微信打赏二维码](http://qn.kemean.cn/upload/202006/17/15923814750253qjayobp.png)
+![支付宝打赏二维码](http://qn.kemean.cn/upload/202006/17/1592381515304aezjp7h3.jpg)
 
 开源不易，打个赏吧
-
 ### [H5预览地址](http://8.129.186.35/index.html)
 ### [安卓APP安装包下载地址](http://qn.kemean.cn/upload/202006/10/1591785853646tulgw1o4.apk)
+### [Demo版GitHub地址](https://github.com/zhouwei1994/uni-app-demo)
+### [空项目模板GitHub地址（开发用这个）](https://github.com/zhouwei1994/uni-app-template)
 
 # 项目结构
 
@@ -41,7 +42,8 @@
 │   ├── share                           	// APP分享
 │   ├── md5.js                           	// md5加密
 │   ├── permission.js                       // APP权限判断和打开手机系统设置
-│   └── utils.js                       		// 工具（时间转换、APP和小程序获取经纬度代码）
+│   ├── utils.js                       		// 工具（时间转换、APP和小程序获取经纬度代码）
+│   └── wxJsSDK.js                       	// 微信公众号SDK去权限获取页面
 ├── static                                  // 公共文件
 │   ├── demo                          		// 本项目相关的图片（可删除）
 │   ├── icon                          		// 项目图标

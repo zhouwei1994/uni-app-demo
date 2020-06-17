@@ -134,6 +134,24 @@
 			}
 		},
 		{
+			"path": "pages/demo/waterfall/common",
+			"style": {
+				"navigationBarTitleText": "瀑布流列表"
+			}
+		},
+		{
+			"path": "pages/demo/waterfall/stableWaterfall",
+			"style": {
+				"navigationBarTitleText": "稳定版瀑布流"
+			}
+		},
+		{
+			"path": "pages/demo/waterfall/completeWaterfall",
+			"style": {
+				"navigationBarTitleText": "完全版瀑布流"
+			}
+		},
+		{
 			"path": "pages/template/webView",
 			"style": {
 				"navigationBarTitleText": "",

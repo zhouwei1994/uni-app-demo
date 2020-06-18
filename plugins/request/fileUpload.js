@@ -22,6 +22,37 @@ export default class fileUpload extends request {
 			});
 		});
 	}
+	//七牛云上传视频
+	qnVideoUpload(data = {}, options = {}) {
+		const _this = this;
+		return new Promise((resolve, reject) => {
+			uni.chooseVideo({
+				sourceType: data.sourceType || ['album', 'camera'], //从相册选择
+				compressed: data.compressed || false, //是否压缩所选的视频源文件，默认值为 true，需要压缩。
+				maxDuration: data.maxDuration || 60, //拍摄视频最长拍摄时间，单位秒。最长支持 60 秒。
+				camera: data.camera || 'back', //'front'、'back'，默认'back'
+				success: function(res) {
+					console.log(res);
+					let files = [{
+						path: res.tempFilePath
+					}];
+					// #ifdef APP-PLUS || H5 || MP-WEIXIN
+					files[0].duration = res.duration;
+					files[0].size = res.size;
+					files[0].height = res.height;
+					files[0].width = res.width;
+					// #endif
+					// #ifdef H5
+					files[0].name = res.name;
+					// #endif
+					_this.qnFileUpload({
+						files: files,
+						...data
+					}, options).then(resolve, reject);
+				}
+			});
+		});
+	}
 	//七牛云上传文件命名
 	randomChar(l, url = "") {
 		const x = "0123456789qwertyuioplkjhgfdsazxcvbnm";
@@ -69,7 +100,7 @@ export default class fileUpload extends request {
 			}
 			if (Array.isArray(requestInfo.files)) {
 				let len = requestInfo.files.length;
-				let imageList = new Array;
+				let fileList = new Array;
 				if(_this.getQnToken){
 					_this.getQnToken(qnRes => {
 						/*
@@ -81,23 +112,40 @@ export default class fileUpload extends request {
 						 */
 						uploadFile(0);
 						function uploadFile(i) {
+							let item = requestInfo.files[i];
 							let fileData = {
 								fileIndex: i,
 								files: requestInfo.files,
-								size: requestInfo.files[i].size
 							};
-							// #ifdef H5
-							fileData.name = requestInfo.files[i].name;
-							fileData.type = requestInfo.files[i].type;
-							// #endif
+							if(item.path){
+								fileData.path = item.path;
+							}
+							if(item.size){
+								fileData.size = item.size;
+							}
+							if(item.type){
+								fileData.type = item.type;
+							}
+							if(item.name){
+								fileData.name = item.name;
+							}
+							if(item.duration){
+								fileData.duration = item.duration;
+							}
+							if(item.height){
+								fileData.height = item.height;
+							}
+							if(item.width){
+								fileData.width = item.width;
+							}
 							// 交给七牛上传
-							qiniuUploader.upload(requestInfo.files[i].path, (res) => {
+							qiniuUploader.upload(item.path, (res) => {
 								fileData.url = res.imageURL;
 								requestInfo.onEachUpdate && requestInfo.onEachUpdate({
 									url: res.imageURL,
 									...fileData
 								});
-								imageList.push(res.imageURL);
+								fileList.push(res.imageURL);
 								if (len - 1 > i) {
 									uploadFile(i + 1);
 								} else {
@@ -105,9 +153,9 @@ export default class fileUpload extends request {
 									_this.requestEnd && _this.requestEnd(requestInfo, {
 										errMsg: "request:ok",
 										statusCode: 200,
-										data: imageList
+										data: fileList
 									});
-									resolve(imageList);
+									resolve(fileList);
 								}
 							}, (error) => {
 								console.log('error: ' + error);
@@ -172,9 +220,39 @@ export default class fileUpload extends request {
 			});
 		});
 	}
+	//七牛云上传视频
+	urlVideoUpload(url = '',data = {}, options = {}) {
+		const _this = this;
+		return new Promise((resolve, reject) => {
+			uni.chooseVideo({
+				sourceType: data.sourceType || ['album', 'camera'], //从相册选择
+				compressed: data.compressed || false, //是否压缩所选的视频源文件，默认值为 true，需要压缩。
+				maxDuration: data.maxDuration || 60, //拍摄视频最长拍摄时间，单位秒。最长支持 60 秒。
+				camera: data.camera || 'back', //'front'、'back'，默认'back'
+				success: function(res) {
+					let files = [{
+						path: res.tempFilePath
+					}];
+					// #ifdef APP-PLUS || H5 || MP-WEIXIN
+					files[0].duration = res.duration;
+					files[0].size = res.size;
+					files[0].height = res.height;
+					files[0].width = res.width;
+					// #endif
+					// #ifdef H5
+					files[0].name = res.name;
+					// #endif
+					_this.urlFileUpload(url, {
+						files: files,
+						...data
+					}, options).then(resolve, reject);
+				}
+			});
+		});
+	}
 	//本地服务器文件上传方法
 	urlFileUpload(url = '', data = {}, options = {}) {
-		let requestInfo = this.getDefault({
+		let requestInfo = this.dataMerge({
 			...data,
 			url: url,
 			method: "FILE"
@@ -288,18 +366,35 @@ export default class fileUpload extends request {
 				fileUpload(0);
 
 				function fileUpload(i) {
+					let item = requestInfo.files[i];
 					let fileData = {
 						fileIndex: i,
 						files: requestInfo.files,
-						size: requestInfo.files[i].size
 					};
-					// #ifdef H5
-					fileData.name = requestInfo.files[i].name;
-					fileData.type = requestInfo.files[i].type;
-					// #endif
+					if(item.path){
+						fileData.path = item.path;
+					}
+					if(item.size){
+						fileData.size = item.size;
+					}
+					if(item.type){
+						fileData.type = item.type;
+					}
+					if(item.name){
+						fileData.name = item.name;
+					}
+					if(item.duration){
+						fileData.duration = item.duration;
+					}
+					if(item.height){
+						fileData.height = item.height;
+					}
+					if(item.width){
+						fileData.width = item.width;
+					}
 					let config = {
 						url: requestInfo.url,
-						filePath: requestInfo.files[i].path,
+						filePath: item.path,
 						header: requestInfo.header, //加入请求头
 						name: requestInfo.name || "file",
 						success: (response) => {

@@ -14,6 +14,18 @@
 					<view class="upload_img upload" @click="onImgsUpload" v-if="imgs.length < 9"></view>
 				</view>
 			</view>
+			<view class="input_form_box">
+				<view class="input_box">
+					<view class="name">上传视频</view>
+					<view class="upload_info">
+						<view class="upload_img" v-for="(item, index) of videos" :key="index">
+							<video :src="item.url" controls></video>
+							<text class="delete" @click="onDeleteVideo(index)"></text>
+						</view>
+						<view class="upload_img upload" @click="onVideosUpload" v-if="videos.length < 9"></view>
+					</view>
+				</view>
+			</view>
 			<view class="input_box">
 				<view class="name">上传文件</view>
 				<view class="upload_file_info">
@@ -33,7 +45,8 @@ export default {
 	data() {
 		return {
 			imgs: [],
-			files: []
+			files: [],
+			videos: []
 		};
 	},
 	//第一次加载
@@ -65,6 +78,23 @@ export default {
 		//删除图片
 		onDeleteImg(index) {
 			this.imgs.splice(index, 1);
+		},
+		// 视频
+		onVideosUpload(){
+			this.$http.urlVideoUpload("api/common/v1/upload_file", {
+				onEachUpdate: res => {
+					console.log("单张上传成功返回：",res);
+				},
+				onProgressUpdate: res => {
+					console.log("上传进度返回：",res);
+				}
+			}).then(res => {
+				this.videos = this.videos.concat(res);
+			});
+		},
+		//删除视频
+		onDeleteVideo(index) {
+			this.videos.splice(index, 1);
 		},
 		//上传文件
 		onFilesUpload() {

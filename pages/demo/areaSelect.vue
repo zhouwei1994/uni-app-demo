@@ -45,7 +45,7 @@
 			<view class="input_box">
 				<view class="name required">只能选到市级</view>
 				<view class="select_info" @click="popupShow3 = true">
-					<text class="value" v-if="addressList3.length >= 2">{{ addressList3[0].name }}{{ addressList3[1].name }}{{ addressList3[2].name }}</text>
+					<text class="value" v-if="addressList3.length >= 2">{{ addressList3[0].name }}{{ addressList3[1].name }}</text>
 					<text class="select" v-else="">请选择位置</text>
 				</view>
 			</view>

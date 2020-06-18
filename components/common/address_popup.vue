@@ -30,7 +30,7 @@ export default {
 		},
 		length: {
 			type: Number,
-			default: 2
+			default: 3
 		},
 		force:{
 			type: Boolean,

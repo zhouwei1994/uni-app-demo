@@ -2,10 +2,10 @@ let baseUrl = "";
 let socketUrl = "";
 if (process.env.NODE_ENV === 'development') {
 	// 开发环境
-	// baseUrl = "http://localhost:7001/";
-	// socketUrl = "ws://localhost:8001/";
-	baseUrl = "http://8.129.186.35/";
-	socketUrl = "ws://8.129.186.35:6001/";
+	baseUrl = "http://localhost:7001/";
+	socketUrl = "ws://localhost:6001/";
+	// baseUrl = "http://8.129.186.35/";
+	// socketUrl = "ws://8.129.186.35:6001/";
 } else if (process.env.NODE_ENV === 'production') {
 	// 生产环境
 	baseUrl = "http://8.129.186.35/";

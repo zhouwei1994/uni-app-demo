@@ -7,16 +7,16 @@ export default class request {
 		//默认请求头
 		this.header = options.header || {};
 		//默认配置
-		this.config = {
-			isPrompt: options.isPrompt === false ? false : true,
-			load: options.load === false ? false : true,
-			isFactory: options.isFactory === false ? false : true,
-			loadMore: options.loadMore === false ? false : true
+		this.config = options.config || {
+			isPrompt: true,
+			load: true,
+			isFactory: true,
+			loadMore: true
 		};
 	}
 
-	// 获取默认信息
-	getDefault(data, options = {}) {
+	// 获取合并的数据
+	dataMerge(data, options = {}) {
 		//判断url是不是链接
 		let urlType = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~/])+$/.test(data.url);
 		let config = Object.assign({}, this.config, options, data);
@@ -87,7 +87,7 @@ export default class request {
 				});
 				return;
 			}
-			let requestInfo = this.getDefault(data);
+			let requestInfo = this.dataMerge(data);
 			//请求前回调
 			if (this.requestStart) {
 				let requestStart = this.requestStart(requestInfo);
@@ -166,7 +166,7 @@ export default class request {
 	}
 	//jsonp请求(只限于H5使用)
 	jsonp(url = '', data = {}, options = {}) {
-		let requestInfo = this.getDefault({
+		let requestInfo = this.dataMerge({
 			method: "JSONP",
 			data: data,
 			url: url,

@@ -83,8 +83,7 @@ export default {
 			this.$http.get('api/common/v1/region', { pid: pid }, { load: false }).then(data => {
 				if (data.length > 0) {
 					this.addressList = data;
-					// this.$refs.scroll.scrollTop = '0px';
-					this.scrollTop = Math.random();
+					this.scrollTop = 0;
 				} else {
 					this.$emit('change', this.addressVal);
 				}

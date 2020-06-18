@@ -22,7 +22,6 @@
 		</mescroll-body>
 	</view>
 </template>
-
 <script>
 	import MescrollMixin from "@/components/common/mescroll-uni/mescroll-mixins.js";
 	export default {
@@ -40,19 +39,9 @@
 			downCallback() {
 				//联网加载数据
 				this.loadData(1);
-				// apiNewList().then(data => {
-				// 	//联网成功的回调,隐藏下拉刷新的状态
-				// 	this.mescroll.endSuccess();
-				// 	//设置列表数据
-				// 	this.dataList.unshift(data[0]);
-				// }).catch(()=>{
-				// 	//联网失败的回调,隐藏下拉刷新的状态
-				// 	this.mescroll.endErr();
-				// })
 			},
 			/*上拉加载的回调: 其中page.num:当前页 从1开始, page.size:每页数据条数,默认10 */
 			upCallback(page) {
-				console.log(page);
 				//联网加载数据
 				this.loadData(page.num);
 			},
@@ -69,16 +58,16 @@
 						//mescroll会根据传的参数,自动判断列表如果无任何数据,则提示空;列表无下一页数据,则提示无更多数据;
 						
 						//方法一(推荐): 后台接口有返回列表的总页数 totalPage
-						this.mescroll.endByPage(res.length, res.pages); //必传参数(当前页的数据个数, 总页数)
+						this.mescroll.endByPage(res.data.length, res.pages); //必传参数(当前页的数据个数, 总页数)
 						
 						//方法二(推荐): 后台接口有返回列表的总数据量 totalSize
-						//this.mescroll.endBySize(res.length, res.count); //必传参数(当前页的数据个数, 总数据量)
+						//this.mescroll.endBySize(res.data.length, res.count); //必传参数(当前页的数据个数, 总数据量)
 						
 						//方法三(推荐): 您有其他方式知道是否有下一页 hasNext
-						//this.mescroll.endSuccess(res.length, hasNext); //必传参数(当前页的数据个数, 是否有下一页true/false)
+						//this.mescroll.endSuccess(res.data.length, hasNext); //必传参数(当前页的数据个数, 是否有下一页true/false)
 						
 						//方法四 (不推荐),会存在一个小问题:比如列表共有20条数据,每页加载10条,共2页.如果只根据当前页的数据个数判断,则需翻到第三页才会知道无更多数据.
-						// this.mescroll.endSuccess(res.length);
+						// this.mescroll.endSuccess(res.data.length);
 						
 						if (pageNo == 1) {
 							this.dataList = res.data;

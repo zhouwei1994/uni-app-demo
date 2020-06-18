@@ -62,7 +62,7 @@ $http.requestStart = function(options) {
 	// 图片上传大小限制
 	if (options.method == "FILE" && options.maxSize) {
 		// 文件最大字节: options.maxSize 可以在调用方法的时候加入参数
-		maxSize = options.maxSize;
+		let maxSize = options.maxSize;
 		for (let item of options.files) {
 			if (item.size > maxSize) {
 				setTimeout(() => {

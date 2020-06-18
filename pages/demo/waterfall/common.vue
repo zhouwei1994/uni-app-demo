@@ -1,27 +1,15 @@
 <template>
   <view>
-     <nav-bar backState="2000" title="模板页面"></nav-bar>
+     <nav-bar title="瀑布流"></nav-bar>
 	 <!-- 公共组件-每个页面必须引入 -->
 	 <public-module></public-module>
-	 <view class="nav_list" @click="onPageJump('/pages/user/login')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>登录</text>
+	 <view class="nav_list" @click="onPageJump('/pages/demo/waterfall/stableWaterfall')">
+	 	<image src="../../../static/demo/icon_case.png" mode="aspectFit"></image>
+	 	<text>稳定版瀑布流（标题保留两行，右边空隙较少）</text>
 	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/user/register')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>注册</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/user/forget')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>忘记密码</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/user/bindPhone')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>绑定手机号</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/user/protocol')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>协议</text>
+	 <view class="nav_list" @click="onPageJump('/pages/demo/waterfall/completeWaterfall')">
+	 	<image src="../../../static/demo/icon_case.png" mode="aspectFit"></image>
+	 	<text>完全版瀑布流（标题全部显示，右边空隙较大）</text>
 	 </view>
   </view>
 </template>
@@ -86,7 +74,7 @@ export default {
 		transform: translateY(-50%);
 		width: 40upx;
 		height: 40upx;
-		background-image: url('../../static/demo/icon_right.png');
+		background-image: url('../../../static/demo/icon_right.png');
 		background-position: center center;
 		background-repeat: no-repeat;
 		background-size: cover;

@@ -25,10 +25,9 @@
 					<view class="upwarp-tip">{{ mescroll.optUp.textLoading }}</view>
 				</view>
 				<!-- 无数据 -->
-				<view v-if="upLoadType===2" class="upwarp-nodata">{{ mescroll.optUp.textNoMore }}</view>
+				<view v-if="upLoadType === 2" class="upwarp-nodata">{{ mescroll.optUp.textNoMore }}</view>
 			</view>
 		</view>
-
 		<!-- 回到顶部按钮 (fixed元素需写在transform外面,防止降级为absolute)-->
 		<mescroll-top v-model="isShowToTop" :option="mescroll.optUp.toTop" @click="toTopClick"></mescroll-top>
 	</view>

@@ -3,6 +3,8 @@
 ### QQ交流群(学习干货多多) 607391225
 ![QQ交流群](http://qn.kemean.cn//upload/202004/14/15868301778472k7oubi6.png)
 
+# [点击跳转-插件示例](https://ext.dcloud.net.cn/plugin?id=2009)
+
 ### 常见问题
 1.安卓apk下载完成后没有更新APP?
 

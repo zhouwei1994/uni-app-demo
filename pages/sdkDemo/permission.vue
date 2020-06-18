@@ -148,17 +148,18 @@ export default {
 			*/
 			// #ifdef APP-PLUS
 			judgePermission(permissionID, function(res){
-				if (res.result === 1) {
+				console.log(res);
+				if (res === 1) {
 					uni.showToast({
 						title:"已获取到权限",
 						icon:"none"
 					});
-				}else if(res.result === 0){
+				}else if(res === 0){
 					uni.showToast({
 						title:"正在获取权限，会弹窗提示",
 						icon:"none"
 					});
-				}else if(res.result === -1){
+				}else if(res === -1){
 					uni.showToast({
 						title:"用户已拒绝权限，会弹窗提示用户到【系统设置】里面开启权限",
 						icon:"none"

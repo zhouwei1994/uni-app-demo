@@ -123,35 +123,6 @@ $http.dataFactory = function(res) {
 			// 返回正确的结果(then接受数据)
 			res.resolve(httpData.data);
 		} else if (httpData.code == "1000" || httpData.code == "1001" || httpData.code == 1100) {
-			
-			
-			// 失败重发
-			if(res.method == "GET"){
-				$http.get(res.url, res.data, {
-					headers:res.headers
-				}).then(data => {
-					res.resolve(data);
-				});
-			}else if(res.method == "POST"){
-				$http.post(res.url, res.data, {
-					headers:res.headers
-				}).then(data => {
-					res.resolve(data);
-				});
-			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			store.commit("emptyUserInfo");
 			// #ifdef MP-WEIXIN
 			onLogin();

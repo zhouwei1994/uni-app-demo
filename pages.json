@@ -296,6 +296,12 @@
 			"style": {
 				"navigationBarTitleText": "支付"
 			}
+		},
+		{
+			"path": "pages/template/shortVideo",
+			"style": {
+				"navigationBarTitleText": "防抖音滑动视频"
+			}
 		}
 	],
 	"globalStyle": {

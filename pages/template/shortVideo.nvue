@@ -1,0 +1,251 @@
+<template>
+	<view class="page">
+		<swiper class="video_swiper" vertical :skip-hidden-item-layout="true"  @change="onSwiperChange">
+			<swiper-item v-for="(item,index) of 5" :key="index">
+				<short-video
+					:play="swiperIndex == index"
+					src="http://v.weishi.qq.com/shg_1047_1047_0bf2vabpiaacamaltjoj4bpblkae6s7qf4ca.f20.mp4"
+					:index="index"
+					:progress="progress"
+					:progressValue="progressValue"
+				></short-video>
+				<view class="content_bottom_box">
+					<view class="content_goods_info">
+						<image class="content_goods_info_image" src="../../static/icon/shortVideo/ic_home_shoppingcart.png" mode="aspectFit"></image>
+						<text class="content_goods_info_text">圣芙蕾雅 照烧猪排109g</text>
+					</view>
+					<text class="content_user_name">@德丽莎·阿波卡利斯</text>
+					<text class="content_description">口感非常好吃的猪排，天命独门秘方，让大家垂涎欲滴~</text>
+				</view>
+			</swiper-item>
+		</swiper>
+		<view class="right_suspended">
+			<view class="suspended_user_info" @click="onPageJump('/pages/shortVideo/mainPage')">
+				<image class="suspended_user_info_image" src="../../static/icon/WeChatIcon.png" mode="aspectFill"></image>
+				<!-- <image class="suspended_user_info_icon" src="../../static/icon/theme/ic_attention.png" mode="aspectFit"></image> -->
+			</view>
+			<view class="suspended_features_item">
+				<image class="suspended_features_icon" src="../../static/icon/shortVideo/ic_video_phone.png" mode="aspectFit"></image>
+				<text class="suspended_features_text">电话</text>
+				<!-- <text class="suspended_features_dot">89</text> -->
+			</view>
+			<view class="suspended_features_item">
+				<image class="suspended_features_icon" src="../../static/icon/shortVideo/ic_video_weixin.png" mode="aspectFit"></image>
+				<text class="suspended_features_text">微信</text>
+				<!-- <text class="suspended_features_dot">89</text> -->
+			</view>
+			<view class="suspended_features_item" @click="shareShow = true">
+				<image class="suspended_features_icon" src="../../static/icon/shortVideo/ic_video_share.png" mode="aspectFit"></image>
+				<text class="suspended_features_text">分享</text>
+				<!-- <text class="suspended_features_dot">999</text> -->
+			</view>
+		</view>
+		<view class="progress_drag" @touchstart="onTouchstart" @touchmove="onTouchmove" @touchcancel="onTouchcancel" @touchend="onTouchend"></view>
+		<z-share v-model="shareShow"></z-share>
+		<!-- <z-navigation></z-navigation> -->
+	</view>
+</template>
+<script>
+import shortVideo from "@/components/module/short_video.vue"
+import zShare from "@/components/module/share.vue"
+// import zNavigation from "@/components/module/navigation.vue"
+export default {
+	components:{
+		shortVideo,
+		zShare,
+		// zNavigation
+	},
+	data() {
+		return {
+			swiperIndex: 0,
+			progress: 10000,
+			progressValue: 0,
+			shareShow: false
+		};
+	},
+	//第一次加载
+	onLoad(e) {
+		// 隐藏原生的tabbar
+		// uni.hideTabBar();
+		let systemInfo = uni.getSystemInfoSync();
+		this.screenWidth = systemInfo.screenWidth;
+	},
+	//页面显示
+	onShow() {
+		// 隐藏原生的tabbar
+		// uni.hideTabBar();
+	},
+	//方法
+	methods: {
+		onPageJump(url) {
+			uni.navigateTo({
+				url: url
+			});
+		},
+		onSwiperChange(e){
+			this.swiperIndex = e.detail.current;
+		},
+		onTouchstart(e) {
+			this.progress = 0;
+		},
+		// 手指触摸后移动
+		onTouchmove(e) {
+			//手指当前坐标
+			// #ifdef APP-NVUE
+			const clientX = e.changedTouches[0].screenX;
+			// #endif
+			// #ifndef APP-NVUE
+			const clientX = e.changedTouches[0].clientX;
+			// #endif
+			this.progress = parseInt((clientX / this.screenWidth) * 100);
+		},
+		// 手指触摸动作被打断，如来电提醒，弹窗
+		onTouchcancel(e) {
+			// #ifdef APP-NVUE
+			this.progressValue = parseInt((e.changedTouches[0].screenX / this.screenWidth) * 100);
+			// #endif
+			// #ifndef APP-NVUE
+			this.progressValue = parseInt((e.changedTouches[0].clientX / this.screenWidth) * 100);
+			// #endif
+			
+		},
+		// 手指触摸动作结束
+		onTouchend(e) {
+			// #ifdef APP-NVUE
+			this.progressValue = parseInt((e.changedTouches[0].screenX / this.screenWidth) * 100);
+			// #endif
+			// #ifndef APP-NVUE
+			this.progressValue = parseInt((e.changedTouches[0].clientX / this.screenWidth) * 100);
+			// #endif
+		}
+	},
+	//页面隐藏
+	onHide() {},
+	//页面卸载
+	onUnload() {},
+	//页面下来刷新
+	onPullDownRefresh() {},
+	//页面上拉触底
+	onReachBottom() {},
+	//用户点击分享
+	onShareAppMessage(e) {
+		return this.wxShare();
+	}
+};
+</script>
+<style lang="scss" scoped>
+@import '@/style/mixin.scss';
+.page {
+	background-color: #1a1b20;
+	width: 750rpx;
+	position: relative;
+}
+.progress_drag {
+	position: absolute;
+	bottom: 0rpx;
+	left: 0;
+	width: 100%;
+	padding: 15rpx 0;
+	z-index: 5;
+}
+.video_swiper {
+	width: 750rpx;
+	/* #ifdef H5 */
+	height: calc(100vh - 100rpx);
+	/* #endif */
+	/* #ifndef H5 */
+	height: 100vh;
+	/* #endif */
+}
+.video_file {
+	width: 750rpx;
+	height: 100%;
+}
+.content_bottom_box {
+	position: absolute;
+	bottom: 0rpx;
+	width: 750rpx;
+	padding: 0 0rpx 40rpx 0rpx;
+	background-image: linear-gradient(to, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4));
+	align-items: flex-start;
+	z-index: 1;
+}
+.content_goods_info {
+	height: 49rpx;
+	flex-direction: row;
+	align-items: center;
+	background-color: rgba($color: #000000, $alpha: 0.4);
+	padding: 0 12rpx;
+	margin: 0 182rpx 0 40rpx;
+}
+.content_goods_info_image {
+	width: 24rpx;
+	height: 24rpx;
+}
+.content_goods_info_text {
+	font-size: 24rpx;
+	color: #ffffff;
+	margin-left: 12rpx;
+}
+.content_user_name {
+	font-size: 36rpx;
+	color: #ffffff;
+	font-weight: bold;
+	margin: 70rpx 182rpx 0 40rpx;
+}
+.content_description {
+	font-size: 28rpx;
+	color: #ffffff;
+	margin: 30rpx 182rpx 0 40rpx;
+}
+.right_suspended {
+	position: fixed;
+	right: 30rpx;
+	bottom: 280rpx;
+	align-items: center;
+}
+.suspended_user_info {
+	position: relative;
+}
+.suspended_user_info_image {
+	width: 120rpx;
+	height: 120rpx;
+	border: solid 2rpx #ffffff;
+	border-radius: 50%;
+}
+.suspended_user_info_icon {
+	width: 40rpx;
+	height: 40rpx;
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%) translateY(50%);
+}
+.suspended_features_item {
+	align-items: center;
+	position: relative;
+	margin-top: 80rpx;
+}
+.suspended_features_icon {
+	width: 48rpx;
+	height: 48rpx;
+}
+.suspended_features_text {
+	margin-top: 12rpx;
+	font-size: 28rpx;
+	color: #ffffff;
+}
+.suspended_features_dot {
+	font-size: 20rpx;
+	color: #ffffff;
+	position: absolute;
+	top: -10rpx;
+	right: 0;
+	transform: translateX(50%);
+	height: 24rpx;
+	background-color: #ff3682;
+	border-radius: 12rpx;
+	line-height: 24rpx;
+	padding: 0 9rpx;
+}
+</style>

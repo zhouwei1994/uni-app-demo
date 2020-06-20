@@ -519,7 +519,10 @@ MeScroll.prototype.showNoMore = function() {
 	this.optUp.hasNext = false; // 标记无更多数据
 	this.optUp.showNoMore && this.optUp.showNoMore(this); // 回调
 }
-
+/* 显示加载失败 */
+MeScroll.prototype.showErr = function() {
+	this.options.showErr && this.options.showErr(this); // 回调
+}
 /* 隐藏上拉区域**/
 MeScroll.prototype.hideUpScroll = function() {
 	this.optUp.hideUpScroll && this.optUp.hideUpScroll(this); // 回调
@@ -663,11 +666,13 @@ MeScroll.prototype.endErr = function(errDistance) {
 			page.time = this.prePageTime;
 		}
 		this.endDownScroll();
+		this.showErr();
 	}
 	// 结束上拉,回调失败重置回原来的页码
 	if (this.isUpScrolling) {
 		this.optUp.page.num--;
 		this.endUpScroll(false);
+		this.showErr();
 		// 如果是mescroll-body,则需往回滚一定距离
 		if (this.isScrollBody && errDistance !== 0) { // 不处理0
 			if (!errDistance) errDistance = this.optUp.errDistance; // 不传,则取默认

@@ -26,6 +26,8 @@
 				</view>
 				<!-- 无数据 -->
 				<view v-if="upLoadType === 2" class="upwarp-nodata">{{ mescroll.optUp.textNoMore }}</view>
+				<!-- 请求失败 -->
+				<view v-if="upLoadType === 3" class="upwarp-nodata">{{ mescroll.optUp.textErr }}</view>
 			</view>
 		</view>
 		<!-- 回到顶部按钮 (fixed元素需写在transform外面,防止降级为absolute)-->
@@ -78,7 +80,14 @@
 		computed: {
 			// mescroll最小高度,默认windowHeight,使列表不满屏仍可下拉
 			minHeight(){
-				let minHeight = this.toPx(this.height || '100%');
+				let minHeight = 0;
+				if(this.height > 0){
+					 minHeight = this.toPx(this.height);
+				}else if(this.height && Number(this.height) < 0){
+					minHeight = this.toPx('100%') + uni.upx2px(this.height)
+				} else {
+					minHeight = this.toPx('100%');
+				}
 				if(this.navbar){
 					return (minHeight - this.statusBarHeight - uni.upx2px(88) )+ 'px'
 				}else {
@@ -243,7 +252,11 @@
 					callback: function(mescroll) {
 						vm.$emit('up', mescroll);
 					}
-				}
+				},
+				// 显示请求失败
+				showErr(){
+					vm.upLoadType = 3;
+				},
 			};
 
 			MeScroll.extend(diyOption, GlobalOption); // 混入全局的配置

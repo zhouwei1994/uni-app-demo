@@ -46,7 +46,8 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+@import '@/style/mixin.scss';
 /* 无任何数据的空布局 */
 .mescroll-empty {
 	box-sizing: border-box;
@@ -83,9 +84,9 @@ export default {
 	min-width: 200rpx;
 	padding: 18rpx;
 	font-size: 28rpx;
-	border: 1rpx solid #e04b28;
+	border: 1rpx solid $themeColor;
 	border-radius: 60rpx;
-	color: #e04b28;
+	color: $themeColor;
 }
 
 .mescroll-empty .empty-btn:active {

@@ -69,12 +69,21 @@
 			topbar: Boolean, // top的偏移量是否加上状态栏高度, 默认false (使用场景:取消原生导航栏时,配置此项可自动加上状态栏高度的偏移量)
 			bottom: [String, Number], // 上拉布局往上的偏移量 (支持20, "20rpx", "20px", "20%"格式的值, 其中纯数字则默认单位rpx, 百分比则相对于windowHeight)
 			safearea: Boolean, // bottom的偏移量是否加上底部安全区的距离, 默认false (需要适配iPhoneX时使用)
+			navbar: {
+				type: Boolean,
+				default: true
+			}, // 高度是否减去导航栏和状态栏部分
 			height: [String, Number] // 指定mescroll最小高度,默认windowHeight,使列表不满屏仍可下拉
 		},
 		computed: {
 			// mescroll最小高度,默认windowHeight,使列表不满屏仍可下拉
 			minHeight(){
-				return this.toPx(this.height || '100%') + 'px'
+				let minHeight = this.toPx(this.height || '100%');
+				if(this.navbar){
+					return (minHeight - this.statusBarHeight - uni.upx2px(88) )+ 'px'
+				}else {
+					return minHeight + 'px'
+				}
 			},
 			// 下拉布局往下偏移的距离 (px)
 			numTop() {

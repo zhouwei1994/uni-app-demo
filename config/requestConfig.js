@@ -94,14 +94,6 @@ $http.requestEnd = function(options, resolve) {
 		// 关闭加载动画
 		store.commit("setLoadingShow", false);
 	}
-	if (resolve.errMsg && resolve.statusCode && resolve.statusCode > 300) {
-		setTimeout(() => {
-			uni.showToast({
-				title: "网络错误，请检查一下网络",
-				icon: "none"
-			});
-		}, 500);
-	}
 }
 let loginPopupNum = 0;
 //所有接口数据处理（此方法需要开发者根据各自的接口返回类型修改，以下只是模板）
@@ -196,4 +188,13 @@ $http.dataFactory = function(res) {
 		res.reject(res.response);
 	}
 };
+
+$http.requestError = function(e){
+	setTimeout(() => {
+		uni.showToast({
+			title: "网络错误，请检查一下网络",
+			icon: "none"
+		});
+	}, 500);
+}
 export default $http;

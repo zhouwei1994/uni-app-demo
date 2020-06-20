@@ -14,9 +14,8 @@ export default class request {
 			loadMore: true
 		};
 	}
-
 	// 获取合并的数据
-	dataMerge(data, options = {}) {
+	mergeConfig(data, options = {}) {
 		//判断url是不是链接
 		let urlType = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~/])+$/.test(data.url);
 		let config = Object.assign({}, this.config, options, data);
@@ -35,7 +34,6 @@ export default class request {
 		}
 		return config;
 	}
-
 	//post请求
 	post(url = '', data = {}, options = {}) {
 		return this.request({
@@ -80,14 +78,13 @@ export default class request {
 	request(data) {
 		return new Promise((resolve, reject) => {
 			if (!data.url) {
-				console.log("request缺失数据url");
 				reject({
 					errMsg: "缺失数据url",
 					statusCode: 0
 				});
 				return;
 			}
-			let requestInfo = this.dataMerge(data);
+			let requestInfo = this.mergeConfig(data);
 			//请求前回调
 			if (this.requestStart) {
 				let requestStart = this.requestStart(requestInfo);
@@ -130,10 +127,20 @@ export default class request {
 					}
 				},
 				fail: (err) => {
-					console.log("err");
 					//请求完成回调
 					this.requestEnd && this.requestEnd(requestInfo, err);
-					reject(err);
+					// 请求失败也加入数据工厂处理
+					if (requestInfo.isFactory && this.dataFactory) {
+						//数据处理
+						this.dataFactory({
+							...requestInfo,
+							response: err,
+							resolve: resolve,
+							reject: reject
+						});
+					} else {
+						reject(err);
+					}
 				}
 			};
 			//请求类型
@@ -166,7 +173,7 @@ export default class request {
 	}
 	//jsonp请求(只限于H5使用)
 	jsonp(url = '', data = {}, options = {}) {
-		let requestInfo = this.dataMerge({
+		let requestInfo = this.mergeConfig({
 			method: "JSONP",
 			data: data,
 			url: url,

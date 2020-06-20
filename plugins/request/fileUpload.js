@@ -1,5 +1,20 @@
 import request from "./request.js";
 const qiniuUploader = require("./qiniuUploader");
+//七牛云上传文件命名
+function randomChar(l, url = "") {
+	const x = "0123456789qwertyuioplkjhgfdsazxcvbnm";
+	let tmp = "";
+	let time = new Date();
+	for (let i = 0; i < l; i++) {
+		tmp += x.charAt(Math.ceil(Math.random() * 100000000) % x.length);
+	}
+	return (
+		"file/" +
+		url +
+		time.getTime() +
+		tmp
+	);
+}
 export default class fileUpload extends request {
 	constructor(props) {
 		// 调用实现父类的构造函数
@@ -18,6 +33,11 @@ export default class fileUpload extends request {
 						files: res.tempFiles,
 						...data
 					}, options).then(resolve, reject);
+				},
+				fail: err => {
+					// 报错回调
+					_this.requestError && _this.requestError(err);
+					reject(err);
 				}
 			});
 		});
@@ -49,25 +69,16 @@ export default class fileUpload extends request {
 						files: files,
 						...data
 					}, options).then(resolve, reject);
+				},
+				fail: err => {
+					// 报错回调
+					_this.requestError && _this.requestError(err);
+					reject(err);
 				}
 			});
 		});
 	}
-	//七牛云上传文件命名
-	randomChar(l, url = "") {
-		const x = "0123456789qwertyuioplkjhgfdsazxcvbnm";
-		let tmp = "";
-		let time = new Date();
-		for (let i = 0; i < l; i++) {
-			tmp += x.charAt(Math.ceil(Math.random() * 100000000) % x.length);
-		}
-		return (
-			"file/" +
-			url +
-			time.getTime() +
-			tmp
-		);
-	}
+
 	//七牛云文件上传（支持多张上传）
 	qnFileUpload(data = {}, options = {}) {
 		const _this = this;
@@ -86,22 +97,22 @@ export default class fileUpload extends request {
 					requestInfo.load = requestStart.load;
 					requestInfo.files = requestStart.files;
 				} else {
+					let errMsg = {
+						errMsg: "请求开始拦截器未通过",
+						statusCode: 0
+					};
 					//请求完成回调
-					_this.requestEnd && _this.requestEnd(requestInfo, {
-						errMsg: "请求开始拦截器未通过",
-						statusCode: 0
-					});
-					reject({
-						errMsg: "请求开始拦截器未通过",
-						statusCode: 0
-					});
+					_this.requestEnd && _this.requestEnd(requestInfo, errMsg);
+					// 报错回调
+					_this.requestError && _this.requestError(errMsg);
+					reject(errMsg);
 					return;
 				}
 			}
 			if (Array.isArray(requestInfo.files)) {
 				let len = requestInfo.files.length;
 				let fileList = new Array;
-				if(_this.getQnToken){
+				if (_this.getQnToken) {
 					_this.getQnToken(qnRes => {
 						/*
 						 *接口返回参数：
@@ -111,31 +122,32 @@ export default class fileUpload extends request {
 						 *region: 地区 默认为：SCN
 						 */
 						uploadFile(0);
+
 						function uploadFile(i) {
 							let item = requestInfo.files[i];
 							let fileData = {
 								fileIndex: i,
 								files: requestInfo.files,
 							};
-							if(item.path){
+							if (item.path) {
 								fileData.path = item.path;
 							}
-							if(item.size){
+							if (item.size) {
 								fileData.size = item.size;
 							}
-							if(item.type){
+							if (item.type) {
 								fileData.type = item.type;
 							}
-							if(item.name){
+							if (item.name) {
 								fileData.name = item.name;
 							}
-							if(item.duration){
+							if (item.duration) {
 								fileData.duration = item.duration;
 							}
-							if(item.height){
+							if (item.height) {
 								fileData.height = item.height;
 							}
-							if(item.width){
+							if (item.width) {
 								fileData.width = item.width;
 							}
 							// 交给七牛上传
@@ -158,14 +170,15 @@ export default class fileUpload extends request {
 									resolve(fileList);
 								}
 							}, (error) => {
-								console.log('error: ' + error);
+								console.log('error: ', error);
 								//请求完成回调
 								_this.requestEnd && _this.requestEnd(requestInfo, error);
-								reject(error)
+								// 报错回调
+								_this.requestError && _this.requestError(err);
 							}, {
 								region: qnRes.region || 'SCN', //地区
 								domain: qnRes.visitPrefix, // bucket 域名，下载资源时用到。
-								key: _this.randomChar(8, qnRes.folderPath),
+								key: randomChar(8, qnRes.folderPath),
 								uptoken: qnRes.token, // 由其他程序生成七牛 uptoken
 								uptokenURL: 'UpTokenURL.com/uptoken' // 上传地址
 							}, (res) => {
@@ -178,27 +191,26 @@ export default class fileUpload extends request {
 						}
 					});
 				} else {
+					let errMsg = {
+						errMsg: "请添加七牛云回调方法：getQnToken",
+						statusCode: 0
+					};
 					//请求完成回调
-					_this.requestEnd && _this.requestEnd(requestInfo, {
-						errMsg: "请添加七牛云回调方法：getQnToken",
-						statusCode: 0
-					});
-					reject({
-						errMsg: "请添加七牛云回调方法：getQnToken",
-						statusCode: 0
-					});
-					return;
+					_this.requestEnd && _this.requestEnd(requestInfo, errMsg);
+					// 报错回调
+					_this.requestError && _this.requestError(errMsg);
+					reject(errMsg);
 				}
 			} else {
+				let errMsg = {
+					errMsg: "files 必须是数组类型",
+					statusCode: 0
+				};
 				//请求完成回调
-				_this.requestEnd && _this.requestEnd(requestInfo, {
-					errMsg: "files 必须是数组类型",
-					statusCode: 0
-				});
-				reject({
-					errMsg: "files 必须是数组类型",
-					statusCode: 0
-				});
+				_this.requestEnd && _this.requestEnd(requestInfo, errMsg);
+				// 报错回调
+				_this.requestError && _this.requestError(errMsg);
+				reject(errMsg);
 			};
 		});
 
@@ -216,12 +228,17 @@ export default class fileUpload extends request {
 						...data,
 						files: res.tempFiles
 					}, options).then(resolve, reject);
+				},
+				fail: err => {
+					// 报错回调
+					_this.requestError && _this.requestError(err);
+					reject(err);
 				}
 			});
 		});
 	}
 	//七牛云上传视频
-	urlVideoUpload(url = '',data = {}, options = {}) {
+	urlVideoUpload(url = '', data = {}, options = {}) {
 		const _this = this;
 		return new Promise((resolve, reject) => {
 			uni.chooseVideo({
@@ -246,13 +263,18 @@ export default class fileUpload extends request {
 						files: files,
 						...data
 					}, options).then(resolve, reject);
+				},
+				fail: err => {
+					// 报错回调
+					_this.requestError && _this.requestError(err);
+					reject(err);
 				}
 			});
 		});
 	}
 	//本地服务器文件上传方法
 	urlFileUpload(url = '', data = {}, options = {}) {
-		let requestInfo = this.dataMerge({
+		let requestInfo = this.mergeConfig({
 			...data,
 			url: url,
 			method: "FILE"
@@ -270,21 +292,25 @@ export default class fileUpload extends request {
 					requestInfo.isFactory = requestStart.isFactory;
 					requestInfo.files = requestStart.files;
 				} else {
+					let errMsg = {
+						errMsg: "请求开始拦截器未通过",
+						statusCode: 0
+					};
 					//请求完成回调
-					_this.requestEnd && _this.requestEnd(requestInfo, {
-						errMsg: "请求开始拦截器未通过",
-						statusCode: 0
-					});
-					reject({
-						errMsg: "请求开始拦截器未通过",
-						statusCode: 0
-					});
+					_this.requestEnd && _this.requestEnd(requestInfo, errMsg);
+					// 报错回调
+					_this.requestError && _this.requestError(errMsg);
+					reject(errMsg);
 					return;
 				}
 			}
 			// 本地文件上传去掉默认Content-Type
-			if(requestInfo.header['Content-Type']){
+			if (requestInfo.header['Content-Type']) {
 				delete requestInfo.header['Content-Type'];
+			}
+			// 本地文件上传去掉默认Content-Type
+			if (requestInfo.header['content-type']) {
+				delete requestInfo.header['content-type'];
 			}
 			if (Array.isArray(requestInfo.files)) {
 				// #ifdef APP-PLUS || H5
@@ -327,13 +353,16 @@ export default class fileUpload extends request {
 									resolve(data);
 								},
 								reject: function(err) {
-									//请求完成回调
-									_this.requestEnd && _this.requestEnd(requestInfo, {
+									let errMsg = {
 										errMsg: "数据工厂返回错误",
 										statusCode: 0,
 										data: err
-									});
-									reject(err);
+									};
+									//请求完成回调
+									_this.requestEnd && _this.requestEnd(requestInfo, errMsg);
+									// 报错回调
+									_this.requestError && _this.requestError(errMsg);
+									reject(errMsg);
 								}
 							});
 						} else {
@@ -349,6 +378,8 @@ export default class fileUpload extends request {
 					fail: (err) => {
 						//请求完成回调
 						_this.requestEnd && _this.requestEnd(requestInfo, err);
+						// 报错回调
+						_this.requestError && _this.requestError(err);
 						reject(err);
 					}
 				};
@@ -371,25 +402,25 @@ export default class fileUpload extends request {
 						fileIndex: i,
 						files: requestInfo.files,
 					};
-					if(item.path){
+					if (item.path) {
 						fileData.path = item.path;
 					}
-					if(item.size){
+					if (item.size) {
 						fileData.size = item.size;
 					}
-					if(item.type){
+					if (item.type) {
 						fileData.type = item.type;
 					}
-					if(item.name){
+					if (item.name) {
 						fileData.name = item.name;
 					}
-					if(item.duration){
+					if (item.duration) {
 						fileData.duration = item.duration;
 					}
-					if(item.height){
+					if (item.height) {
 						fileData.height = item.height;
 					}
-					if(item.width){
+					if (item.width) {
 						fileData.width = item.width;
 					}
 					let config = {
@@ -426,13 +457,16 @@ export default class fileUpload extends request {
 										}
 									},
 									reject: function(err) {
-										//请求完成回调
-										_this.requestEnd && _this.requestEnd(requestInfo, {
+										let errMsg = {
 											errMsg: "数据工厂返回错误",
 											statusCode: 0,
 											data: err
-										});
-										reject(err);
+										};
+										//请求完成回调
+										_this.requestEnd && _this.requestEnd(requestInfo, errMsg);
+										// 报错回调
+										_this.requestError && _this.requestError(errMsg);
+										reject(errMsg);
 									}
 								});
 							} else {
@@ -457,6 +491,8 @@ export default class fileUpload extends request {
 						fail: (err) => {
 							//请求完成回调
 							_this.requestEnd && _this.requestEnd(requestInfo, err);
+							// 报错回调
+							_this.requestError && _this.requestError(err);
 							reject(err);
 						}
 					};
@@ -470,15 +506,15 @@ export default class fileUpload extends request {
 				}
 				// #endif
 			} else {
+				let errMsg = {
+					errMsg: "files 必须是数组类型",
+					statusCode: 0
+				};
 				//请求完成回调
-				_this.requestEnd && _this.requestEnd(requestInfo, {
-					errMsg: "files 必须是数组类型",
-					statusCode: 0
-				});
-				reject({
-					errMsg: "files 必须是数组类型",
-					statusCode: 0
-				})
+				_this.requestEnd && _this.requestEnd(requestInfo, errMsg);
+				// 报错回调
+				_this.requestError && _this.requestError(errMsg);
+				reject(errMsg);
 			}
 		});
 	}

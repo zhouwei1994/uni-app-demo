@@ -218,9 +218,11 @@ export const h5Login = function(type = "judge", callback) {
 			// APP内嵌网页调取APP方法
 			appMutual("jumpLogin", null, function() {
 				if (type == "force") {
-					uni.navigateTo({
-						url: "/pages/user/login"
-					});
+					setTimeout(() => {
+						uni.navigateTo({
+							url: "/pages/user/login"
+						});
+					},500);
 				} else {
 					uni.showModal({
 						title: "提示",

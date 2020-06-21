@@ -3,25 +3,20 @@
 		<nav-bar backState="2000" title="首页"></nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
-		<button type="default" @click="onFileUpdata">图片上传</button>
-		<view class="nav_list" @click="onPageJump('/pages/demo/common')">
-			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-			<text>列表刷新</text>
-		</view>
 		<view class="video_box" v-if="videoShow" @click="onCloseVideo"><video :src="videoUrl" autoplay="true" controls></video></view>
-		<z-login ref="login"></z-login>
+		<z-navigation></z-navigation>
 	</view>
 </template>
 
 <script>
-import zLogin from '@/components/module/login';
 import { mapState, mapMutations } from 'vuex';
 // #ifdef MP-WEIXIN
 import {onLogin} from '@/config/login';
 // #endif
+import zNavigation from '@/components/module/navigation.vue';
 export default {
 	components: {
-		zLogin
+		zNavigation
 	},
 	data() {
 		return {
@@ -36,6 +31,8 @@ export default {
 	},
 	//第一次加载
 	onLoad(e) {
+		// 隐藏原生的tabbar
+		uni.hideTabBar();
 		// #ifdef MP-WEIXIN
 		onLogin(() => {
 			this.getCoupon();
@@ -44,49 +41,12 @@ export default {
 	},
 	//页面显示
 	onShow() {
-		
+		// 隐藏原生的tabbar
+		uni.hideTabBar();
 	},
 	//方法
 	methods: {
 		...mapMutations(['setWebViewUrl']),
-		onFileUpdata(){
-			this.$http.get('api/open/v1/region',{pid:0}).
-			then(function (response) {
-				//这里只会在接口是成功状态返回
-			}).catch(function (error) {
-				//这里只会在接口是失败状态返回，不需要去处理错误提示
-				console.log(error);
-			});
-			// this.$http.urlImgUpload("http://api.xpuree.com/api/attachment",{
-			// 	count:3,
-			// 	onEachUpdate: res => {
-			// 		console.log("单张上传成功返回：",res);
-			// 	},
-			// 	onProgressUpdate: res => {
-			// 		console.log("上传进度返回：",res);
-			// 	},
-			// },{
-			// 	headers:{
-			// 		AccessToken: "VgG8NwFveqlFnTV4fR/aoAr3SMcptO+rrYkijy0HO4hDEadqW9uJa+FAbWLaul9LSeS9B26oxxRmsMBEv51qXOUxGShLHizR29Q+Q2CnyXY=",
-			// 		"content-type": "multipart/form-data"
-			// 	}
-			// }).then(res => {
-			// 	console.log("全部上传返回结果：",res);
-			// });
-			// this.$http.qnImgUpload({
-			// 	count:3,
-			// 	onEachUpdate: res => {
-			// 		console.log("单张上传成功返回：",res);
-			// 	},
-			// 	onProgressUpdate: res => {
-			// 		console.log("上传进度返回：",res);
-			// 	},
-			// },{
-			// 	// maxSize:100000
-			// }).then(res => {
-			// 	console.log("总框架返回：",res);
-			// });
-		},
 		pageData() {},
 		onPageJump(url) {
 			uni.navigateTo({

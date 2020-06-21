@@ -1,5 +1,6 @@
 <template>
 	<view class="page">
+		<nav-bar type="transparentFixed"></nav-bar>
 		<swiper class="video_swiper" vertical :skip-hidden-item-layout="true"  @change="onSwiperChange">
 			<swiper-item v-for="(item,index) of 5" :key="index">
 				<short-video

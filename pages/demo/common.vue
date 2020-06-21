@@ -1,84 +1,100 @@
 <template>
-  <view>
-     <nav-bar backState="2000" title="组件示例"></nav-bar>
-	 <!-- 公共组件-每个页面必须引入 -->
-	 <public-module></public-module>
-	 <view class="nav_list" @click="onPageJump('/pages/demo/themeColor')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>项目主题色介绍</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/demo/navBarMemo/index')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>头部导航示例</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/demo/formDemo')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>表单模板</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/demo/list')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>列表</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/demo/areaSelect')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>地区选择</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/demo/popup')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>弹窗</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/demo/prompt')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>弹窗输入框</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/demo/swipeAction')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>滑动操作</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/demo/parser')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>富文本编译</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/demo/waterfall/common')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>瀑布流列表</text>
-	 </view>
-  </view>
+	<view>
+		<nav-bar backState="2000" title="组件示例"></nav-bar>
+		<!-- 公共组件-每个页面必须引入 -->
+		<public-module></public-module>
+		<view class="nav_list" @click="onPageJump('/pages/demo/waterfall/common')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>瀑布流列表</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/demo/shortVideo')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>防抖音滑动视频（带进度加载）</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/demo/themeColor')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>项目主题色介绍</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/demo/navBarMemo/index')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>头部导航示例</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/demo/formDemo')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>表单模板</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/demo/list')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>列表</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/demo/areaSelect')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>地区选择</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/demo/popup')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>弹窗</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/demo/prompt')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>弹窗输入框</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/demo/swipeAction')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>滑动操作</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/demo/parser')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>富文本编译</text>
+		</view>
+		
+		<z-navigation></z-navigation>
+	</view>
 </template>
 
 <script>
+import zNavigation from '@/components/module/navigation.vue';
 export default {
-  data() {
-    return {};
-  },
-  //第一次加载
-  onLoad(e) {},
+	components: {
+		zNavigation
+	},
+	data() {
+		return {};
+	},
+	//第一次加载
+	onLoad(e) {
+		// 隐藏原生的tabbar
+		uni.hideTabBar();
+	},
 	//页面显示
-	onShow() {},
-  //方法
-  methods: {
-    onPageJump(url) {
+	onShow() {
+		// 隐藏原生的tabbar
+		uni.hideTabBar();
+	},
+	//方法
+	methods: {
+		onPageJump(url) {
 			uni.navigateTo({
 				url: url
 			});
 		}
-  },
-  //页面隐藏
-  onHide() {},
-  //页面卸载
-  onUnload() {},
-  //页面下来刷新
-  onPullDownRefresh() {},
-  //页面上拉触底
-  onReachBottom() {},
-  //用户点击分享
-  onShareAppMessage(e) {
-    return this.wxShare();
-  }
+	},
+	//页面隐藏
+	onHide() {},
+	//页面卸载
+	onUnload() {},
+	//页面下来刷新
+	onPullDownRefresh() {},
+	//页面上拉触底
+	onReachBottom() {},
+	//用户点击分享
+	onShareAppMessage(e) {
+		return this.wxShare();
+	}
 };
 </script>
 <style lang="scss" scoped>
-@import "@/style/mixin.scss";
+@import '@/style/mixin.scss';
 .nav_list {
 	background-color: #fff;
 	padding: 30upx;
@@ -87,7 +103,7 @@ export default {
 	position: relative;
 	margin-bottom: 10upx;
 	&:active {
-		background-color: #F5f5f5;
+		background-color: #f5f5f5;
 	}
 	image {
 		width: 40upx;
@@ -113,4 +129,3 @@ export default {
 	}
 }
 </style>
-

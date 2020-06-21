@@ -1,68 +1,76 @@
 <template>
-  <view>
-     <nav-bar backState="2000" title="模板页面"></nav-bar>
-	 <!-- 公共组件-每个页面必须引入 -->
-	 <public-module></public-module>
-	 <view class="nav_list" @click="onPageJump('/pages/template/shortVideo')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>防抖音滑动视频（带进度加载）</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/user/login')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>登录</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/user/register')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>注册</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/user/forget')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>忘记密码</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/user/bindPhone')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>绑定手机号</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/user/protocol')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>协议</text>
-	 </view>
-  </view>
+	<view>
+		<nav-bar backState="2000" title="模板页面"></nav-bar>
+		<!-- 公共组件-每个页面必须引入 -->
+		<public-module></public-module>
+		
+		<view class="nav_list" @click="onPageJump('/pages/user/login')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>登录</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/user/register')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>注册</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/user/forget')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>忘记密码</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/user/bindPhone')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>绑定手机号</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/user/protocol')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>协议</text>
+		</view>
+		<z-navigation></z-navigation>
+	</view>
 </template>
 
 <script>
+import zNavigation from '@/components/module/navigation.vue';
 export default {
-  data() {
-    return {};
-  },
-  //第一次加载
-  onLoad(e) {},
+	components: {
+		zNavigation
+	},
+	data() {
+		return {};
+	},
+	//第一次加载
+	onLoad(e) {
+		// 隐藏原生的tabbar
+		uni.hideTabBar();
+	},
 	//页面显示
-	onShow() {},
-  //方法
-  methods: {
-    onPageJump(url) {
+	onShow() {
+		// 隐藏原生的tabbar
+		uni.hideTabBar();
+	},
+	//方法
+	methods: {
+		onPageJump(url) {
 			uni.navigateTo({
 				url: url
 			});
 		}
-  },
-  //页面隐藏
-  onHide() {},
-  //页面卸载
-  onUnload() {},
-  //页面下来刷新
-  onPullDownRefresh() {},
-  //页面上拉触底
-  onReachBottom() {},
-  //用户点击分享
-  onShareAppMessage(e) {
-    return this.wxShare();
-  }
+	},
+	//页面隐藏
+	onHide() {},
+	//页面卸载
+	onUnload() {},
+	//页面下来刷新
+	onPullDownRefresh() {},
+	//页面上拉触底
+	onReachBottom() {},
+	//用户点击分享
+	onShareAppMessage(e) {
+		return this.wxShare();
+	}
 };
 </script>
 <style lang="scss" scoped>
-@import "@/style/mixin.scss";
+@import '@/style/mixin.scss';
 .nav_list {
 	background-color: #fff;
 	padding: 30upx;
@@ -71,7 +79,7 @@ export default {
 	position: relative;
 	margin-bottom: 10upx;
 	&:active {
-		background-color: #F5f5f5;
+		background-color: #f5f5f5;
 	}
 	image {
 		width: 40upx;
@@ -97,4 +105,3 @@ export default {
 	}
 }
 </style>
-

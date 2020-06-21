@@ -1,104 +1,115 @@
 <template>
-  <view>
-     <nav-bar backState="2000" title="通用方法示例"></nav-bar>
-	 <!-- 公共组件-每个页面必须引入 -->
-	 <public-module></public-module>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/request')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>接口请求</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/appUpdate')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>APP版本更新</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/pay')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>支付</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/share')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>分享</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/appletsLogin')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>小程序登录</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/publicLogin')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>公众号登录</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/loginIntercept')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>登录拦截</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/location')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>获取当前位置</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/uploadFile')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>图片上传/文件上传</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/quUploadFile')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>七牛云图片上传/文件上传</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/saveImg')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>保存图片到相册</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/socket')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>webSocket封装介绍</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/publicSdk')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>公众号SDK</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/permission')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>APP权限判断和跳转到系统设置</text>
-	 </view>
-	 <view class="nav_list" @click="onPageJump('/pages/sdkDemo/utils')">
-	 	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-	 	<text>常用工具</text>
-	 </view>
-  </view>
+	<view>
+		<nav-bar backState="2000" title="通用方法示例"></nav-bar>
+		<!-- 公共组件-每个页面必须引入 -->
+		<public-module></public-module>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/request')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>接口请求</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/appUpdate')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>APP版本更新</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/pay')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>支付</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/share')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>分享</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/appletsLogin')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>小程序登录</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/publicLogin')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>公众号登录</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/loginIntercept')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>登录拦截</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/location')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>获取当前位置</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/uploadFile')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>图片上传/文件上传</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/quUploadFile')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>七牛云图片上传/文件上传</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/saveImg')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>保存图片到相册</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/socket')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>webSocket封装介绍</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/publicSdk')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>公众号SDK</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/permission')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>APP权限判断和跳转到系统设置</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/utils')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>常用工具</text>
+		</view>
+		<z-navigation></z-navigation>
+	</view>
 </template>
 
 <script>
+import zNavigation from '@/components/module/navigation.vue';
 export default {
-  data() {
-    return {};
-  },
-  //第一次加载
-  onLoad(e) {},
+	components: {
+		zNavigation
+	},
+	data() {
+		return {};
+	},
+	//第一次加载
+	onLoad(e) {
+		// 隐藏原生的tabbar
+		uni.hideTabBar();
+	},
 	//页面显示
-	onShow() {},
-  //方法
-  methods: {
-    onPageJump(url) {
+	onShow() {
+		// 隐藏原生的tabbar
+		uni.hideTabBar();
+	},
+	//方法
+	methods: {
+		onPageJump(url) {
 			uni.navigateTo({
 				url: url
 			});
 		}
-  },
-  //页面隐藏
-  onHide() {},
-  //页面卸载
-  onUnload() {},
-  //页面下来刷新
-  onPullDownRefresh() {},
-  //页面上拉触底
-  onReachBottom() {},
-  //用户点击分享
-  onShareAppMessage(e) {
-    return this.wxShare();
-  }
+	},
+	//页面隐藏
+	onHide() {},
+	//页面卸载
+	onUnload() {},
+	//页面下来刷新
+	onPullDownRefresh() {},
+	//页面上拉触底
+	onReachBottom() {},
+	//用户点击分享
+	onShareAppMessage(e) {
+		return this.wxShare();
+	}
 };
 </script>
 <style lang="scss" scoped>
-@import "@/style/mixin.scss";
+@import '@/style/mixin.scss';
 .nav_list {
 	background-color: #fff;
 	padding: 30upx;
@@ -107,7 +118,7 @@ export default {
 	position: relative;
 	margin-bottom: 10upx;
 	&:active {
-		background-color: #F5f5f5;
+		background-color: #f5f5f5;
 	}
 	image {
 		width: 40upx;
@@ -133,4 +144,3 @@ export default {
 	}
 }
 </style>
-

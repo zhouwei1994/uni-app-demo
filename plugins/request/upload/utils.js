@@ -1,3 +1,4 @@
+const qiniuUploader = require("./qiniuUploader");
 //七牛云上传文件命名
 export const randomChar = function(l, url = "") {
 	const x = "0123456789qwertyuioplkjhgfdsazxcvbnm";

@@ -107,7 +107,9 @@ $http.dataFactory = async function(res) {
 	});
 	if (res.response.statusCode && res.response.statusCode == 200) {
 		let httpData = res.response.data;
-
+		if(typeof(httpData) == "string"){
+			httpData = JSON.parse(httpData);
+		}
 		/*********以下只是模板(及共参考)，需要开发者根据各自的接口返回类型修改*********/
 
 		//判断数据是否请求成功

@@ -1,5 +1,4 @@
 import request from "./../core/request.js";
-const qiniuUploader = require("./qiniuUploader");
 const {
 	chooseImage,
 	chooseVideo,
@@ -49,9 +48,10 @@ export default class fileUpload extends request {
 
 	//七牛云文件上传（支持多张上传）
 	async qnFileUpload(options = {}) {
+		let requestInfo;
 		try {
 			// 数据合并
-			let requestInfo = {
+			requestInfo = {
 				...this.config,
 				...options,
 				header: {},

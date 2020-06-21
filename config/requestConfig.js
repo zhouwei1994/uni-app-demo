@@ -88,7 +88,7 @@ $http.requestStart = function(options) {
 	return options;
 }
 //请求结束
-$http.requestEnd = function(options, resolve) {
+$http.requestEnd = function(options) {
 	//判断当前接口是否需要加载动画
 	if (options.load) {
 		// 关闭加载动画
@@ -97,7 +97,7 @@ $http.requestEnd = function(options, resolve) {
 }
 let loginPopupNum = 0;
 //所有接口数据处理（此方法需要开发者根据各自的接口返回类型修改，以下只是模板）
-$http.dataFactory = function(res) {
+$http.dataFactory = async function(res) {
 	console.log("接口请求数据", {
 		url: res.url,
 		resolve: res.response,
@@ -113,7 +113,7 @@ $http.dataFactory = function(res) {
 		//判断数据是否请求成功
 		if (httpData.success || httpData.code == 200) {
 			// 返回正确的结果(then接受数据)
-			res.resolve(httpData.data);
+			return Promise.resolve(httpData.data);
 		} else if (httpData.code == "1000" || httpData.code == "1001" || httpData.code == 1100) {
 			store.commit("emptyUserInfo");
 			// #ifdef MP-WEIXIN
@@ -146,7 +146,10 @@ $http.dataFactory = function(res) {
 			}
 			// #endif
 			// 返回错误的结果(catch接受数据)
-			res.reject(res.response);
+			return Promise.reject({
+				statusCode: 0,
+				errMsg: "【request】" +  (httpData.info || httpData.msg)
+			});
 		} else if (httpData.code == "1004") {
 			if (loginPopupNum <= 0) {
 				loginPopupNum++;
@@ -166,7 +169,10 @@ $http.dataFactory = function(res) {
 				});
 			}
 			// 返回错误的结果(catch接受数据)
-			res.reject(res.response);
+			return Promise.reject({
+				statusCode: 0,
+				errMsg: "【request】" + (httpData.info || httpData.msg)
+			});
 		} else { //其他错误提示
 			if (res.isPrompt) {
 				setTimeout(function() {
@@ -178,23 +184,34 @@ $http.dataFactory = function(res) {
 				}, 500);
 			}
 			// 返回错误的结果(catch接受数据)
-			res.reject(res.response);
+			return Promise.reject({
+				statusCode: 0,
+				errMsg: "【request】" +  (httpData.info || httpData.msg)
+			});
 		}
 
 		/*********以上只是模板(及共参考)，需要开发者根据各自的接口返回类型修改*********/
 
 	} else {
 		// 返回错误的结果(catch接受数据)
-		res.reject(res.response);
+		return Promise.reject({
+			statusCode: 0,
+			errMsg: "【request】数据工厂验证不通过"
+		});
 	}
 };
 
 $http.requestError = function(e){
-	setTimeout(() => {
-		uni.showToast({
-			title: "网络错误，请检查一下网络",
-			icon: "none"
-		});
-	}, 500);
+	// e.statusCode == 0 是参数效验错误抛出的
+	if(e.statusCode == 0){
+		throw e;
+	} else {
+		setTimeout(() => {
+			uni.showToast({
+				title: "网络错误，请检查一下网络",
+				icon: "none"
+			});
+		}, 500);
+	}
 }
 export default $http;

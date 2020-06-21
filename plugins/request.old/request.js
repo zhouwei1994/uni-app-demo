@@ -78,10 +78,13 @@ export default class request {
 	request(data) {
 		return new Promise((resolve, reject) => {
 			if (!data.url) {
-				reject({
+				let errMsg = {
 					errMsg: "缺失数据url",
 					statusCode: 0
-				});
+				};
+				// 报错回调
+				this.requestError && this.requestError( errMsg);
+				reject(errMsg);
 				return;
 			}
 			let requestInfo = this.mergeConfig(data);
@@ -95,15 +98,15 @@ export default class request {
 					requestInfo.load = requestStart.load;
 					requestInfo.isFactory = requestStart.isFactory;
 				} else {
+					let errMsg = {
+						errMsg: "请求开始拦截器未通过",
+						statusCode: 0
+					};
 					//请求完成回调
-					_this.requestEnd && _this.requestEnd(requestInfo, {
-						errMsg: "请求开始拦截器未通过",
-						statusCode: 0
-					});
-					reject({
-						errMsg: "请求开始拦截器未通过",
-						statusCode: 0
-					});
+					this.requestEnd && this.requestEnd(requestInfo, errMsg);
+					// 报错回调
+					this.requestError && this.requestError(errMsg);
+					reject(errMsg);
 					return;
 				}
 			}
@@ -129,18 +132,9 @@ export default class request {
 				fail: (err) => {
 					//请求完成回调
 					this.requestEnd && this.requestEnd(requestInfo, err);
-					// 请求失败也加入数据工厂处理
-					if (requestInfo.isFactory && this.dataFactory) {
-						//数据处理
-						this.dataFactory({
-							...requestInfo,
-							response: err,
-							resolve: resolve,
-							reject: reject
-						});
-					} else {
-						reject(err);
-					}
+					// 报错回调
+					this.requestError && this.requestError(err);
+					reject(err);
 				}
 			};
 			//请求类型
@@ -200,15 +194,15 @@ export default class request {
 					requestInfo.load = requestStart.load;
 					requestInfo.isFactory = requestStart.isFactory;
 				} else {
+					let errMsg = {
+						errMsg: "请求开始拦截器未通过",
+						statusCode: 0
+					};
 					//请求完成回调
-					_this.requestEnd && _this.requestEnd(requestInfo, {
-						errMsg: "请求开始拦截器未通过",
-						statusCode: 0
-					});
-					reject({
-						errMsg: "请求开始拦截器未通过",
-						statusCode: 0
-					});
+					_this.requestEnd && _this.requestEnd(requestInfo, errMsg);
+					// 报错回调
+					_this.requestError && _this.requestError(errMsg);
+					reject(errMsg);
 					return;
 				}
 			}

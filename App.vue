@@ -1,5 +1,5 @@
 <script>
-	import store from "@/config/store";
+	import store from "@/config/store/index.js";
 	import socket from "@/config/socket";
 	// #ifdef H5
 	import {
@@ -33,6 +33,7 @@
 			}
 			// #endif
 			// #ifdef H5
+			console.log(store.state);
 			if (store.state.userInfo.token) {
 				socket.init();
 			} else {

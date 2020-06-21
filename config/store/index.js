@@ -14,7 +14,6 @@ files.keys().forEach((key) => {
   Object.assign(modules.mutations, files(key)["mutations"]);
   Object.assign(modules.actions, files(key)["actions"]);
 });
-console.log(modules);
 const store = new Vuex.Store(modules);
 export default store;
 

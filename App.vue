@@ -33,7 +33,6 @@
 			}
 			// #endif
 			// #ifdef H5
-			console.log(store.state);
 			if (store.state.userInfo.token) {
 				socket.init();
 			} else {

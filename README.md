@@ -27,13 +27,17 @@
 ├── components                              // 组件
 │   ├── common                              // 公共组件
 │   └── module                              // 项目组件
-├── config                                  // 基本配置
+├── config                                  // 配置
+│   ├── store                          		// vuex商店
+│   │	├── modules							// vuex分类
+│   │	│	├── common.js					// vuex通用数据管理
+│   │	│	└── user.js						// vuex用户数据管理
+│   │	└── index.js						// vuex主文件
 │   ├── baseUrl.js                          // 项目配置
 │   ├── html5Utils.js                       // H5相关的功能（公众号支付、公众号登录）
 │   ├── login.js                            // 小程序登录js代码部分和登录拦截器代码
 │   ├── requestConfig.js                    // 接口请求配置
 │   ├── socket.js                           // webSocket相关代码
-│   ├── store.js                            // vuex商店（简单配置，没有细分文件）
 │   └── utils.js                            // 项目相关工具（公众号分享、小程序分享数据处理、支付、获取经纬度、支付分配）
 ├── pages  									// 项目页面
 ├── plugins                                 // 公共SDK（基本上不需要改）

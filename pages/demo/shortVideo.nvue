@@ -18,29 +18,29 @@
 					<text class="content_user_name">@德丽莎·阿波卡利斯</text>
 					<text class="content_description">口感非常好吃的猪排，天命独门秘方，让大家垂涎欲滴~</text>
 				</view>
+				<view class="right_suspended">
+					<view class="suspended_user_info">
+						<image class="suspended_user_info_image" src="../../static/demo/1.jpg" mode="aspectFill"></image>
+						<!-- <image class="suspended_user_info_icon" src="../../static/icon/theme/ic_attention.png" mode="aspectFit"></image> -->
+					</view>
+					<view class="suspended_features_item">
+						<image class="suspended_features_icon" src="../../static/demo/ic_video_phone.png" mode="aspectFit"></image>
+						<text class="suspended_features_text">电话</text>
+						<!-- <text class="suspended_features_dot">89</text> -->
+					</view>
+					<view class="suspended_features_item">
+						<image class="suspended_features_icon" src="../../static/demo/ic_video_weixin.png" mode="aspectFit"></image>
+						<text class="suspended_features_text">微信</text>
+						<!-- <text class="suspended_features_dot">89</text> -->
+					</view>
+					<view class="suspended_features_item" @click="shareShow = true">
+						<image class="suspended_features_icon" src="../../static/demo/ic_video_share.png" mode="aspectFit"></image>
+						<text class="suspended_features_text">分享</text>
+						<!-- <text class="suspended_features_dot">999</text> -->
+					</view>
+				</view>
 			</swiper-item>
 		</swiper>
-		<view class="right_suspended">
-			<view class="suspended_user_info">
-				<image class="suspended_user_info_image" src="../../static/demo/1.jpg" mode="aspectFill"></image>
-				<!-- <image class="suspended_user_info_icon" src="../../static/icon/theme/ic_attention.png" mode="aspectFit"></image> -->
-			</view>
-			<view class="suspended_features_item">
-				<image class="suspended_features_icon" src="../../static/demo/ic_video_phone.png" mode="aspectFit"></image>
-				<text class="suspended_features_text">电话</text>
-				<!-- <text class="suspended_features_dot">89</text> -->
-			</view>
-			<view class="suspended_features_item">
-				<image class="suspended_features_icon" src="../../static/demo/ic_video_weixin.png" mode="aspectFit"></image>
-				<text class="suspended_features_text">微信</text>
-				<!-- <text class="suspended_features_dot">89</text> -->
-			</view>
-			<view class="suspended_features_item" @click="shareShow = true">
-				<image class="suspended_features_icon" src="../../static/demo/ic_video_share.png" mode="aspectFit"></image>
-				<text class="suspended_features_text">分享</text>
-				<!-- <text class="suspended_features_dot">999</text> -->
-			</view>
-		</view>
 		<view class="progress_drag" @touchstart="onTouchstart" @touchmove="onTouchmove" @touchcancel="onTouchcancel" @touchend="onTouchend"></view>
 	</view>
 </template>
@@ -69,6 +69,13 @@ export default {
 	onShow() {
 		// 隐藏原生的tabbar
 		// uni.hideTabBar();
+		// #ifdef APP-PLUS
+		uni.showModal({
+			title: "提示",
+			content: "APP体验效果不好，暂没做兼容",
+			showCancel:false
+		});
+		// #endif
 	},
 	//方法
 	methods: {
@@ -189,7 +196,7 @@ export default {
 	margin: 30rpx 182rpx 0 40rpx;
 }
 .right_suspended {
-	position: fixed;
+	position: absolute;
 	right: 30rpx;
 	bottom: 280rpx;
 	align-items: center;

@@ -177,13 +177,11 @@ $http.dataFactory = async function(res) {
 			});
 		} else { //其他错误提示
 			if (res.isPrompt) {
-				setTimeout(function() {
-					uni.showToast({
-						title: httpData.info || httpData.msg,
-						icon: "none",
-						duration: 3000
-					});
-				}, 500);
+				uni.showToast({
+					title: httpData.info || httpData.msg,
+					icon: "none",
+					duration: 3000
+				});
 			}
 			// 返回错误的结果(catch接受数据)
 			return Promise.reject({
@@ -208,12 +206,10 @@ $http.requestError = function(e){
 	if(e.statusCode == 0){
 		throw e;
 	} else {
-		setTimeout(() => {
-			uni.showToast({
-				title: "网络错误，请检查一下网络",
-				icon: "none"
-			});
-		}, 500);
+		uni.showToast({
+			title: "网络错误，请检查一下网络",
+			icon: "none"
+		});
 	}
 }
 export default $http;

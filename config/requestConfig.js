@@ -200,10 +200,10 @@ $http.dataFactory = async function(res) {
 		});
 	}
 };
-
+// 错误回调
 $http.requestError = function(e){
-	// e.statusCode == 0 是参数效验错误抛出的
-	if(e.statusCode == 0){
+	// e.statusCode === 0 是参数效验错误抛出的
+	if(e.statusCode === 0){
 		throw e;
 	} else {
 		uni.showToast({

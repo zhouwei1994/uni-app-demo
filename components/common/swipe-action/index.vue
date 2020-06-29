@@ -6,11 +6,11 @@
 				<view v-for="(item,index) of options" :key="index" class="swipe_action_btn" :style="{
 				  backgroundColor: item.style && item.style.backgroundColor ? item.style.backgroundColor : '#C7C6CD'
 				}" @click.stop="onBtn(index,item)">
-				<text :style="{
-				  fontSize: item.style && item.style.fontSize ? item.style.fontSize : '14px',
-				  color: item.style && item.style.color ? item.style.color : '#FFFFFF'
-				}">{{ item.text }}</text>
-			</view>
+					<text :style="{
+					  fontSize: item.style && item.style.fontSize ? item.style.fontSize : '14px',
+					  color: item.style && item.style.color ? item.style.color : '#FFFFFF'
+					}">{{ item.text }}</text>
+				</view>
 			</view>
 		</view>
 	</view>

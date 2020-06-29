@@ -19,6 +19,8 @@
 ### QQ交流群(学习干货多多) 607391225
 ![QQ交流群](http://qn.kemean.cn//upload/202004/14/15868301778472k7oubi6.png)
 
+# [点击跳转-5年的web前端开源的uni-app快速开发模板-下载看文档](https://ext.dcloud.net.cn/plugin?id=2009)
+
 ### 本组件全局配置（位置：zhouWei-navBar/index.vue =>页面script）
 1. 主页页面的页面路径
 2. 首页页面路径

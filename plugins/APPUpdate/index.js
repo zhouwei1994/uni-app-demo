@@ -1,6 +1,10 @@
 // #ifdef APP-PLUS 
+/**** 此文件说明请看注释 *****/
+// 可以用自己项目的请求方法
 // 请求配置说明：https://ext.dcloud.net.cn/plugin?id=822
 import $http from '@/config/requestConfig';
+/**** 结束 *****/
+
 const platform = uni.getSystemInfoSync().platform;
 // 主颜色
 const $mainColor = "FF5B78";
@@ -31,6 +35,8 @@ export const getServerNo = function(version,isPrompt = false, callback) {
 	 * version: 应用当前版本号（已自动获取）
 	 * type：平台（1101是安卓，1102是IOS）
 	 */
+	/****************以下是示例*******************/
+	// 可以用自己项目的请求方法
 	$http.get("api/common/v1/app_version", httpData,{
 		isPrompt: isPrompt
 	}).then(res => {
@@ -52,6 +58,7 @@ export const getServerNo = function(version,isPrompt = false, callback) {
 			});
 		}
 	});
+	/****************以上是示例*******************/
 }
 // 从服务器下载应用资源包（wgt文件）
 export const getDownload = function(data) {

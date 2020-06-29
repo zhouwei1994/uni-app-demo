@@ -1,4 +1,4 @@
-# request请求、配置简单、批量上传图片、超强适应性（很方便的支持多域名请求）
+# request请求、配置简单、批量上传图片、视频、超强适应性（支持多域名请求）
 1. 配置简单、源码清晰注释多、适用于一项目多域名请求、第三方请求、七牛云图片上传、本地服务器图片上传等等
 2. 支持请求`get`、`post`、`put`、`delete`
 3. 自动显示请求加载动画（可单个接口关闭）
@@ -7,8 +7,8 @@
 6. 全局自动提示接口抛出的错误信息（可单个接口关闭）
 7. 支持 Promise
 8. 支持拦截器
-9. 支持七牛云文件（图片）批量上传
-10. 支持本地服务器文件（图片）批量上传
+9. 支持七牛云文件（图片、视频）批量上传
+10. 支持本地服务器文件（图片、视频）批量上传
 11. 支持上传文件拦截过滤
 12. 支持上传文件进度监听
 13. 支持上传文件单张成功回调
@@ -17,6 +17,7 @@
 ![QQ交流群](http://qn.kemean.cn//upload/202004/14/15868301778472k7oubi6.png)
 
 # [点击跳转-插件示例](https://ext.dcloud.net.cn/plugin?id=2009)
+# [点击跳转-5年的web前端开源的uni-app快速开发模板-下载看文档](https://ext.dcloud.net.cn/plugin?id=2009)
 
 ### 常见问题
 1.接口请求成功了，没有返回数据或者数据是走的catch回调
@@ -49,22 +50,28 @@ $http.getQnToken = function(callback){
 		 *visitPrefix:访问文件的域名
 		 *token:七牛云上传token
 		 *folderPath:上传的文件夹
+		 *region: 地区 默认为：SCN
 		 */
 		callback({
 			visitPrefix: data.visitPrefix,
 			token: data.token,
-			folderPath: data.folderPath
+			folderPath: data.folderPath,
+			region: "SCN"
 		});
 	});
 }
 ```
 
 ### 文件说明
-1. `request => request.js` 请求方法的源码文件
-2. `request => fileUpload.js` 七牛云上传和服务器上传的源码文件
-3. `request => index.js` 输出方法的文件
-4. `request => qiniuUploader.js` 七牛云官方上传文件
-5. `requestConfig.js` 请求配置文件（具体看代码）
+1. `request => core` 请求方法的目录
+2. `request => core => request.js` 请求方法的class文件
+3. `request => core => utils.js` 请求方法的源码文件
+4. `request => upload` 上传方法的目录
+5. `request => upload => upload.js` 上传方法的class文件
+6. `request => upload => utils.js` 上传方法源码文件
+7. `request => upload => qiniuUploader.js` 七牛云官方上传文件
+8. `request => index.js` 输出方法的文件
+9. `requestConfig.js` 请求配置文件（具体看代码）
 
 ### 在main.js引入并挂在Vue上
 ```
@@ -72,11 +79,11 @@ import $http from '@/zhouWei-request/requestConfig';
 Vue.prototype.$http = $http;
 ```
 
-### 通用请求方法（此方法不支持文件上传和JSONP）
+### 通用请求方法
 ```
 this.$http.request({
 	url: 'aid/region',
-	method: "GET", // POST、GET、PUT、DELETE，具体说明查看官方文档
+	method: "GET", // POST、GET、PUT、DELETE、JSONP，具体说明查看官方文档
 	data: {pid:0},
 	timeout: 30000,  // 默认 30000 说明：超时时间，单位 ms，具体说明查看官方文档
 	dataType: "json",  // 默认 json 说明：如果设为 json，会尝试对返回的数据做一次 JSON.parse，具体说明查看官方文档
@@ -141,20 +148,42 @@ this.$http.urlImgUpload('flie/upload',{
 	sizeType:"选择压缩图原图，默认两个都选",//默认 ['original', 'compressed']
 	sourceType:"选择相机拍照或相册上传 默认两个都选",//默认 ['album','camera']
 	data:"而外参数" //可不填,
-	onEachUpdate: res => {
-		console.log("单张上传成功返回：",res);
-	},
-	onProgressUpdate: res => {
-		console.log("上传进度返回：",res);
-	}
-},{
 	isPrompt: true,//（默认 true 说明：本接口抛出的错误是否提示）
 	load: true,//（默认 true 说明：本接口是否提示加载动画）
 	header: { //默认 无 说明：请求头
 		'Content-Type': 'application/json'
 	},
 	isFactory: true, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数奖失去作用）
-	maxSize: 300000 //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
+	maxSize: 300000, //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
+	onEachUpdate: res => {
+		console.log("单张上传成功返回：",res);
+	},
+	onProgressUpdate: res => {
+		console.log("上传进度返回：",res);
+	}
+}).then(res => {
+	console.log("全部上传完返回结果：",res);
+});
+```
+### 本地服务器视频上传
+```
+this.$http.urlVideoUpload('flie/upload',{
+	sourceType:"选择相机拍照或相册上传 默认两个都选",//默认 ['album','camera']
+	compressed:"是否压缩所选的视频源文件，默认值为 true，需要压缩",//默认 false
+	maxDuration: "拍摄视频最长拍摄时间，单位秒。最长支持 60 秒", //默认 60
+	camera: '前置还是后置摄像头', //'front'、'back'，默认'back'
+	name:"后台接受文件key名称", //默认 file
+	data:"而外参数" //可不填,
+	isPrompt: true,//（默认 true 说明：本接口抛出的错误是否提示）
+	load: true,//（默认 true 说明：本接口是否提示加载动画）
+	header: { //默认 无 说明：请求头
+		'Content-Type': 'application/json'
+	},
+	isFactory: true, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数奖失去作用）
+	maxSize: 300000, //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
+	onProgressUpdate: res => {
+		console.log("上传进度返回：",res);
+	}
 }).then(res => {
 	console.log("全部上传完返回结果：",res);
 });
@@ -162,68 +191,77 @@ this.$http.urlImgUpload('flie/upload',{
 ### 本地服务器文件上传（支持多张上传）
 ```
 this.$http.urlFileUpload("flie/upload",{
-		files:[], // 必填 临时文件路径
-		data:"向服务器传递的参数", //可不填
-		name:"后台接受文件key名称", //默认 file
-		onEachUpdate: res => {
-			console.log("单张上传成功返回：",res);
-		},
-		onProgressUpdate: res => {
-			console.log("上传进度返回：",res);
-		}
+	files:[], // 必填 临时文件路径
+	data:"向服务器传递的参数", //可不填
+	name:"后台接受文件key名称", //默认 file
+	isPrompt: true,//（默认 true 说明：本接口抛出的错误是否提示）
+	load: true,//（默认 true 说明：本接口是否提示加载动画）
+	header: { //默认 无 说明：请求头
+		'Content-Type': 'application/json'
 	},
-	{
-		isPrompt: true,//（默认 true 说明：本接口抛出的错误是否提示）
-		load: true,//（默认 true 说明：本接口是否提示加载动画）
-		header: { //默认 无 说明：请求头
-			'Content-Type': 'application/json'
-		},
-		isFactory: true, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数奖失去作用）
-		maxSize: 300000 //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
-	}).then(res => {
-		console.log("全部上传完返回结果：",res);
-	});
+	isFactory: true, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数奖失去作用）
+	maxSize: 300000, //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
+	onEachUpdate: res => {
+		console.log("单张上传成功返回：",res);
+	},
+	onProgressUpdate: res => {
+		console.log("上传进度返回：",res);
+	}
+}).then(res => {
+	console.log("全部上传完返回结果：",res);
+});
 ```
 
 ### 七牛云图片上传（支持多张上传）
 ```
 this.$http.qnImgUpload({
-		count:"最大选择数", // 默认 9
-		sizeType:"选择压缩图原图，默认两个都选", // 默认 ['original', 'compressed']
-		sourceType:"选择相机拍照或相册上传 默认两个都选", // 默认 ['album','camera']
-		onEachUpdate: res => {
-			console.log("单张上传成功返回：",res);
-		},
-		onProgressUpdate: res => {
-			console.log("上传进度返回：",res);
-		}
+	count:"最大选择数", // 默认 9
+	sizeType:"选择压缩图原图，默认两个都选", // 默认 ['original', 'compressed']
+	sourceType:"选择相机拍照或相册上传 默认两个都选", // 默认 ['album','camera']
+	load: true, //（默认 true 说明：本接口是否提示加载动画）
+	maxSize: 300000, //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
+	onEachUpdate: res => {
+		console.log("单张上传成功返回：",res);
 	},
-	{
-		load: true, //（默认 true 说明：本接口是否提示加载动画）
-		maxSize: 300000 //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
-	}).then(res => {
-		console.log("全部上传完返回结果：",res);
-	});
+	onProgressUpdate: res => {
+		console.log("上传进度返回：",res);
+	}
+}).then(res => {
+	console.log("全部上传完返回结果：",res);
+});
 ```
-
+### 七牛云视频上传
+```
+this.$http.qnVideoUpload({
+	sourceType:"选择相机拍照或相册上传 默认两个都选",//默认 ['album','camera']
+	compressed:"是否压缩所选的视频源文件，默认值为 true，需要压缩",//默认 false
+	maxDuration: "拍摄视频最长拍摄时间，单位秒。最长支持 60 秒", //默认 60
+	camera: '前置还是后置摄像头', //'front'、'back'，默认'back'
+	load: true,//（默认 true 说明：本接口是否提示加载动画）
+	maxSize: 300000, //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
+	onProgressUpdate: res => {
+		console.log("上传进度返回：",res);
+	}
+}).then(res => {
+	console.log("全部上传完返回结果：",res);
+});
+```
 ### 七牛云文件上传（支持多张上传）
 ```
 this.$http.qnFileUpload(
-	{
-		files:[], // 必填 临时文件路径
-		onEachUpdate: res => {
-			console.log("单张上传成功返回：",res);
-		},
-		onProgressUpdate: res => {
-			console.log("上传进度返回：",res);
-		}
+{
+	files:[], // 必填 临时文件路径
+	load: true, //（默认 true 说明：本接口是否提示加载动画）
+	maxSize: 300000, //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
+	onEachUpdate: res => {
+		console.log("单张上传成功返回：",res);
 	},
-	{
-		load: true, //（默认 true 说明：本接口是否提示加载动画）
-		maxSize: 300000 //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
-	}).then(res => {
-		console.log("全部上传完返回结果：",res);
-	});
+	onProgressUpdate: res => {
+		console.log("上传进度返回：",res);
+	}
+}).then(res => {
+	console.log("全部上传完返回结果：",res);
+});
 ```
 ### jsonp 跨域请求（只支持H5）
 ```

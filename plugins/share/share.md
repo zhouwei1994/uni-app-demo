@@ -3,6 +3,9 @@
 ### QQ交流群(学习干货多多) 607391225
 ![QQ交流群](http://qn.kemean.cn//upload/202004/14/15868301778472k7oubi6.png)
 
+# [点击跳转-插件示例](https://ext.dcloud.net.cn/plugin?id=2009)
+# [点击跳转-5年的web前端开源的uni-app快速开发模板-下载看文档](https://ext.dcloud.net.cn/plugin?id=2009)
+
 ### 使用方法 第一步
 在`manifest.json`文件里面的`App SDK配置`的`分享`配置对应的平台参数（`不配置参数`在自定义基座里面只会显示`复制`和`更多`， 配置之后要`重新打包`才`生效`）
 
@@ -19,7 +22,7 @@
 
 <script>
 	// 引入方法
-	import appShare, { closeShare } from "@/utils/share.js"
+	import appShare, { closeShare } from "@/plugins/share.js"
 	export default {
 		methods: {
 			onShare(){

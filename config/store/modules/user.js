@@ -8,7 +8,7 @@ export const mutations = {
   //储存用户信息
   setUserInfo(state, data) {
   	if (data) {
-  		state.userInfo =  Object.assign(state.userInfo,data);
+  		state.userInfo =  Object.assign({}, state.userInfo,data);
   		// #ifdef H5
   		window.sessionStorage.setItem('userInfo', JSON.stringify(state.userInfo));
   		// #endif

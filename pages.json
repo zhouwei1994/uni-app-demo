@@ -301,10 +301,17 @@
 			"style": {
 				"navigationBarTitleText": "防抖音滑动视频"
 			}
-		}, {
+		}, 
+		{
 			"path": "pages/template/home",
 			"style": {
 				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/template/editInfo",
+			"style": {
+				"navigationBarTitleText": "个人信息"
 			}
 		}
 	],

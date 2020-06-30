@@ -24,6 +24,10 @@
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>协议</text>
 		</view>
+		<view class="nav_list" @click="onTokenJump('/pages/template/editInfo')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>个人信息</text>
+		</view>
 		<z-navigation></z-navigation>
 	</view>
 </template>
@@ -52,6 +56,13 @@ export default {
 		onPageJump(url) {
 			uni.navigateTo({
 				url: url
+			});
+		},
+		onTokenJump(url) {
+			this.judgeLogin(() => {
+				uni.navigateTo({
+					url: url
+				});
 			});
 		}
 	},

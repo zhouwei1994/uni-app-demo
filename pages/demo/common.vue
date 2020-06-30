@@ -25,7 +25,7 @@
 		</view>
 		<view class="nav_list" @click="onPageJump('/pages/demo/list')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-			<text>列表</text>
+			<text>上拉加载/下拉刷新列表</text>
 		</view>
 		<view class="nav_list" @click="onPageJump('/pages/demo/areaSelect')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>

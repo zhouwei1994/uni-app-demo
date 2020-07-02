@@ -313,6 +313,18 @@
 			"style": {
 				"navigationBarTitleText": "个人信息"
 			}
+		},
+		{
+			"path": "pages/template/goodsPoster",
+			"style": {
+				"navigationBarTitleText": "商品海报生成"
+			}
+		},
+		{
+			"path": "pages/template/scanCode",
+			"style": {
+				"navigationBarTitleText": "推广海报生成"
+			}
 		}
 	],
 	"globalStyle": {

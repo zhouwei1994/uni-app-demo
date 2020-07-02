@@ -74,7 +74,7 @@
 						} else {
 							this.dataList = this.dataList.concat(res.data);
 						}
-					}).catch(()=>{
+					}).catch(() => {
 						//联网失败, 结束加载
 						this.mescroll.endErr();
 					});
@@ -91,7 +91,6 @@
 				// #endif
 			}
 		},
-		
 	}
 </script>
 

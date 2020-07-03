@@ -182,8 +182,6 @@ export default {
 			navBgColor: '',
 			//透明底字体色
 			navTransparentFixedFontColor: '#000000',
-			// 是否使用
-			themeBgColor: false,
 			// 导航栏高度
 			statusBarHeight: 0,
 			// 上次显示的导航栏颜色
@@ -292,28 +290,26 @@ export default {
 		},
 		// 获取导航背景颜色
 		getNavBgColor(val) {
-			if (val.indexOf('#') === -1) {
-				this.themeBgColorName = val;
-				this.themeBgColor = true;
-				this.navBgColor = '';
-			} else if (this.type == 'transparent') {
-				this.themeBgColor = false;
-				this.navBgColor = '';
-			} else {
-				if (typeof val == 'string') {
+			if (typeof val == 'string') {
+				if (val.indexOf('#') === -1) {
+					this.themeBgColorName = val;
+					this.navBgColor = '';
+				} else if (this.type == 'transparent') {
+					this.navBgColor = '';
+				} else {
 					this.navBgColor = 'linear-gradient(90deg,' + val + ',' + val + ')';
-				} else if (Array.isArray(val) && val.length >= 2) {
-					let navBgColor = 'linear-gradient(' + this.bgColorAngle + 'deg';
-					val.forEach(item => {
-						if (typeof item == 'string') {
-							navBgColor += ',' + item;
-						} else if (typeof item == 'object') {
-							navBgColor += ',' + item.color + ' ' + item.scale;
-						}
-					});
-					navBgColor += ')';
-					this.navBgColor = navBgColor;
 				}
+			} else if (Array.isArray(val) && val.length >= 2) {
+				let navBgColor = 'linear-gradient(' + this.bgColorAngle + 'deg';
+				val.forEach(item => {
+					if (typeof item == 'string') {
+						navBgColor += ',' + item;
+					} else if (typeof item == 'object') {
+						navBgColor += ',' + item.color + ' ' + item.scale;
+					}
+				});
+				navBgColor += ')';
+				this.navBgColor = navBgColor;
 			}
 		},
 		//设置手机状态栏颜色

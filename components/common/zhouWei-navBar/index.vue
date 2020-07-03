@@ -291,10 +291,10 @@ export default {
 		// 获取导航背景颜色
 		getNavBgColor(val) {
 			if (typeof val == 'string') {
-				if (val.indexOf('#') === -1) {
-					this.themeBgColorName = val;
+				if (this.type == 'transparent') {
 					this.navBgColor = '';
-				} else if (this.type == 'transparent') {
+				} else if (val.indexOf('#') === -1) {
+					this.themeBgColorName = val;
 					this.navBgColor = '';
 				} else {
 					this.navBgColor = 'linear-gradient(90deg,' + val + ',' + val + ')';

@@ -78,6 +78,7 @@ export const qiniuUpload = function(requestInfo, getQnToken) {
 
 					function uploadFile(i) {
 						let item = requestInfo.files[i];
+						let updateUrl = randomChar(10, qnRes.folderPath);
 						let fileData = {
 							fileIndex: i,
 							files: requestInfo.files,
@@ -93,6 +94,8 @@ export const qiniuUpload = function(requestInfo, getQnToken) {
 						}
 						if (item.name) {
 							fileData.name = item.name;
+							let nameArr = item.name.split(".");
+							updateUrl += "." + nameArr[nameArr.length - 1];
 						}
 						if (item.duration) {
 							fileData.duration = item.duration;
@@ -103,6 +106,7 @@ export const qiniuUpload = function(requestInfo, getQnToken) {
 						if (item.width) {
 							fileData.width = item.width;
 						}
+						console.log("----------",updateUrl,  item);
 						// 交给七牛上传
 						qiniuUploader.upload(item.path, (res) => {
 							fileData.url = res.imageURL;
@@ -121,7 +125,7 @@ export const qiniuUpload = function(requestInfo, getQnToken) {
 						}, {
 							region: qnRes.region || 'SCN', //地区
 							domain: qnRes.visitPrefix, // bucket 域名，下载资源时用到。
-							key: randomChar(8, qnRes.folderPath),
+							key: updateUrl,
 							uptoken: qnRes.token, // 由其他程序生成七牛 uptoken
 							uptokenURL: 'UpTokenURL.com/uptoken' // 上传地址
 						}, (res) => {

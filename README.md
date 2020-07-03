@@ -19,7 +19,8 @@
 
 ### `开源不易，打个赏吧`
 ### [H5预览地址](http://8.129.186.35/index.html)
-### [安卓APP安装包下载地址](http://qn.kemean.cn/upload/202006/10/1591785853646tulgw1o4.apk)
+### [安卓APP安装包下载地址1.0.1（可体验版本更新）](http://qn.kemean.cn/upload/202006/10/1591785853646tulgw1o4.apk)
+### [安卓APP安装包下载地址1.0.7（最新版）](http://qiniu.jping.ren/file/files/2020-07/1593748290298wpnj5r8dcr.apk)
 ### [Demo版GitHub地址](https://github.com/zhouwei1994/uni-app-demo)
 ### [空项目模板GitHub地址（开发用这个）](https://github.com/zhouwei1994/uni-app-template)
 

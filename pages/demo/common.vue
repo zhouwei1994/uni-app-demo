@@ -3,14 +3,6 @@
 		<nav-bar backState="2000" title="组件示例"></nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
-		<view class="nav_list" @click="onPageJump('/pages/demo/waterfall/common')">
-			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-			<text>瀑布流列表</text>
-		</view>
-		<view class="nav_list" @click="onPageJump('/pages/demo/shortVideo')">
-			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-			<text>防抖音滑动视频（带进度加载）(微信小程序、H5)</text>
-		</view>
 		<view class="nav_list" @click="onPageJump('/pages/demo/themeColor')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>项目主题色介绍</text>
@@ -47,7 +39,14 @@
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>富文本编译</text>
 		</view>
-		
+		<view class="nav_list" @click="onPageJump('/pages/demo/waterfall/common')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>瀑布流列表</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/demo/shortVideo')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>防抖音滑动视频（带进度加载）(微信小程序、H5)</text>
+		</view>
 		<z-navigation></z-navigation>
 	</view>
 </template>

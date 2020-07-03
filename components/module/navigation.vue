@@ -38,16 +38,16 @@ export default {
 			path: '',
 			navigationList: [
 				{
-					pagePath: 'pages/demo/common',
+					pagePath: 'pages/template/addTemplate',
 					iconPath: 'static/icon/tab/icon_home.png',
 					selectedIconPath: 'static/icon/tab/icon_home_c.png',
-					text: '组件示例'
+					text: '新增功能'
 				},
 				{
-					pagePath: 'pages/sdkDemo/common',
+					pagePath: 'pages/demo/common',
 					iconPath: 'static/icon/tab/icon_wode.png',
 					selectedIconPath: 'static/icon/tab/icon_wode_c.png',
-					text: 'SDK示例'
+					text: '组件示例'
 				},
 				{
 					iconPath: 'static/icon/tab/icon_home_c.png',
@@ -55,10 +55,10 @@ export default {
 					raised: true
 				},
 				{
-					pagePath: 'pages/template/home',
+					pagePath: 'pages/sdkDemo/common',
 					iconPath: 'static/icon/tab/icon_xiaoxi.png',
 					selectedIconPath: 'static/icon/tab/icon_xiaoxi_c.png',
-					text: '首页'
+					text: 'SDK示例'
 				},
 				{
 					pagePath: 'pages/template/common',

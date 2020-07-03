@@ -1,5 +1,12 @@
 {
-	"pages": [{
+	"pages": [
+		{
+			"path": "pages/template/addTemplate",
+			"style": {
+				"navigationBarTitleText": "新增功能"
+			}
+		},
+		{
 			"path": "pages/demo/common",
 			"style": {
 				"navigationBarTitleText": "功能示例"
@@ -340,22 +347,22 @@
 		"borderStyle": "black",
 		"backgroundColor": "#ffffff",
 		"list": [{
-				"pagePath": "pages/demo/common",
+				"pagePath": "pages/template/addTemplate",
 				"iconPath": "static/icon/tab/icon_home.png",
 				"selectedIconPath": "static/icon/tab/icon_home_c.png",
+				"text": "新增功能"
+			},
+			{
+				"pagePath": "pages/demo/common",
+				"iconPath": "static/icon/tab/icon_wode.png",
+				"selectedIconPath": "static/icon/tab/icon_wode_c.png",
 				"text": "组件示例"
 			},
 			{
 				"pagePath": "pages/sdkDemo/common",
-				"iconPath": "static/icon/tab/icon_wode.png",
-				"selectedIconPath": "static/icon/tab/icon_wode_c.png",
-				"text": "SDK示例"
-			},
-			{
-				"pagePath": "pages/template/home",
 				"iconPath": "static/icon/tab/icon_xiaoxi.png",
 				"selectedIconPath": "static/icon/tab/icon_xiaoxi_c.png",
-				"text": "首页"
+				"text": "SDK示例"
 			},
 			{
 				"pagePath": "pages/template/common",

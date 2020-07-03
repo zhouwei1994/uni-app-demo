@@ -26,18 +26,18 @@
 		<view class="share_save_box">
 			<!-- #ifdef MP -->
 			<button open-type="share">
-				<image src="../../../static/icon/ic_pic.png" mode="aspectFit"></image>
+				<image src="../../static/demo/ic_pic.png" mode="aspectFit"></image>
 				<text>发给好友</text>
 			</button>
 			<!-- #endif -->
 			<!-- #ifdef APP-PLUS -->
 			<button @click="onAppShare">
-				<image src="../../../static/icon/ic_pic.png" mode="aspectFit"></image>
+				<image src="../../static/demo/ic_pic.png" mode="aspectFit"></image>
 				<text>发给好友</text>
 			</button>
 			<!-- #endif -->
 			<button class="onSave" @click="onSaveImg">
-				<image src="../../../static/icon/ic_weixin.png" mode="aspectFit"></image>
+				<image src="../../static/demo/ic_weixin.png" mode="aspectFit"></image>
 				<text>保存图片</text>
 			</button>
 		</view>
@@ -152,8 +152,27 @@ export default {
 			swiperIndex: 0,
 			posterImgs: [],
 			dataInfo: {
-				headImgs: [],
-				share: {}
+				priceShop: "¥699.0",
+				headImgs: [
+					"http://qn.kemean.cn/file/upload/202005/21/1590043402088i2jxb79n.jpg?imageView2/0/w/800",
+					"http://qn.kemean.cn/file/upload/202005/21/1590043404759qml3zmlm.jpg?imageView2/0/w/800",
+					"http://qn.kemean.cn/file/upload/202005/21/1590043407501c6o63bmi.jpg?imageView2/0/w/800",
+					"http://qn.kemean.cn/file/upload/202005/21/1590043410966jwbtkyw1.jpg?imageView2/0/w/800",
+					"http://qn.kemean.cn/file/upload/202005/21/1590043413622bnysmgy9.jpg?imageView2/0/w/800"
+				],
+				goodsRecommendShare: {
+					goodsImg: "https://qn.kemean.cn/file/upload/202005/21/1590043402088i2jxb79n.jpg?imageView2/0/w/800",
+					goodsName: "冰希黎巴黎红精粹沙龙香水50ml",
+					goodsPrice: "¥699.0",
+					mainLogo: "https://qn.kemean.cn//file/upload/202005/22/1590138818080cmvg4qnl.png",
+					recommendCodeGoods: "https://qn.kemean.cn/upload/202007/03/9c6a38df800e46bbba6aede3d84c3427"
+				},
+				share: {
+					shareContent: "商家云系统,点击了解",
+					shareImg: "http://qn.kemean.cn/file/upload/202005/21/1590043402088i2jxb79n.jpg?imageView2/0/w/800",
+					shareTitle: "冰希黎巴黎红精粹沙龙香水50ml",
+					shareUrl: "http://kemean.com/download/3jiayunbz/index.htmlpages/mall/shopPage/goodsDetail?objId=18111505&recommendCode=32029043"
+				}
 			},
 			platformName: "",
 			h5SaveImg: ""
@@ -164,23 +183,13 @@ export default {
 		this.platformName = this.$base.platformName;
 		if (e.objId) {
 			this.objId = e.objId;
-			this.pageData();
 		}
 	},
 	computed: {
-		...mapState(['webViewUrl', "userInfo"])
+		...mapState(["userInfo"])
 	},
 	//方法
 	methods: {
-		pageData() {
-			this.$http
-				.get('api/mall/goods/v1/info', {
-					objId: this.objId
-				})
-				.then(res => {
-					this.dataInfo = res;
-				});
-		},
 		// 轮播图变化
 		onSwiperChange(e) {
 			this.swiperIndex = e.detail.current;
@@ -578,7 +587,7 @@ export default {
 		transform: translateX(-50%);
 		&:before {
 			content: '';
-			@include bis('../../../static/icon/icon_download.png');
+			@include bis('../../static/demo/icon_download.png');
 			width: 24rpx;
 			height: 24rpx;
 			margin-right: 15rpx;

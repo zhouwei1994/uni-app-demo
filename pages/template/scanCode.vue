@@ -6,25 +6,25 @@
 			<swiper-item v-for="(item, index) of promoteBgImgs" :key="index">
 				<view class="poster_image" :class="{ active: swiperIndex == index }">
 					<image class="poster_bg_image" :src="item" mode="widthFix"></image>
-					<image class="poster_code_image" :src="webViewUrl" mode="aspectFit"></image>
+					<image class="poster_code_image" :src="promoteCodeImg" mode="aspectFit"></image>
 				</view>
 			</swiper-item>
 		</swiper>
 		<view class="share_save_box">
 			<!-- #ifdef MP -->
 			<button open-type="share">
-				<image src="../../../static/icon/ic_pic.png" mode="aspectFit"></image>
+				<image src="../../static/demo/ic_pic.png" mode="aspectFit"></image>
 				<text>发给好友</text>
 			</button>
 			<!-- #endif -->
 			<!-- #ifdef APP-PLUS -->
 			<button @click="onAppShare">
-				<image src="../../../static/icon/ic_pic.png" mode="aspectFit"></image>
+				<image src="../../static/demo/ic_pic.png" mode="aspectFit"></image>
 				<text>发给好友</text>
 			</button>
 			<!-- #endif -->
 			<button class="onSave" @click="onSaveImg">
-				<image src="../../../static/icon/ic_weixin.png" mode="aspectFit"></image>
+				<image src="../../static/demo/ic_weixin.png" mode="aspectFit"></image>
 				<text>保存图片</text>
 			</button>
 		</view>
@@ -44,34 +44,31 @@ export default {
 	data() {
 		return {
 			nickName: '',
-			promoteBgImgs: [],
+			promoteBgImgs: [
+				"https://qn.kemean.cn/upload/202006/05/1591346203171zj5m2qkl.png",
+				"https://qn.kemean.cn/upload/202006/05/1591346218311qsy0h9h7.png",
+				"https://qn.kemean.cn/upload/202006/05/15913462289486a12js7d.png",
+			],
+			promoteCodeImg: "https://qn.kemean.cn/upload/202007/03/1593744239803mgajzyjk.png",
 			swiperIndex: 0,
 			posterImgs: [],
-			shareInfo: {},
+			shareInfo: {
+				shareContent: "商家云系统,点击了解",
+				shareImg: "http://qn.kemean.cn/upload/202004/08/15863540965488mlv1qgj.png",
+				shareTitle: "商家云",
+				shareUrl: "http://kemean.com/download/3jiayunbz/index.html"
+			},
 			h5SaveImg: ""
 		};
 	},
 	//第一次加载
 	onLoad(e) {
-		if (this.$base.promoteBgImgs) {
-			this.promoteBgImgs = this.$base.promoteBgImgs;
-		}
-		this.loadData();
 	},
 	computed: {
-		...mapState(['webViewUrl', "userInfo"])
+		...mapState(["userInfo"])
 	},
 	//方法
 	methods: {
-		loadData(){
-			this.$http
-				.get('api/open/v1/conf', {
-					needLogin: false
-				})
-				.then(res => {
-					this.shareInfo = res.share;
-				});
-		},
 		// 轮播图变化
 		onSwiperChange(e) {
 			this.swiperIndex = e.detail.current;
@@ -93,7 +90,7 @@ export default {
 							if (res.statusCode === 200) {
 								ctx.drawImage(res.tempFilePath, 0, 0, 375, 667);
 								uni.downloadFile({
-									url: this.webViewUrl,
+									url: this.promoteCodeImg,
 									success: res => {
 										if (res.statusCode === 200) {
 											ctx.drawImage(res.tempFilePath, 137.45, 504, 100.1, 100.1);
@@ -389,7 +386,7 @@ export default {
 		transform: translateX(-50%);
 		&:before {
 			content: '';
-			@include bis('../../../static/icon/icon_download.png');
+			@include bis('../../static/demo/icon_download.png');
 			width: 24rpx;
 			height: 24rpx;
 			margin-right: 15rpx;

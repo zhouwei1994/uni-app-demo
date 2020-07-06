@@ -106,7 +106,6 @@ export const qiniuUpload = function(requestInfo, getQnToken) {
 						if (item.width) {
 							fileData.width = item.width;
 						}
-						console.log("----------",updateUrl,  item);
 						// 交给七牛上传
 						qiniuUploader.upload(item.path, (res) => {
 							fileData.url = res.imageURL;
@@ -207,8 +206,14 @@ export const urlUpload = function(requestInfo, dataFactory) {
 					reject(err);
 				}
 			};
+			if (requestInfo.data) {
+				config.formData = requestInfo.data;
+			}
+			const uploadTask = uni.uploadFile(config);
+			uploadTask.onProgressUpdate(res => {
+				requestInfo.onProgressUpdate && requestInfo.onProgressUpdate(Object.assign({}, fileData, res));
+			});
 			// #endif
-			
 			// #ifdef MP
 			const len = requestInfo.files.length - 1;
 			let fileList = new Array;
@@ -284,15 +289,15 @@ export const urlUpload = function(requestInfo, dataFactory) {
 						reject(err);
 					}
 				};
+				if (requestInfo.data) {
+					config.formData = requestInfo.data;
+				}
+				const uploadTask = uni.uploadFile(config);
+				uploadTask.onProgressUpdate(res => {
+					requestInfo.onProgressUpdate && requestInfo.onProgressUpdate(Object.assign({}, fileData, res));
+				});
 			}
 			// #endif
-			if (requestInfo.data) {
-				config.formData = requestInfo.data;
-			}
-			const uploadTask = uni.uploadFile(config);
-			uploadTask.onProgressUpdate(res => {
-				requestInfo.onProgressUpdate && requestInfo.onProgressUpdate(Object.assign({}, fileData, res));
-			});
 		} else {
 			reject({
 				errMsg: "files 必须是数组类型",

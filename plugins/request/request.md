@@ -140,6 +140,42 @@ let data = await this.$http.post(
 );
 ```
 
+### `requestConfig.js`可以设置服务器上传图片默认url
+```
+//可以new多个request来支持多个域名请求
+let $http = new request({
+	//服务器本地上传文件地址
+	fileUrl: base.baseUrl,
+	// 服务器上传图片默认url
+	defaultUploadUrl: "api/common/v1/upload_image",
+});
+```
+```
+// 上传可以不用传递url（使用全局的上传图片url）
+this.$http.urlImgUpload({
+	name:"后台接受文件key名称", //默认 file
+	count:"最大选择数",//默认 9
+	sizeType:"选择压缩图原图，默认两个都选",//默认 ['original', 'compressed']
+	sourceType:"选择相机拍照或相册上传 默认两个都选",//默认 ['album','camera']
+	data:"而外参数" //可不填,
+});
+// 上传可以不用传递url（使用全局的上传图片url）
+this.$http.urlVideoUpload({
+	sourceType:"选择相机拍照或相册上传 默认两个都选",//默认 ['album','camera']
+	compressed:"是否压缩所选的视频源文件，默认值为 true，需要压缩",//默认 false
+	maxDuration: "拍摄视频最长拍摄时间，单位秒。最长支持 60 秒", //默认 60
+	camera: '前置还是后置摄像头', //'front'、'back'，默认'back'
+	name:"后台接受文件key名称", //默认 file
+	data:"而外参数" //可不填,
+});
+// 上传可以不用传递url（使用全局的上传图片url）
+this.$http.urlFileUpload({
+	files: [], // 必填 临时文件路径 格式: [{path: "图片地址"}]
+	data:"向服务器传递的参数", //可不填
+	name:"后台接受文件key名称", //默认 file
+});
+```
+
 ### 本地服务器图片上传（支持多张上传）
 ```
 this.$http.urlImgUpload('flie/upload',{

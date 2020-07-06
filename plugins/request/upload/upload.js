@@ -19,8 +19,8 @@ export default class fileUpload extends request {
 		try {
 			files = await chooseImage(options);
 		} catch (err) {
-			return Promise.reject(err);
 			this.requestError && this.requestError(err);
+			return Promise.reject(err);
 		}
 		if (files) {
 			return this.qnFileUpload({
@@ -35,8 +35,8 @@ export default class fileUpload extends request {
 		try {
 			files = await chooseVideo(options);
 		} catch (err) {
-			return Promise.reject(err);
 			this.requestError && this.requestError(err);
+			return Promise.reject(err);
 		}
 		if (files) {
 			return this.qnFileUpload({
@@ -82,56 +82,81 @@ export default class fileUpload extends request {
 		}
 	}
 	//本地服务器图片上传
-	async urlImgUpload(url = '', options = {}) {
-		let files;
-		try {
-			files = await chooseImage(options);
-		} catch (err) {
-			return Promise.reject(err);
-			this.requestError && this.requestError(err);
+	async urlImgUpload() {
+		let options = {};
+		if (arguments[0]) {
+			if (typeof(arguments[0]) == "string") {
+				options.url = arguments[0];
+			} else if (typeof(arguments[0]) == "object") {
+				options = Object.assign(options, arguments[0]);
+			}
 		}
-		if (files) {
-			return this.urlFileUpload(url, {
-				...options,
-				files: files
-			});
+		if (arguments[1] && typeof(arguments[1]) == "object") {
+			options = Object.assign(options, arguments[1]);
+		}
+		try {
+			options.files = await chooseImage(options);
+		} catch (err) {
+			this.requestError && this.requestError(err);
+			return Promise.reject(err);
+		}
+		if (options.files) {
+			return this.urlFileUpload(options);
 		}
 	}
 	//本地服务器上传视频
-	async urlVideoUpload(url = '', options = {}) {
-		let files;
-		try {
-			files = await chooseVideo(options);
-		} catch (err) {
-			return Promise.reject(err);
-			this.requestError && this.requestError(err);
+	async urlVideoUpload() {
+		let options = {};
+		if (arguments[0]) {
+			if (typeof(arguments[0]) == "string") {
+				options.url = arguments[0];
+			} else if (typeof(arguments[0]) == "object") {
+				options = Object.assign(options, arguments[0]);
+			}
 		}
-		if (files) {
-			return this.urlFileUpload(url, {
-				...options,
-				files: files
-			});
+		if (arguments[1] && typeof(arguments[1]) == "object") {
+			options = Object.assign(options, arguments[1]);
+		}
+		try {
+			options.files = await chooseVideo(options);
+		} catch (err) {
+			this.requestError && this.requestError(err);
+			return Promise.reject(err);
+		}
+		if (options.files) {
+			return this.urlFileUpload(options);
 		}
 	}
 	//本地服务器文件上传方法
-	async urlFileUpload(url = '',options = {}) {
+	async urlFileUpload() {
+		let requestInfo = {
+			method: "FILE"
+		};
+		if (arguments[0]) {
+			if (typeof(arguments[0]) == "string") {
+				requestInfo.url = arguments[0];
+			} else if (typeof(arguments[0]) == "object") {
+				requestInfo = Object.assign(requestInfo, arguments[0]);
+			}
+		}
+		if (arguments[1] && typeof(arguments[1]) == "object") {
+			requestInfo = Object.assign(requestInfo, arguments[1]);
+		}
+		if (!requestInfo.url && this.defaultUploadUrl) {
+			requestInfo.url = this.defaultUploadUrl;
+		}
 		// 请求数据
-		let requestInfo,
-			// 是否运行过请求开始钩子
-			runRequestStart = false;
+		// 是否运行过请求开始钩子
+		let runRequestStart = false;
 		try {
-			if (!url) {
+			if (!requestInfo.url) {
 				throw {
 					errMsg: "【request】文件上传缺失数据url",
 					statusCode: 0
 				}
 			}
 			// 数据合并
-			requestInfo = mergeConfig(this, {
-				...options,
-				url: url,
-				method: "FILE"
-			});
+			requestInfo = mergeConfig(this, requestInfo);
 			// 代表之前运行到这里
 			runRequestStart = true;
 			//请求前回调
@@ -151,11 +176,11 @@ export default class fileUpload extends request {
 			}
 			let requestResult = await urlUpload(requestInfo, this.dataFactory);
 			return Promise.resolve(requestResult);
-		} catch (err){
+		} catch (err) {
 			this.requestError && this.requestError(err);
 			return Promise.reject(err);
 		} finally {
-			if(runRequestStart){
+			if (runRequestStart) {
 				this.requestEnd && this.requestEnd(requestInfo);
 			}
 		}

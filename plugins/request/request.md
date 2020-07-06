@@ -191,7 +191,7 @@ this.$http.urlVideoUpload('flie/upload',{
 ### 本地服务器文件上传（支持多张上传）
 ```
 this.$http.urlFileUpload("flie/upload",{
-	files:[], // 必填 临时文件路径
+	files: [], // 必填 临时文件路径 格式: [{path: "图片地址"}]
 	data:"向服务器传递的参数", //可不填
 	name:"后台接受文件key名称", //默认 file
 	isPrompt: true,//（默认 true 说明：本接口抛出的错误是否提示）
@@ -250,7 +250,7 @@ this.$http.qnVideoUpload({
 ```
 this.$http.qnFileUpload(
 {
-	files:[], // 必填 临时文件路径
+	files:[], // 必填 临时文件路径 格式: [{path: "图片地址"}]
 	load: true, //（默认 true 说明：本接口是否提示加载动画）
 	maxSize: 300000, //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
 	onEachUpdate: res => {

@@ -5,6 +5,8 @@ export default class request {
 		this.baseUrl = options.baseUrl || "";
 		//公共文件上传请求地址
 		this.fileUrl = options.fileUrl || "";
+		// 服务器上传图片默认url
+		this.defaultUploadUrl = options.defaultUploadUrl || "";
 		//默认请求头
 		this.header = options.header || {};
 		//默认配置

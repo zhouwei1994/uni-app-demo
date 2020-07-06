@@ -63,7 +63,7 @@ export default {
 		//上传图片
 		onImgsUpload() {
 			let count = 9 - this.imgs.length;
-			this.$http.urlImgUpload("api/common/v1/upload_image",{ 
+			this.$http.urlImgUpload({
 				count: count,
 				onEachUpdate: res => {
 					console.log("单张上传成功返回：",res);

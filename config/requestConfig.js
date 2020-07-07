@@ -197,7 +197,7 @@ $http.dataFactory = async function(res) {
 	} else {
 		// 返回错误的结果(catch接受数据)
 		return Promise.reject({
-			statusCode: 0,
+			statusCode: res.response.statusCode,
 			errMsg: "【request】数据工厂验证不通过"
 		});
 	}

@@ -13,11 +13,12 @@
 12. 支持上传文件进度监听
 13. 支持上传文件单张成功回调
 
-### QQ交流群(学习干货多多) 607391225
-![QQ交流群](http://qn.kemean.cn//upload/202004/14/15868301778472k7oubi6.png)
+| `QQ交流群(607391225)`         | `微信交流群`                  |
+| ----------------------------|--------------------------- |
+|![QQ交流群](http://qn.kemean.cn//upload/202004/14/15868301778472k7oubi6.png)|![微信交流群](http://8.129.186.35/images/weiXin_group_code.jpg)|
 
-# [点击跳转-插件示例](https://ext.dcloud.net.cn/plugin?id=2009)
-# [点击跳转-5年的web前端开源的uni-app快速开发模板-下载看文档](https://ext.dcloud.net.cn/plugin?id=2009)
+### [点击跳转-插件示例](https://ext.dcloud.net.cn/plugin?id=2009)
+### [点击跳转-5年的web前端开源的uni-app快速开发模板-下载看文档](https://ext.dcloud.net.cn/plugin?id=2009)
 
 ### 常见问题
 1.接口请求成功了，没有返回数据或者数据是走的catch回调

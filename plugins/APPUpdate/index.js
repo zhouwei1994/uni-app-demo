@@ -20,7 +20,7 @@ export const getCurrentNo = function(callback) {
 			version: inf.version
 		});
 	});
-} 
+}
 // 发起ajax请求获取服务端版本号
 export const getServerNo = function(version,isPrompt = false, callback) {
 	let httpData = {

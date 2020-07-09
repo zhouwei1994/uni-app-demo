@@ -1,7 +1,7 @@
 <template>
 	<view class="swipe_action_box" @touchstart="onTouchstart" @touchmove="onTouchmove" @touchcancel="onTouchcancel" @touchend="onTouchend">
 		<view class="swipe_action_item" :style="{ width: (screenWidth + maxWidth) + 'px', transform: 'translateX(' + translateX + 'px)', transition: 'transform ' + animationTime + 'ms cubic-bezier(.165, .84, .44, 1)'  }">
-			<view class="swipe_action_content"><slot></slot></view>
+			<view class="swipe_action_content" @click="onClick"><slot></slot></view>
 			<view class="swipe_action_btn_box" ref="swipeActionBtnBox">
 				<view v-for="(item,index) of options" :key="index" class="swipe_action_btn" :style="{
 				  backgroundColor: item.style && item.style.backgroundColor ? item.style.backgroundColor : '#C7C6CD'
@@ -117,6 +117,9 @@ export default {
 	},
 	//方法
 	methods: {
+        onClick(e){
+            this.$emit('click', e);
+        },
 		onBtn(index, item) {
 			this.$emit('button', {
 				content: item,

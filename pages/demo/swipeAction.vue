@@ -51,7 +51,7 @@
 			<swipe-action :options="options2" disabled><view class="swipe_action">禁止滑动</view></swipe-action>
 		</view>
 		<view v-for="(item, index) of 3" :key="index" class="swipe_action_list">
-			<swipe-action :options="options3" :index="index" @button="onButton">
+			<swipe-action :options="options3" :index="index" @button="onButton" @click="onClock(index)">
 				<view class="swipe_action">滑动列表{{ index + 1 }}</view>
 			</swipe-action>
 		</view>
@@ -133,7 +133,10 @@ export default {
 				title: '您点击了滑动列表' + (e.index + 1) + '的第' + (e.buttonIndex + 1) + '个按钮，按钮为‘' + e.content.text + '’',
 				icon: 'none'
 			});
-		}
+		},
+        onClock(index){
+            console.log(index);
+        }
 	},
 	//页面隐藏
 	onHide() {},

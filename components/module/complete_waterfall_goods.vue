@@ -146,7 +146,7 @@
 		data() {
 			return {
 				newList: [],
-				positionList: [],
+				positionList: {},
 				loadingTop: 0,
 				leftHistoryTop: 0,
 				rightHistoryTop: 0

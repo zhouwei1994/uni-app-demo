@@ -288,7 +288,7 @@
 			font-size: 28rpx;
 			@include bov(2);
 		}
-
+0
 		.sell_well {
 			display: flex;
 			padding: 0rpx 20rpx 20rpx 20rpx;

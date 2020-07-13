@@ -281,7 +281,6 @@
 		.goods_img {
 			image {
 				width: 100%;
-				height: 345rpx;
 			}
 		}
 

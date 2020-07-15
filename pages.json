@@ -322,13 +322,13 @@
 			}
 		},
 		{
-			"path": "pages/template/goodsPoster",
+			"path": "pages/template/poster/goodsPoster",
 			"style": {
 				"navigationBarTitleText": "商品海报生成"
 			}
 		},
 		{
-			"path": "pages/template/scanCode",
+			"path": "pages/template/poster/scanCode",
 			"style": {
 				"navigationBarTitleText": "推广海报生成"
 			}

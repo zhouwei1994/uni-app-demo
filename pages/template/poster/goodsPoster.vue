@@ -7,9 +7,9 @@
 				<view class="goods_info_box" :class="{ active: swiperIndex == index }">
 					<image class="goods_image" :src="item" mode="aspectFit"></image>
 					<view class="goods_info">
-						<view class="goods_name">{{dataInfo.goodsRecommendShare.goodsName}}</view>
+						<view class="goods_name">{{dataInfo.goodsName}}</view>
 						<view class="price_box">
-							<view class="price">{{dataInfo.goodsRecommendShare.goodsPrice}}</view>
+							<view class="price">{{dataInfo.goodsPrice}}</view>
 							<view class="store_price">{{dataInfo.priceShop}}</view>
 						</view>
 						<view class="poster_info">
@@ -17,7 +17,7 @@
 								<view>长按识别二维码访问</view>
 								<text>{{platformName}}</text>
 							</view>
-							<image class="poster_code_image" :src="dataInfo.goodsRecommendShare.recommendCodeGoods" mode="aspectFit"></image>
+							<image class="poster_code_image" :src="dataInfo.recommendCodeGoods" mode="aspectFit"></image>
 						</view>
 					</view>
 				</view>
@@ -26,18 +26,18 @@
 		<view class="share_save_box">
 			<!-- #ifdef MP -->
 			<button open-type="share">
-				<image src="../../static/demo/ic_pic.png" mode="aspectFit"></image>
+				<image src="../../../static/demo/ic_pic.png" mode="aspectFit"></image>
 				<text>发给好友</text>
 			</button>
 			<!-- #endif -->
 			<!-- #ifdef APP-PLUS -->
 			<button @click="onAppShare">
-				<image src="../../static/demo/ic_pic.png" mode="aspectFit"></image>
+				<image src="../../../static/demo/ic_pic.png" mode="aspectFit"></image>
 				<text>发给好友</text>
 			</button>
 			<!-- #endif -->
 			<button class="onSave" @click="onSaveImg">
-				<image src="../../static/demo/ic_weixin.png" mode="aspectFit"></image>
+				<image src="../../../static/demo/ic_weixin.png" mode="aspectFit"></image>
 				<text>保存图片</text>
 			</button>
 		</view>
@@ -160,13 +160,11 @@ export default {
 					"http://qn.kemean.cn/file/upload/202005/21/1590043410966jwbtkyw1.jpg?imageView2/0/w/800",
 					"http://qn.kemean.cn/file/upload/202005/21/1590043413622bnysmgy9.jpg?imageView2/0/w/800"
 				],
-				goodsRecommendShare: {
-					goodsImg: "https://qn.kemean.cn/file/upload/202005/21/1590043402088i2jxb79n.jpg?imageView2/0/w/800",
-					goodsName: "冰希黎巴黎红精粹沙龙香水50ml",
-					goodsPrice: "¥699.0",
-					mainLogo: "https://qn.kemean.cn//file/upload/202005/22/1590138818080cmvg4qnl.png",
-					recommendCodeGoods: "https://qn.kemean.cn/upload/202007/03/9c6a38df800e46bbba6aede3d84c3427"
-				},
+                goodsImg: "https://qn.kemean.cn/file/upload/202005/21/1590043402088i2jxb79n.jpg?imageView2/0/w/800",
+                goodsName: "冰希黎巴黎红精粹沙龙香水50ml",
+                goodsPrice: "¥699.0",
+                mainLogo: "https://qn.kemean.cn//file/upload/202005/22/1590138818080cmvg4qnl.png",
+                recommendCodeGoods: "https://qn.kemean.cn/upload/202007/03/9c6a38df800e46bbba6aede3d84c3427",
 				share: {
 					shareContent: "商家云系统,点击了解",
 					shareImg: "http://qn.kemean.cn/file/upload/202005/21/1590043402088i2jxb79n.jpg?imageView2/0/w/800",
@@ -210,13 +208,13 @@ export default {
 						if (res.statusCode === 200) {
 							ctx.drawImage(res.tempFilePath, 0, 0, 375, 375);
 							uni.downloadFile({
-								url: this.dataInfo.goodsRecommendShare.recommendCodeGoods,
+								url: this.dataInfo.recommendCodeGoods,
 								success: (res2) => {
 									if (res.statusCode === 200) {
 										// 商品标题
 										ctx.setFontSize(21);
 										ctx.setFillStyle('#333');
-										let drawtextList = drawtext(this.dataInfo.goodsRecommendShare.goodsName, 341);
+										let drawtextList = drawtext(this.dataInfo.goodsName, 341);
 										let textTop = 0;
 										drawtextList.forEach((item,index) => {
 											if(index < 2){
@@ -227,11 +225,11 @@ export default {
 										// 商品价格
 										ctx.setFontSize(26);
 										ctx.setFillStyle('#f00');
-										ctx.fillText(this.dataInfo.goodsRecommendShare.goodsPrice, 17, textTop + 47);
+										ctx.fillText(this.dataInfo.goodsPrice, 17, textTop + 47);
 										// 商品门市价
 										ctx.setFontSize(18);
 										ctx.setFillStyle('#999');
-										let textLeft = 38 + (this.dataInfo.goodsRecommendShare.goodsPrice.length * 13)
+										let textLeft = 38 + (this.dataInfo.goodsPrice.length * 13)
 										ctx.fillText(this.dataInfo.priceShop, textLeft, textTop + 45);
 										// 商品门市价横线
 										ctx.beginPath();
@@ -441,7 +439,6 @@ export default {
 		if(this.userInfo.token){
 			shareInfo.path += "&recommendCode=" + this.userInfo.uid;
 		}
-		console.log(shareInfo);
 		return shareInfo;
 	}
 };
@@ -587,7 +584,7 @@ export default {
 		transform: translateX(-50%);
 		&:before {
 			content: '';
-			@include bis('../../static/demo/icon_download.png');
+			@include bis('../../../static/demo/icon_download.png');
 			width: 24rpx;
 			height: 24rpx;
 			margin-right: 15rpx;

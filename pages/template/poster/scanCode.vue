@@ -13,18 +13,18 @@
 		<view class="share_save_box">
 			<!-- #ifdef MP -->
 			<button open-type="share">
-				<image src="../../static/demo/ic_pic.png" mode="aspectFit"></image>
+				<image src="../../../static/demo/ic_pic.png" mode="aspectFit"></image>
 				<text>发给好友</text>
 			</button>
 			<!-- #endif -->
 			<!-- #ifdef APP-PLUS -->
 			<button @click="onAppShare">
-				<image src="../../static/demo/ic_pic.png" mode="aspectFit"></image>
+				<image src="../../../static/demo/ic_pic.png" mode="aspectFit"></image>
 				<text>发给好友</text>
 			</button>
 			<!-- #endif -->
 			<button class="onSave" @click="onSaveImg">
-				<image src="../../static/demo/ic_weixin.png" mode="aspectFit"></image>
+				<image src="../../../static/demo/ic_weixin.png" mode="aspectFit"></image>
 				<text>保存图片</text>
 			</button>
 		</view>
@@ -43,7 +43,6 @@ let settingWritePhotosAlbum = false;
 export default {
 	data() {
 		return {
-			nickName: '',
 			promoteBgImgs: [
 				"https://qn.kemean.cn/upload/202006/05/1591346203171zj5m2qkl.png",
 				"https://qn.kemean.cn/upload/202006/05/1591346218311qsy0h9h7.png",
@@ -386,7 +385,7 @@ export default {
 		transform: translateX(-50%);
 		&:before {
 			content: '';
-			@include bis('../../static/demo/icon_download.png');
+			@include bis('../../../static/demo/icon_download.png');
 			width: 24rpx;
 			height: 24rpx;
 			margin-right: 15rpx;

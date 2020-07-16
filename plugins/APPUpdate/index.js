@@ -16,15 +16,16 @@ export const getCurrentNo = function(callback) {
 	// 获取本地应用资源版本号
 	plus.runtime.getProperty(plus.runtime.appid, function(inf) {
 		callback && callback({
-			versionCode: inf.version.replace(/\./g, ""),
-			version: inf.version
+			versionCode: inf.versionCode,
+			versionName: inf.versionName
 		});
 	});
-}
+} 
 // 发起ajax请求获取服务端版本号
 export const getServerNo = function(version,isPrompt = false, callback) {
 	let httpData = {
-		version:version
+		version: version.versionCode,
+        versionName: version.versionName
 	};
 	if (platform == "android") {
 		httpData.type = 1101;
@@ -767,7 +768,7 @@ function downloadPopup(data, callback, cancelCallback,rebootCallback) {
 }
 export default function(isPrompt = false) {
 	getCurrentNo(version => {
-		getServerNo(version.versionCode,isPrompt, res => {
+		getServerNo(version,isPrompt, res => {
 			if (res.forceUpdate) {
 				if (/\.wgt$/i.test(res.downloadUrl)) {
 					getDownload(res);

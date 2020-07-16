@@ -4,11 +4,11 @@
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<view class="time">版本1.0.7</view>
-		<view class="nav_list" @click="onPageJump('/pages/template/goodsPoster')">
+		<view class="nav_list" @click="onPageJump('/pages/template/poster/goodsPoster')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>商品海报生成</text>
 		</view>
-		<view class="nav_list" @click="onTokenJump('/pages/template/scanCode')">
+		<view class="nav_list" @click="onTokenJump('/pages/template/poster/scanCode')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>推广海报生成</text>
 		</view>

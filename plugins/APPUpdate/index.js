@@ -128,7 +128,6 @@ export const getDownload = function(data) {
 							progress: true
 						});
 					}
-					
 					break;
 			}
 		});

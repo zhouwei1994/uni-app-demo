@@ -20,7 +20,7 @@ export const getCurrentNo = function(callback) {
 			versionName: inf.versionName
 		});
 	});
-} 
+}
 // 发起ajax请求获取服务端版本号
 export const getServerNo = function(version,isPrompt = false, callback) {
 	let httpData = {
@@ -72,77 +72,77 @@ export const getDownload = function(data) {
 	}
 	let dtask;
 	let lastProgressValue = 0;
-	downloadPopup(popupData, function(res) {
-		dtask = plus.downloader.createDownload(data.downloadUrl, {
-			filename: "_doc/update/"
-		}, function(download, status) {
-			if (status == 200) {
-				res.change({
-					progressValue: 100,
-					progressTip:"正在安装文件...",
-					progress: true,
-					buttonNum: 0
-				});
-				plus.runtime.install(download.filename, {}, function() {
-					res.change({
-						contentText: "应用资源更新完成！",
-						buttonNum: 1,
-						progress: false
-					});
-				}, function(e) {
-					res.cancel();
-					plus.nativeUI.alert("安装文件失败[" + e.code + "]：" + e.message);
-				});
-			} else {
-				res.change({
-					contentText: "文件下载失败...",
-					buttonNum: 1,
-					progress: false
-				});
-			}
-		});
-		dtask.start();
-		dtask.addEventListener("statechanged", function(task, status) {
-			switch (task.state) {
-				case 1: // 开始
-					res.change({
-						progressValue:0,
-						progressTip:"准备下载...",
-						progress: true
-					});
-					break;
-				case 2: // 已连接到服务器  
-					res.change({
-						progressValue:0,
-						progressTip:"开始下载...",
-						progress: true
-					});
-					break;
-				case 3:
-					const progress = parseInt(task.downloadedSize / task.totalSize * 100);
-					if(progress - lastProgressValue >= 2){
-						lastProgressValue = progress;
-						res.change({
-							progressValue:progress,
-							progressTip: "已下载" + progress + "%",
-							progress: true
-						});
-					}
-					break;
-			}
-		});
-	},function(){
-		// 取消下载
-		dtask && dtask.abort();
-		uni.showToast({
-			title: "已取消下载",
-			icon:"none"
-		});
-	},
-	function(){
-		// 重启APP
-		plus.runtime.restart();
-	});
+	let popupObj = downloadPopup(popupData);
+    dtask = plus.downloader.createDownload(data.downloadUrl, {
+        filename: "_doc/update/"
+    }, function(download, status) {
+        if (status == 200) {
+            popupObj.change({
+                progressValue: 100,
+                progressTip:"正在安装文件...",
+                progress: true,
+                buttonNum: 0
+            });
+            plus.runtime.install(download.filename, {}, function() {
+                popupObj.change({
+                    contentText: "应用资源更新完成！",
+                    buttonNum: 1,
+                    progress: false
+                });
+            }, function(e) {
+                popupObj.cancel();
+                plus.nativeUI.alert("安装文件失败[" + e.code + "]：" + e.message);
+            });
+        } else {
+            popupObj.change({
+                contentText: "文件下载失败...",
+                buttonNum: 1,
+                progress: false
+            });
+        }
+    });
+    dtask.start();
+    dtask.addEventListener("statechanged", function(task, status) {
+        switch (task.state) {
+            case 1: // 开始
+                popupObj.change({
+                    progressValue:0,
+                    progressTip:"准备下载...",
+                    progress: true
+                });
+                break;
+            case 2: // 已连接到服务器  
+                popupObj.change({
+                    progressValue:0,
+                    progressTip:"开始下载...",
+                    progress: true
+                });
+                break;
+            case 3:
+                const progress = parseInt(task.downloadedSize / task.totalSize * 100);
+                if(progress - lastProgressValue >= 2){
+                    lastProgressValue = progress;
+                    popupObj.change({
+                        progressValue:progress,
+                        progressTip: "已下载" + progress + "%",
+                        progress: true
+                    });
+                }
+                break;
+        }
+    });
+    // 取消下载
+    popupObj.cancelDownload = function(){
+        dtask && dtask.abort();
+        uni.showToast({
+        	title: "已取消下载",
+        	icon:"none"
+        });
+    }
+    // 重启APP
+    popupObj.reboot = function(){
+        plus.runtime.restart();
+    }
 }
 // 文字换行
 function drawtext(text, maxWidth) {
@@ -616,7 +616,7 @@ function downloadPopupDrawing(data){
 	};
 }
 // 文件下载的弹窗
-function downloadPopup(data, callback, cancelCallback,rebootCallback) {
+function downloadPopup(data) {
 	// 弹窗遮罩层
 	let maskLayer = new plus.nativeObj.View("maskLayer", { //先创建遮罩层
 		top: '0px',
@@ -642,36 +642,7 @@ function downloadPopup(data, callback, cancelCallback,rebootCallback) {
 		buttonNum = data.buttonNum;
 	}
 	popupView.draw(popupViewData.elementList);
-	popupView.addEventListener("click", function(e) {
-		let maxTop = popupViewData.popupViewHeight - popupViewData.viewContentPadding;
-		let maxLeft = popupViewData.popupViewWidth - popupViewData.viewContentPadding;
-		if (e.clientY > maxTop - 40 && e.clientY < maxTop) {
-			if(buttonNum == 1){
-				// 单按钮
-				if (e.clientX > popupViewData.viewContentPadding && e.clientX < maxLeft) {
-					maskLayer.hide();
-					popupView.hide();
-					rebootCallback && rebootCallback();
-				}
-			}else if(buttonNum == 2){
-				// 双按钮
-				let buttonWidth = (popupViewData.viewContentWidth - popupViewData.viewContentPadding) / 2;
-				if (e.clientX > popupViewData.viewContentPadding && e.clientX < maxLeft - buttonWidth - popupViewData.viewContentPadding) {
-					maskLayer.hide();
-					popupView.hide();
-					cancelCallback && cancelCallback();
-				} else if (e.clientX > maxLeft - buttonWidth && e.clientX < maxLeft) {
-					maskLayer.hide();
-					popupView.hide();
-				}
-			}
-		}
-	});
-	// 显示弹窗
-	maskLayer.show();
-	popupView.show();
-	// 改变进度条
-	callback({
+    let callbackData = {
 		change: function(res) {
 			let progressElement = [];
 			if(res.progressValue){
@@ -763,11 +734,41 @@ function downloadPopup(data, callback, cancelCallback,rebootCallback) {
 			maskLayer.hide();
 			popupView.hide();
 		}
+	}
+	popupView.addEventListener("click", function(e) {
+		let maxTop = popupViewData.popupViewHeight - popupViewData.viewContentPadding;
+		let maxLeft = popupViewData.popupViewWidth - popupViewData.viewContentPadding;
+		if (e.clientY > maxTop - 40 && e.clientY < maxTop) {
+			if(buttonNum == 1){
+				// 单按钮
+				if (e.clientX > popupViewData.viewContentPadding && e.clientX < maxLeft) {
+					maskLayer.hide();
+					popupView.hide();
+                    callbackData.reboot();
+				}
+			}else if(buttonNum == 2){
+				// 双按钮
+				let buttonWidth = (popupViewData.viewContentWidth - popupViewData.viewContentPadding) / 2;
+				if (e.clientX > popupViewData.viewContentPadding && e.clientX < maxLeft - buttonWidth - popupViewData.viewContentPadding) {
+					maskLayer.hide();
+					popupView.hide();
+                    callbackData.cancelDownload();
+				} else if (e.clientX > maxLeft - buttonWidth && e.clientX < maxLeft) {
+					maskLayer.hide();
+					popupView.hide();
+				}
+			}
+		}
 	});
+	// 显示弹窗
+	maskLayer.show();
+	popupView.show();
+	// 改变进度条
+	return callbackData;
 }
 export default function(isPrompt = false) {
-	getCurrentNo(version => {
-		getServerNo(version,isPrompt, res => {
+	getCurrentNo(versionInfo => {
+		getServerNo(versionInfo,isPrompt, res => {
 			if (res.forceUpdate) {
 				if (/\.wgt$/i.test(res.downloadUrl)) {
 					getDownload(res);

@@ -124,7 +124,7 @@ $http.dataFactory = async function(res) {
 			onLogin();
 			// #endif
 			// #ifdef H5
-			h5Login("force");
+			h5Login("force"); 
 			// #endif
 			// #ifdef APP-PLUS
 			var content = '此时此刻需要您登录喔~';
@@ -208,6 +208,7 @@ $http.requestError = function(e){
 	if(e.statusCode === 0){
 		throw e;
 	} else {
+        console.log(e);
 		uni.showToast({
 			title: "网络错误，请检查一下网络",
 			icon: "none"

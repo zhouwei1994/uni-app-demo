@@ -68,7 +68,7 @@ export default {
 				isPrompt: true,//（默认 true 说明：本接口抛出的错误是否提示）
 				load: true,//（默认 true 说明：本接口是否提示加载动画）
 				header: { //默认 无 说明：请求头
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/x-www-form-urlencoded'
 				},
 				isFactory: true //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数将失去作用）
 			}).then(res => {

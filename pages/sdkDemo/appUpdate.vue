@@ -42,7 +42,7 @@ export default {
 		getVersionName() {
 			// #ifdef APP-PLUS
 			getCurrentNo(res => {
-				this.versionName = res.version
+				this.versionName = res.versionName
 			});
 			// #endif
 			// #ifndef APP-PLUS

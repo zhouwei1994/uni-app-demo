@@ -17,12 +17,12 @@ export const getCurrentNo = function(callback) {
 	plus.runtime.getProperty(plus.runtime.appid, function(inf) {
 		callback && callback({
 			versionCode: inf.versionCode,
-			versionName: inf.versionName
+			versionName: inf.version
 		});
 	});
 }
 // 发起ajax请求获取服务端版本号
-export const getServerNo = function(version,isPrompt = false, callback) {
+const getServerNo = function(version,isPrompt = false, callback) {
 	let httpData = {
 		version: version.versionCode,
         versionName: version.versionName
@@ -34,6 +34,7 @@ export const getServerNo = function(version,isPrompt = false, callback) {
 	}
 	/* 接口入参说明
 	 * version: 应用当前版本号（已自动获取）
+	 * versionName: 应用当前版本名称（已自动获取）
 	 * type：平台（1101是安卓，1102是IOS）
 	 */
 	/****************以下是示例*******************/
@@ -62,9 +63,9 @@ export const getServerNo = function(version,isPrompt = false, callback) {
 	/****************以上是示例*******************/
 }
 // 从服务器下载应用资源包（wgt文件）
-export const getDownload = function(data) {
+const getDownload = function(data) {
 	let popupData = {
-		progress:true,
+		progress: true,
 		buttonNum: 2
 	};
 	if(data.forceUpdate){

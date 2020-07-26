@@ -37,7 +37,7 @@
 
 <script>
 import md5 from '@/plugins/md5';
-var clear;
+let clear;
 import { mapState, mapMutations } from 'vuex';
 import socket from '@/config/socket';
 export default {

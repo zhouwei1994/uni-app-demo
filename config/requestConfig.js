@@ -119,6 +119,43 @@ $http.dataFactory = async function(res) {
 			// 返回正确的结果(then接受数据)
 			return Promise.resolve(httpData.data);
 		} else if (httpData.code == "1000" || httpData.code == "1001" || httpData.code == 1100) {
+            // 失败重发
+            // let result = await $http.request({
+            // 	url: res.url,
+            // 	data: res.data,
+            // 	method: res.method,
+            // 	header: res.header,
+            // 	isPrompt: res.isPrompt,//（默认 true 说明：本接口抛出的错误是否提示）
+            // 	load: res.load,//（默认 true 说明：本接口是否提示加载动画）
+            // 	isFactory: res.isFactory, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数将失去作用）
+            // });
+            // 返回正确的结果(then接受数据)
+            // return Promise.resolve(result);
+            
+            
+            // 刷新token在重发
+            // let tokenResult = await $http.request({
+            // 	url: "", // 获取token接口地址
+            // 	data: {}, // 获取接口参数
+            // 	method: "GET",
+            // 	load: false,//（默认 true 说明：本接口是否提示加载动画）
+            // });
+            // 储存token
+            // store.commit("userInfo", tokenResult);
+            // let result = await $http.request({
+            // 	url: res.url,
+            // 	data: res.data,
+            // 	method: res.method,
+            // 	header: res.header,
+            // 	isPrompt: res.isPrompt,//（默认 true 说明：本接口抛出的错误是否提示）
+            // 	load: res.load,//（默认 true 说明：本接口是否提示加载动画）
+            // 	isFactory: res.isFactory, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数将失去作用）
+            // });
+            // 返回正确的结果(then接受数据)
+            // return Promise.resolve(result);
+            
+            
+            
 			store.commit("emptyUserInfo");
 			// #ifdef MP-WEIXIN
 			onLogin();

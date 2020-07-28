@@ -9,15 +9,15 @@
             "src" : "图片路径"
         }
     ],
-    "versionName" : "1.0.7",
-    "versionCode" : 107,
+    "versionName" : "1.0.1",
+    "versionCode" : 101,
     "app-plus" : {
         "modules" : {
             "Payment" : {},
             "OAuth" : {},
             "Messaging" : {},
-            "Share" : {},
-            "VideoPlayer" : {}
+            "VideoPlayer" : {},
+            "Share" : {}
         },
         "distribute" : {
             "android" : {
@@ -56,7 +56,12 @@
             },
             "sdkConfigs" : {
                 "ad" : {},
-                "maps" : {}
+                "maps" : {},
+                "share" : {}
+            },
+            "splashscreen" : {
+                "iosStyle" : "storyboard",
+                "androidStyle" : "common"
             }
         },
         "compilerVersion" : 3,

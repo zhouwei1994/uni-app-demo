@@ -119,40 +119,62 @@ $http.dataFactory = async function(res) {
 			// 返回正确的结果(then接受数据)
 			return Promise.resolve(httpData.data);
 		} else if (httpData.code == "1000" || httpData.code == "1001" || httpData.code == 1100) {
-            // 失败重发
-            // let result = await $http.request({
-            // 	url: res.url,
-            // 	data: res.data,
-            // 	method: res.method,
-            // 	header: res.header,
-            // 	isPrompt: res.isPrompt,//（默认 true 说明：本接口抛出的错误是否提示）
-            // 	load: res.load,//（默认 true 说明：本接口是否提示加载动画）
-            // 	isFactory: res.isFactory, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数将失去作用）
+            
+            // 失败重新请求（最多重新请求3次）
+            // if(res.resend < 3){
+            //     let result = await $http.request({
+            //     	url: res.url,
+            //     	data: res.data,
+            //     	method: res.method,
+            //     	header: res.header,
+            //     	isPrompt: res.isPrompt,//（默认 true 说明：本接口抛出的错误是否提示）
+            //     	load: res.load,//（默认 true 说明：本接口是否提示加载动画）
+            //     	isFactory: res.isFactory, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数将失去作用）
+            //      resend: res.resend += 1 // 当前重发次数
+            //     });
+            //     // 返回正确的结果(then接受数据)
+            //     return Promise.resolve(result);
+            // }
+            // 返回错误的结果(catch接受数据)
+            // return Promise.reject({
+            // 	statusCode: 0,
+            // 	errMsg: "【request】" +  (httpData.info || httpData.msg)
             // });
-            // 返回正确的结果(then接受数据)
-            // return Promise.resolve(result);
+            
+            //----------------------------------------分割线---------------------------------------------------
+            
+            // 刷新token在重新请求（最多重新请求2次）
+            // if(res.resend < 2){
+            //     let tokenResult = await $http.request({
+            //     	url: "http://localhost:7001/api/common/v1/protocol", // 获取token接口地址
+            //     	data: {
+            //             type: 1000
+            //         }, // 获取接口参数
+            //     	method: "GET",
+            //     	load: false,//（默认 true 说明：本接口是否提示加载动画）
+            //     });
+            //     // 储存token
+            //     store.commit("userInfo", tokenResult);
+            //     let result = await $http.request({
+            //     	url: res.url,
+            //     	data: res.data,
+            //     	method: res.method,
+            //     	header: res.header,
+            //     	isPrompt: res.isPrompt,//（默认 true 说明：本接口抛出的错误是否提示）
+            //     	load: res.load,//（默认 true 说明：本接口是否提示加载动画）
+            //     	isFactory: res.isFactory, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数将失去作用）
+            //         resend: res.resend += 1 // 当前重发次数
+            //     });
+            //     // 返回正确的结果(then接受数据)
+            //     return Promise.resolve(result);
+            // }
+            // 返回错误的结果(catch接受数据)
+            // return Promise.reject({
+            // 	statusCode: 0,
+            // 	errMsg: "【request】" +  (httpData.info || httpData.msg)
+            // });
             
             
-            // 刷新token在重发
-            // let tokenResult = await $http.request({
-            // 	url: "", // 获取token接口地址
-            // 	data: {}, // 获取接口参数
-            // 	method: "GET",
-            // 	load: false,//（默认 true 说明：本接口是否提示加载动画）
-            // });
-            // 储存token
-            // store.commit("userInfo", tokenResult);
-            // let result = await $http.request({
-            // 	url: res.url,
-            // 	data: res.data,
-            // 	method: res.method,
-            // 	header: res.header,
-            // 	isPrompt: res.isPrompt,//（默认 true 说明：本接口抛出的错误是否提示）
-            // 	load: res.load,//（默认 true 说明：本接口是否提示加载动画）
-            // 	isFactory: res.isFactory, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数将失去作用）
-            // });
-            // 返回正确的结果(then接受数据)
-            // return Promise.resolve(result);
             
             
             
@@ -214,7 +236,7 @@ $http.dataFactory = async function(res) {
 				statusCode: 0,
 				errMsg: "【request】" + (httpData.info || httpData.msg)
 			});
-		} else { //其他错误提示
+		} else { //其他错误提示   
 			if (res.isPrompt) {
 				uni.showToast({
 					title: httpData.info || httpData.msg,
@@ -228,7 +250,7 @@ $http.dataFactory = async function(res) {
 				errMsg: "【request】" +  (httpData.info || httpData.msg)
 			});
 		}
-
+        
 		/*********以上只是模板(及共参考)，需要开发者根据各自的接口返回类型修改*********/
 
 	} else {

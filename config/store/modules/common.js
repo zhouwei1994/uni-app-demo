@@ -62,7 +62,7 @@ export const mutations = {
   //微信场景参数
   setChatScenesInfo(state, data) {
   	if (data) {
-  		state.chatScenesInfo = data;
+  		state.chatScenesInfo = Object.assign({}, state.chatScenesInfo, data);
   	}
   },
   //登录弹窗状态

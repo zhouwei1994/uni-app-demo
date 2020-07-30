@@ -144,7 +144,8 @@ function getLogin(type) {
 		}&redirect_uri=${urlNow}&response_type=code&scope=snsapi_userinfo&state=${type}#wechat_redirect`;
 	window.location.replace(url);
 }
-// 获取Url上的推荐码
+//判断是否登录，登录处理
+let isGetOpenId = true;
 function getRecommendCode() {
 	var url = window.location.href;
 	let codeIndex = url.indexOf("recommendCode=");
@@ -164,30 +165,51 @@ function getRecommendCode() {
 		return;
 	}
 }
-//判断是否登录，登录处理
-let isGetOpenId = true;
-// 公众号登录 || H5页面跳转到登录页面 || APP内嵌网页调取APP方法
+function getRecommend() {
+	var url = window.location.href;
+	let codeIndex = url.indexOf("recommend=");
+	if (codeIndex >= 0) {
+		let recommend = url.substr(codeIndex + 10);
+		if (recommend.indexOf("&") >= 0) {
+			return recommend.substr(0, recommend.indexOf("&"));
+		} else if (recommend.indexOf("?") >= 0) {
+			return recommend.substr(0, recommend.indexOf("?"));
+		} else if (recommend.indexOf("/") >= 0) {
+			return recommend.substr(0, recommend.indexOf("/"));
+		} else if (recommend.indexOf("#") >= 0) {
+			return recommend.substr(0, recommend.indexOf("#"));
+		}
+		return recommend;
+	} else {
+		return;
+	}
+}
 export const h5Login = function(type = "judge", callback) {
 	var getRequest = getUrlData();
 	let recommendCode = getRecommendCode();
 	if (recommendCode && recommendCode !== "null" && recommendCode !== "undefined") {
 		uni.setStorageSync("recommendCode", recommendCode);
-	}
+	} else {
+        let recommend = getRecommend();
+        if(recommend && recommend !== "null" && recommend !== "undefined"){
+           uni.setStorageSync("recommendCode", recommend);
+        }
+    }
 	if (getBrowser() == "微信") {
 		if (getRequest.code) {
-			if (isGetOpenId) {
+			if(isGetOpenId){
 				isGetOpenId = false;
 				let httpData = {
-					code: getRequest.code //微信公众号登录code
+					code: getRequest.code
 				};
-				if (recommendCode && recommendCode !== "null" && recommendCode !== "undefined") {
-					httpData.recommendCode = recommendCode;
-				} else {
-					let recommendCode = uni.getStorageSync("recommendCode");
-					if (recommendCode && recommendCode !== "null" && recommendCode !== "undefined") {
-						httpData.recommendCode = recommendCode;
-					}
-				}
+                let recommendCode = uni.getStorageSync("recommendCode");
+                if(recommendCode){
+                    httpData.recommendUid = recommendCode;
+                    store.commit("setChatScenesInfo", {
+                        recommendCode: recommendCode
+                    });
+                    uni.removeStorageSync("recommendCode");
+                }
 				$http.get("api/open/v2/get_public_login", httpData)
 					.then(result => {
 						store.commit('setUserInfo', result);
@@ -197,7 +219,7 @@ export const h5Login = function(type = "judge", callback) {
 							title: "欢迎回来",
 							icon: "none"
 						});
-					}, () => {
+					},() => {
 						isGetOpenId = true;
 					});
 			}
@@ -205,7 +227,6 @@ export const h5Login = function(type = "judge", callback) {
 			getLogin(type);
 		}
 	} else {
-		// 非微信浏览器环境如果有获取到URL上有用户token,将获取用户信息
 		if (getRequest.userToken) {
 			store.commit('setUserInfo', {
 				token: getRequest.userToken
@@ -215,22 +236,19 @@ export const h5Login = function(type = "judge", callback) {
 				callback && callback();
 			});
 		} else {
-			// APP内嵌网页调取APP方法
 			appMutual("jumpLogin", null, function() {
 				if (type == "force") {
-					setTimeout(() => {
-						uni.navigateTo({
-							url: "/pages/user/login"
-						});
-					},500);
-				} else {
+					uni.navigateTo({
+						url: "/pages/user/login"
+					});
+				}else{
 					uni.showModal({
-						title: "提示",
-						content: "您还未登录，请先登录~",
+						title:"提示",
+						content:"您还未登录，请先登录~",
 						confirmText: "去登录",
 						cancelText: "再逛会",
 						success: (res) => {
-							if (res.confirm) {
+							if(res.confirm){
 								uni.navigateTo({
 									url: "/pages/user/login"
 								});

@@ -14,20 +14,6 @@
 			//取出缓存数据
 			store.commit("setCacheData");
 			// #ifdef MP-WEIXIN
-			//获取二维码携带的参数
-			let scene = decodeURIComponent(e.query.scene);
-			scene = scene.split("&");
-			let data = {
-				//场景值
-				scene: e.scene
-			};
-			scene.forEach(item => {
-				let arr = item.split("=");
-				if (arr.length == 2) {
-					data[arr[0]] = arr[1];
-				}
-			});
-			store.commit("setChatScenesInfo", Object.assign(e.query, data));
 			if (store.state.userInfo.token) {
 				socket.init();
 			}
@@ -48,8 +34,22 @@
 			APPUpdate();
 			// #endif
 		},
-		onShow: function() {
+		onShow: function(e) {
 			// #ifdef MP-WEIXIN
+            //获取二维码携带的参数
+            let scene = decodeURIComponent(e.query.scene);
+            scene = scene.split("&");
+            let data = {
+            	//场景值
+            	scene: e.scene
+            };
+            scene.forEach(item => {
+            	let arr = item.split("=");
+            	if (arr.length == 2) {
+            		data[arr[0]] = arr[1];
+            	}
+            });
+            store.commit("setChatScenesInfo", Object.assign(e.query, data));
 			//小程序更新
 			if (uni.getUpdateManager) {
 				const updateManager = uni.getUpdateManager();

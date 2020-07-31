@@ -82,7 +82,7 @@ const mainPagePath = ['pages/home/home', 'pages/my/my', 'pages/demo/common', 'pa
 //返回首页的地址
 const homePath = '/pages/demo/common';
 //白色表达值
-const whiteList = ['#FFF', '#FFFFFF', 'white', 'rgb(255,255,255)', 'rgba(255,255,255,1)'];
+const whiteList = ['#FFF', '#fff', '#FFFFFF', '#ffffff', 'white', 'rgb(255,255,255)', 'rgba(255,255,255,1)'];
 export default {
 	props: {
 		//是否显示返回按钮

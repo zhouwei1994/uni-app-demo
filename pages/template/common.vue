@@ -27,11 +27,11 @@
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>个人信息</text>
 		</view>
-		<view class="nav_list" @click="onPageJump('/pages/template/goodsPoster')">
+		<view class="nav_list" @click="onPageJump('/pages/template/poster/goodsPoster')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>商品海报生成</text>
 		</view>
-		<view class="nav_list" @click="onTokenJump('/pages/template/scanCode')">
+		<view class="nav_list" @click="onTokenJump('/pages/template/poster/scanCode')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>推广海报生成</text>
 		</view>

@@ -43,6 +43,7 @@ export const getUrlData = () => {
 			theRequest[strs[i].slice(0, index)] = unescape(strs[i].slice(index + 1, strs[i].length));
 		}
 	}
+    
 	return theRequest;
 }
 //公众号微信支付

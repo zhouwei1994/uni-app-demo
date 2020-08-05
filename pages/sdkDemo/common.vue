@@ -39,7 +39,7 @@
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>图片上传/文件上传</text>
 		</view>
-		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/quUploadFile')">
+		<view class="nav_list" @click="onTokenJump('/pages/sdkDemo/quUploadFile')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>七牛云图片上传/文件上传</text>
 		</view>
@@ -91,6 +91,13 @@ export default {
 		onPageJump(url) {
 			uni.navigateTo({
 				url: url
+			});
+		},
+		onTokenJump(url) {
+			this.judgeLogin(() => {
+				uni.navigateTo({
+					url: url
+				});
 			});
 		}
 	},

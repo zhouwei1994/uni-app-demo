@@ -3,6 +3,11 @@
 		<nav-bar title="服务器图片上传/文件上传"></nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
+        <view class="table_box">
+        	<view class="table_title">提醒：不要上传自己隐私照片，例如：身份证照片等</view>
+        	<view class="table_title">此图片可在后台管理（群公告有地址）预览</view>
+        	<view class="table_title">被拿人滥用本作者概不负责</view>
+        </view>	
 		<view class="input_form_box">
 			<view class="input_box">
 				<view class="name">上传图片</view>

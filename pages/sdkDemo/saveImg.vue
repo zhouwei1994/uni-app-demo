@@ -37,7 +37,7 @@ export default {
 	//方法
 	methods: {
 		onAdd(){
-			this.imgUrl = "http://8.129.186.35/images/2020/06-10/15311902468060817_55629005_H800.jpg";
+			this.imgUrl = "http://8.129.186.35/images/2020-08/1596705646019097ajg.jpg";
 		},
 		onSaveImg() {
 			// #ifdef MP-WEIXIN || APP-PLUS || H5

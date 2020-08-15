@@ -118,7 +118,7 @@ $http.dataFactory = async function(res) {
 		if (httpData.success || httpData.code == 200) {
 			// 返回正确的结果(then接受数据)
 			return Promise.resolve(httpData.data);
-		} else if (httpData.code == "1000" || httpData.code == "1001" || httpData.code == 1100) {
+		} else if (httpData.code == "1000" || httpData.code == "1001" || httpData.code == 1100 || httpData.code == 402) {
             
             // 失败重新请求（最多重新请求3次）
             // if(res.resend < 3){
@@ -211,7 +211,8 @@ $http.dataFactory = async function(res) {
 			// 返回错误的结果(catch接受数据)
 			return Promise.reject({
 				statusCode: 0,
-				errMsg: "【request】" +  (httpData.info || httpData.msg)
+				errMsg: "【request】" +  (httpData.info || httpData.msg),
+				data: res.data
 			});
 		} else if (httpData.code == "1004") {
 			if (loginPopupNum <= 0) {
@@ -234,7 +235,8 @@ $http.dataFactory = async function(res) {
 			// 返回错误的结果(catch接受数据)
 			return Promise.reject({
 				statusCode: 0,
-				errMsg: "【request】" + (httpData.info || httpData.msg)
+				errMsg: "【request】" + (httpData.info || httpData.msg),
+				data: res.data
 			});
 		} else { //其他错误提示   
 			if (res.isPrompt) {
@@ -247,7 +249,8 @@ $http.dataFactory = async function(res) {
 			// 返回错误的结果(catch接受数据)
 			return Promise.reject({
 				statusCode: 0,
-				errMsg: "【request】" +  (httpData.info || httpData.msg)
+				errMsg: "【request】" +  (httpData.info || httpData.msg),
+				data: res.data
 			});
 		}
         
@@ -257,7 +260,8 @@ $http.dataFactory = async function(res) {
 		// 返回错误的结果(catch接受数据)
 		return Promise.reject({
 			statusCode: res.response.statusCode,
-			errMsg: "【request】数据工厂验证不通过"
+			errMsg: "【request】数据工厂验证不通过",
+			data: res.data
 		});
 	}
 };

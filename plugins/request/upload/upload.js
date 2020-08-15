@@ -18,6 +18,8 @@ export default class fileUpload extends request {
 		let files;
 		try {
 			files = await chooseImage(options);
+			// 选择完成回调
+			options.onSelectComplete && options.onSelectComplete(files);
 		} catch (err) {
 			this.requestError && this.requestError(err);
 			return Promise.reject(err);
@@ -34,6 +36,8 @@ export default class fileUpload extends request {
 		let files;
 		try {
 			files = await chooseVideo(options);
+			// 选择完成回调
+			options.onSelectComplete && options.onSelectComplete(files);
 		} catch (err) {
 			this.requestError && this.requestError(err);
 			return Promise.reject(err);
@@ -69,6 +73,10 @@ export default class fileUpload extends request {
 					throw {
 						errMsg: "【request】请求开始拦截器未通过",
 						statusCode: 0,
+						data: requestInfo.data,
+						method: requestInfo.method,
+						header: requestInfo.header,
+						url: requestInfo.url,
 					}
 				}
 			}
@@ -96,6 +104,8 @@ export default class fileUpload extends request {
 		}
 		try {
 			options.files = await chooseImage(options);
+			// 选择完成回调
+			options.onSelectComplete && options.onSelectComplete(options.files);
 		} catch (err) {
 			this.requestError && this.requestError(err);
 			return Promise.reject(err);
@@ -119,6 +129,8 @@ export default class fileUpload extends request {
 		}
 		try {
 			options.files = await chooseVideo(options);
+			// 选择完成回调
+			options.onSelectComplete && options.onSelectComplete(options.files);
 		} catch (err) {
 			this.requestError && this.requestError(err);
 			return Promise.reject(err);
@@ -152,7 +164,11 @@ export default class fileUpload extends request {
 			if (!requestInfo.url) {
 				throw {
 					errMsg: "【request】文件上传缺失数据url",
-					statusCode: 0
+					statusCode: 0,
+					data: requestInfo.data,
+					method: requestInfo.method,
+					header: requestInfo.header,
+					url: requestInfo.url,
 				}
 			}
 			// 数据合并
@@ -171,6 +187,10 @@ export default class fileUpload extends request {
 					throw {
 						errMsg: "【request】请求开始拦截器未通过",
 						statusCode: 0,
+						data: requestInfo.data,
+						method: requestInfo.method,
+						header: requestInfo.header,
+						url: requestInfo.url,
 					}
 				}
 			}

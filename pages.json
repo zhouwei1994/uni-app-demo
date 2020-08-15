@@ -332,6 +332,18 @@
 			"style": {
 				"navigationBarTitleText": "推广海报生成"
 			}
+		},
+		{
+			"path": "pages/template/poster/scanCode",
+			"style": {
+				"navigationBarTitleText": "推广海报生成"
+			}
+		},
+		{
+			"path": "pages/chat/index",
+			"style": {
+				"navigationBarTitleText": "聊天"
+			}
 		}
 	],
 	"globalStyle": {

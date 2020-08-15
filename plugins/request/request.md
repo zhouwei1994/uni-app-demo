@@ -192,6 +192,9 @@ this.$http.urlImgUpload('flie/upload',{
 	},
 	isFactory: true, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数奖失去作用）
 	maxSize: 300000, //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
+	onSelectComplete: res => {
+		console.log("选择完成返回：",res);
+	},
 	onEachUpdate: res => {
 		console.log("单张上传成功返回：",res);
 	},
@@ -220,7 +223,10 @@ this.$http.urlVideoUpload('flie/upload',{
 	maxSize: 300000, //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
 	onProgressUpdate: res => {
 		console.log("上传进度返回：",res);
-	}
+	},
+	onSelectComplete: res => {
+		console.log("选择完成返回：",res);
+	},
 }).then(res => {
 	console.log("全部上传完返回结果：",res);
 });
@@ -257,6 +263,9 @@ this.$http.qnImgUpload({
 	sourceType:"选择相机拍照或相册上传 默认两个都选", // 默认 ['album','camera']
 	load: true, //（默认 true 说明：本接口是否提示加载动画）
 	maxSize: 300000, //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
+	onSelectComplete: res => {
+		console.log("选择完成返回：",res);
+	},
 	onEachUpdate: res => {
 		console.log("单张上传成功返回：",res);
 	},
@@ -276,6 +285,9 @@ this.$http.qnVideoUpload({
 	camera: '前置还是后置摄像头', //'front'、'back'，默认'back'
 	load: true,//（默认 true 说明：本接口是否提示加载动画）
 	maxSize: 300000, //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
+	onSelectComplete: res => {
+		console.log("选择完成返回：",res);
+	},
 	onProgressUpdate: res => {
 		console.log("上传进度返回：",res);
 	}

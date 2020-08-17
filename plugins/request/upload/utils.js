@@ -74,6 +74,10 @@ export const qiniuUpload = function(requestInfo, getQnToken) {
 					 *folderPath:上传的文件夹
 					 *region: 地区 默认为：SCN
 					 */
+                    let prefixLen = qnRes.visitPrefix.length;
+                    if(qnRes.visitPrefix.charAt(prefixLen - 1) == '/'){
+                        qnRes.visitPrefix = qnRes.visitPrefix.substring(0, prefixLen - 1)
+                    }
 					uploadFile(0);
 
 					function uploadFile(i) {

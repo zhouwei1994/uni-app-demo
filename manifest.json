@@ -12,6 +12,9 @@
     "versionName" : "1.0.1",
     "versionCode" : 101,
     "app-plus" : {
+        "compatible": {
+            "ignoreVersion": true
+        },
         "modules" : {
             "Payment" : {},
             "OAuth" : {},

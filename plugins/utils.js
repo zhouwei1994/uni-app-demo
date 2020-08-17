@@ -150,6 +150,99 @@ export const saveImg = function(url,callback) {
 		});
 	}
 };
+// 保存视频
+export const saveVideo = function(url,callback) {
+	if (url) {
+		// #ifdef MP-WEIXIN
+		if (settingWritePhotosAlbum) {
+			uni.getSetting({
+				success: res => {
+					if (res.authSetting['scope.writePhotosAlbum']) {
+						uni.downloadFile({
+							url: url,
+							success: data => {
+								if (data.statusCode == 200) {
+									uni.saveVideoToPhotosAlbum({
+										filePath: data.tempFilePath,
+										success: () => {
+											callback && callback();
+											uni.showToast({
+												title: '保存成功'
+											});
+										}
+									});
+								}
+							}
+						});
+					} else {
+						uni.showModal({
+							title: '提示',
+							content: '请先在设置页面打开“保存相册”使用权限',
+							confirmText: '去设置',
+							cancelText: '算了',
+							success: data => {
+								if (data.confirm) {
+									uni.openSetting();
+								}
+							}
+						});
+					}
+				}
+			});
+		} else {
+			settingWritePhotosAlbum = true;
+			uni.authorize({
+				scope: 'scope.writePhotosAlbum',
+				success: () => {
+					uni.downloadFile({
+						url: url,
+						success: data => {
+							if (data.statusCode == 200) {
+								uni.saveVideoToPhotosAlbum({
+									filePath: data.tempFilePath,
+									success: () => {
+										callback && callback();
+										uni.showToast({
+											title: '保存成功'
+										});
+									}
+								});
+							}
+						}
+					});
+				}
+			});
+		}
+		// #endif
+		// #ifdef H5
+		uni.downloadFile({
+			url: url,
+			success: data => {
+				if (data.statusCode == 200) {
+					callback && callback();
+					window.open(data.tempFilePath);
+				}
+			}
+		});
+		// #endif
+		// #ifdef APP-PLUS
+		uni.saveVideoToPhotosAlbum({
+			filePath: url,
+			success: () => {
+				callback && callback();
+				uni.showToast({
+					title: '保存成功'
+				});
+			}
+		});
+		// #endif
+	} else {
+		uni.showToast({
+			title: '未找到视频',
+			icon: 'none'
+		});
+	}
+};
 // 微信小程序获取定位权限判断
 function wxAppletsLocation(successCallback, errCallback) {
 	uni.getSetting({

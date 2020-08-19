@@ -2,18 +2,15 @@
 	<view v-if="show">
 		<swiper class="guide_pages_swiper">
 			<swiper-item>
-				<image v-if="screenHeight > 667" src="../static/img/guide_750_1624_1.png" mode="aspectFill"></image>
-				<image v-else src="../static/img/guide_750_1334_1.png" mode="aspectFill"></image>
+				<view class="guide_pages_bg1">第一屏</view>
 			</swiper-item>
 			<swiper-item>
-				<image v-if="screenHeight > 667" src="../static/img/guide_750_1624_2.png" mode="aspectFill"></image>
-				<image v-else src="../static/img/guide_750_1334_2.png" mode="aspectFill"></image>
+				<view class="guide_pages_bg2">第二屏</view>
 			</swiper-item>
 			<swiper-item>
-				<image v-if="screenHeight > 667" src="../static/img/guide_750_1624_3.png" mode="aspectFill"></image>
-				<image v-else src="../static/img/guide_750_1334_3.png" mode="aspectFill"></image>
-				<button v-if="screenHeight > 667" class="close_1624" @click="onClose"></button>
-				<button v-else class="close_1334" @click="onClose"></button>
+				<view class="guide_pages_bg3">第三屏</view>
+				<button v-if="screenHeight > 667" class="guide_pages_close close_1624" @click="onClose">关闭</button>
+				<button v-else class="guide_pages_close close_1334" @click="onClose">关闭</button>
 			</swiper-item>
 		</swiper>
 	</view>
@@ -28,7 +25,7 @@
 		data() {
 			return {
 				screenHeight: 667,
-				show: false
+				show: true
 			};
 		},
 		created() {
@@ -55,10 +52,50 @@
 	width: 100vw;
 	height: 100vh;
 	background-color:#000;
+    z-index: 10000;
 	image {
 		width: 100vw;
 		height: 100vh;
 	}
+    .guide_pages_bg1 {
+        width: 100vw;
+        height: 100vh;
+        background-color: #4CD964;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #FFF;
+        font-size: 60rpx;
+        font-weight: bold;
+    }
+    .guide_pages_bg2 {
+        width: 100vw;
+        height: 100vh;
+        background-color: #007AFF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #FFF;
+        font-size: 60rpx;
+        font-weight: bold;
+    }
+    .guide_pages_bg3 {
+        width: 100vw;
+        height: 100vh;
+        background-color: #EA552D;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #FFF;
+        font-size: 60rpx;
+        font-weight: bold;
+    }
+    .guide_pages_close {
+        border:2rpx solid #FFF;
+        color: #FFF;
+        line-height: 68rpx;
+        height: 68rpx;
+    }
 	.close_1334 {
 		position: absolute;
 		top: 50%;

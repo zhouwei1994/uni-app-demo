@@ -12,7 +12,7 @@
 
 | `QQ交流群(607391225)`         | `微信交流群`                  |
 | ----------------------------|--------------------------- |
-|![QQ交流群](http://qn.kemean.cn//upload/202004/14/15868301778472k7oubi6.png)|![微信交流群](http://8.129.186.35/images/weiXin_group_code.jpg)|
+|![QQ交流群](http://qn.kemean.cn//upload/202004/14/15868301778472k7oubi6.png)|![微信交流群](http://8.129.186.35/codeWx/weiXin_group_code.jpg)|
 
 ### `开源不易，需要花费很多精力，打个赏吧`
 | `微信打赏码`         | `支付宝打赏码`                  |
@@ -21,7 +21,9 @@
 
 ### [H5预览地址](http://8.129.186.35/index.html)
 ### [安卓APP安装包下载地址1.0.1（可体验版本更新）](http://qn.kemean.cn/upload/202006/10/1591785853646tulgw1o4.apk)
-### [安卓APP安装包下载地址1.0.7（最新版）](http://qiniu.jping.ren/file/files/2020-07/1593748290298wpnj5r8dcr.apk)
+### [安卓APP安装包下载地址1.1.0（最新版）](http://qn.kemean.cn/upload/202008/19/1597832954922s442039o.apk)
+### [聊天案例项目H5地址](http://8.129.186.35/chat/index.html)
+### [聊天案例项目安卓APP安装包下载地址](http://qn.kemean.cn/upload/202008/19/15978328792630b4736sp.apk)
 ### [Demo版GitHub地址](https://github.com/zhouwei1994/uni-app-demo)
 ### [空项目模板GitHub地址（开发用这个）](https://github.com/zhouwei1994/uni-app-template)
 

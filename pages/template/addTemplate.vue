@@ -3,6 +3,19 @@
 		<nav-bar backState="2000" title="新增功能"></nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
+        <view class="time">版本1.1.0</view>
+        <view class="nav_list" @click="onIm">
+        	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+        	<text>IM聊天</text>
+        </view>
+        <view class="nav_list">
+        	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+        	<text>APP开屏引导图（在components/module/guide-pages.vue）</text>
+        </view>
+        <view class="nav_list">
+        	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+        	<text>APP隐私协议弹窗（在manifest.json里面）</text>
+        </view>
 		<view class="time">版本1.0.7</view>
 		<view class="nav_list" @click="onPageJump('/pages/template/poster/goodsPoster')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
@@ -62,7 +75,10 @@ export default {
 					url: url
 				});
 			});
-		}
+		},
+        onIm(){
+            window.open("http://8.129.186.35/chat/index.html");
+        }
 	},
 	//页面隐藏
 	onHide() {},

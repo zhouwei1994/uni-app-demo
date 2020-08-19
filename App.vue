@@ -1,7 +1,6 @@
 <script>
 import store from '@/config/store/index.js';
 import socket from '@/config/socket';
-import io from '@/plugins/socket';
 // #ifdef H5
 import { h5Login } from '@/config/html5Utils';
 // #endif
@@ -19,9 +18,6 @@ export default {
 		// #endif
 		// #ifdef H5
 		if (store.state.userInfo.token) {
-			new io({
-				token: store.state.userInfo.token
-			});
 			socket.init();
 		} else {
 			h5Login('force', () => {

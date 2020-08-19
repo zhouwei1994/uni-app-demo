@@ -3,6 +3,10 @@
 		<nav-bar backState="2000" title="模板页面"></nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
+        <view class="nav_list" @click="onIm">
+        	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+        	<text>IM聊天</text>
+        </view>
 		<view class="nav_list" @click="onPageJump('/pages/user/login')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>登录</text>
@@ -71,7 +75,10 @@ export default {
 					url: url
 				});
 			});
-		}
+		},
+        onIm(){
+            window.open("http://8.129.186.35/chat/index.html");
+        }
 	},
 	//页面隐藏
 	onHide() {},

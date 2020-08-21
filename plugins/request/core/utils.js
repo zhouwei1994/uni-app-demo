@@ -61,8 +61,8 @@ export const dispatchRequest = function(requestInfo) {
 export const jsonpRequest = function(requestInfo) {
 	return new Promise((resolve, reject) => {
 		let dataStr = '';
-		Object.keys(data).forEach(key => {
-			dataStr += key + '=' + data[key] + '&';
+		Object.keys(requestInfo.data).forEach(key => {
+			dataStr += key + '=' + requestInfo.data[key] + '&';
 		});
 		//匹配最后一个&并去除
 		if (dataStr !== '') {

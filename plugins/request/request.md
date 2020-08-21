@@ -315,6 +315,6 @@ this.$http.qnFileUpload(
 ### jsonp 跨域请求（只支持H5）
 ```
 let data = await this.$http.jsonp('http://www.aaa.com/aid/region',{pid:0}, {
-    isFactory: true, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数奖失去作用）
+    isFactory: false, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数奖失去作用）
 });
 ```

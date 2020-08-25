@@ -65,6 +65,9 @@ export const saveImg = function(url,callback) {
 			uni.getSetting({
 				success: res => {
 					if (res.authSetting['scope.writePhotosAlbum']) {
+                        uni.showLoading({
+                            title: '正在下载'
+                        });
 						uni.downloadFile({
 							url: url,
 							success: data => {
@@ -72,14 +75,35 @@ export const saveImg = function(url,callback) {
 									uni.saveImageToPhotosAlbum({
 										filePath: data.tempFilePath,
 										success: () => {
+                                            uni.hideLoading();
 											callback && callback();
 											uni.showToast({
 												title: '保存成功'
 											});
-										}
+										},
+                                        fail(e) {
+                                            uni.hideLoading();
+                                            tip({
+                                                title: '下载失败，错误原因：' + e.errMsg,
+                                                icon: "none"
+                                            });
+                                        }
 									});
-								}
-							}
+								} else {
+                                    uni.hideLoading();
+                                    uni.showToast({
+                                    	title: '下载失败',
+                                        icon: "none"
+                                    });
+                                }
+							},
+                            fail(e) {
+                                uni.hideLoading();
+                                uni.showToast({
+                                	title: '下载失败，错误原因：' + e.errMsg,
+                                    icon: "none"
+                                });
+                            }
 						});
 					} else {
 						uni.showModal({
@@ -101,6 +125,9 @@ export const saveImg = function(url,callback) {
 			uni.authorize({
 				scope: 'scope.writePhotosAlbum',
 				success: () => {
+                    uni.showLoading({
+                        title: '正在下载'
+                    });
 					uni.downloadFile({
 						url: url,
 						success: data => {
@@ -108,39 +135,87 @@ export const saveImg = function(url,callback) {
 								uni.saveImageToPhotosAlbum({
 									filePath: data.tempFilePath,
 									success: () => {
+                                        uni.hideLoading();
 										callback && callback();
 										uni.showToast({
 											title: '保存成功'
 										});
-									}
+									},
+                                    fail(e) {
+                                        uni.hideLoading();
+                                        tip({
+                                            title: '下载失败，错误原因：' + e.errMsg,
+                                            icon: "none"
+                                        });
+                                    }
 								});
-							}
-						}
+							} else {
+                                uni.hideLoading();
+                                uni.showToast({
+                                    title: '下载失败',
+                                    icon: "none"
+                                });
+                            }
+                        },
+                        fail(e) {
+                            uni.hideLoading();
+                            uni.showToast({
+                                title: '下载失败，错误原因：' + e.errMsg,
+                                icon: "none"
+                            });
+                        }
 					});
 				}
 			});
 		}
 		// #endif
 		// #ifdef H5
+        uni.showLoading({
+            title: '正在下载'
+        });
 		uni.downloadFile({
 			url: url,
 			success: data => {
+                uni.hideLoading();
 				if (data.statusCode == 200) {
 					callback && callback();
 					window.open(data.tempFilePath);
-				}
-			}
+				} else {
+                    uni.showToast({
+                        title: '下载失败',
+                        icon: "none"
+                    });
+                }
+            },
+            fail(e) {
+                uni.hideLoading();
+                uni.showToast({
+                    title: '下载失败，错误原因：' + e.errMsg,
+                    icon: "none"
+                });
+            }
 		});
 		// #endif
 		// #ifdef APP-PLUS
+        uni.showLoading({
+            title: '正在下载'
+        });
 		uni.saveImageToPhotosAlbum({
 			filePath: url,
 			success: () => {
+                uni.hideLoading();
 				callback && callback();
 				uni.showToast({
 					title: '保存成功'
 				});
-			}
+			},
+            fail(e) {
+                uni.hideLoading();
+                uni.showToast({
+                    title: '下载失败，错误原因：' + e.errMsg,
+                    icon: "none"
+                });
+            }
 		});
 		// #endif
 	} else {
@@ -151,6 +226,11 @@ export const saveImg = function(url,callback) {
 	}
 };
 // 保存视频
+function tip(data){
+    setTimeout(() => {
+        uni.showToast(data);
+    },500);
+}
 export const saveVideo = function(url,callback) {
 	if (url) {
 		// #ifdef MP-WEIXIN
@@ -158,21 +238,49 @@ export const saveVideo = function(url,callback) {
 			uni.getSetting({
 				success: res => {
 					if (res.authSetting['scope.writePhotosAlbum']) {
+                        // let urlArr = url.split("/");
+                        // let updateUrl = urlArr[urlArr.length - 1];
+                        // let  filePath = wx.env.USER_DATA_PATH + '/' + updateUrl;
+                        uni.showLoading({
+                            title: '正在下载'
+                        });
 						uni.downloadFile({
 							url: url,
+                            // filePath: filePath,
 							success: data => {
 								if (data.statusCode == 200) {
 									uni.saveVideoToPhotosAlbum({
 										filePath: data.tempFilePath,
 										success: () => {
+                                            uni.hideLoading();
 											callback && callback();
-											uni.showToast({
+											tip({
 												title: '保存成功'
 											});
-										}
+										},
+                                        fail(e) {
+                                            uni.hideLoading();
+                                            tip({
+                                                title: '下载失败，错误原因：' + e.errMsg,
+                                                icon: "none"
+                                            });
+                                        }
 									});
-								}
-							}
+								} else {
+                                    uni.hideLoading();
+                                    tip({
+                                        title: '下载失败',
+                                        icon: "none"
+                                    });
+                                }
+                            },
+                            fail(e) {
+                                uni.hideLoading();
+                                tip({
+                                    title: '下载失败，错误原因：' + e.errMsg,
+                                    icon: "none"
+                                });
+                            }
 						});
 					} else {
 						uni.showModal({
@@ -194,50 +302,107 @@ export const saveVideo = function(url,callback) {
 			uni.authorize({
 				scope: 'scope.writePhotosAlbum',
 				success: () => {
+                    // let urlArr = url.split("/");
+                    // let updateUrl = urlArr[urlArr.length - 1];
+                    // let filePath = wx.env.USER_DATA_PATH + '/' + updateUrl;
+                    uni.showLoading({
+                        title: '正在下载'
+                    });
 					uni.downloadFile({
 						url: url,
+                        // filePath: filePath,
 						success: data => {
 							if (data.statusCode == 200) {
 								uni.saveVideoToPhotosAlbum({
 									filePath: data.tempFilePath,
 									success: () => {
+                                        uni.hideLoading();
 										callback && callback();
-										uni.showToast({
+										tip({
 											title: '保存成功'
 										});
-									}
+									},
+                                    fail(e) {
+                                        console.log("-----------------2", e);
+                                        uni.hideLoading();
+                                        tip({
+                                            title: '下载失败，错误原因：'+ e.errMsg,
+                                            icon: "none"
+                                        });
+                                    }
 								});
-							}
-						}
+							} else {
+                                uni.hideLoading();
+                                tip({
+                                    title: '下载失败，错误原因：'+ data.errMsg,
+                                    icon: "none"
+                                });
+                            }
+                        },
+                        fail(e) {
+                            console.log("-----------------", e);
+                            uni.hideLoading();
+                            tip({
+                                title: '下载失败，错误原因：' + e.errMsg,
+                                icon: "none"
+                            });
+                        }
 					});
 				}
 			});
 		}
 		// #endif
 		// #ifdef H5
+        uni.showLoading({
+            title: '正在下载'
+        });
 		uni.downloadFile({
 			url: url,
 			success: data => {
+                uni.hideLoading();
 				if (data.statusCode == 200) {
 					callback && callback();
 					window.open(data.tempFilePath);
-				}
-			}
+				} else {
+                    tip({
+                        title: '下载失败',
+                        icon: "none"
+                    });
+                }
+            },
+            fail(e) {
+                uni.hideLoading();
+                tip({
+                    title: '下载失败，错误原因：' + e.errMsg,
+                    icon: "none"
+                });
+            }
 		});
 		// #endif
 		// #ifdef APP-PLUS
+        uni.showLoading({
+            title: '正在下载'
+        });
 		uni.saveVideoToPhotosAlbum({
 			filePath: url,
 			success: () => {
+                uni.hideLoading();
 				callback && callback();
-				uni.showToast({
+				tip({
 					title: '保存成功'
 				});
-			}
+			},
+            fail(e) {
+                uni.hideLoading();
+                tip({
+                    title: '下载失败，错误原因：' + e.errMsg,
+                    icon: "none"
+                });
+            }
 		});
 		// #endif
 	} else {
-		uni.showToast({
+		tip({
 			title: '未找到视频',
 			icon: 'none'
 		});

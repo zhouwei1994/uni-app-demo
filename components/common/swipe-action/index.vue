@@ -20,6 +20,7 @@
 // #ifdef APP-NVUE
 const dom = weex.requireModule('dom');
 // #endif
+let lastTime = 0;
 export default {
 	props: {
 		/**
@@ -143,7 +144,9 @@ export default {
 			// #ifndef APP-NVUE
 			this.touchStartX = e.changedTouches[0].clientX;
 			// #endif
-			this.startTime = new Date().getTime();
+            let currentTime = new Date().getTime();
+            this.startTime = currentTime;
+            lastTime = currentTime;
 			this.currentX = this.translateX;
 		},
 		// 手指触摸后移动
@@ -160,28 +163,30 @@ export default {
 			// #endif
 			//计算滑动距离
 			const difference = this.touchStartX - clientX;
+            let currentTime = new Date().getTime();
 			//判断左滑还是右滑
 			if (difference > 0) {
 				//计算当前已滑动距离
 				const leftDifference = this.currentX - Math.abs(difference);
 				//判断是否大于滑动的最大宽度
 				if (this.maxWidth < Math.abs(leftDifference)) {
-					this.animationTime = 0;
+					this.animationTime = (currentTime - lastTime) / 1000;
 					this.translateX = -this.maxWidth;
 				} else {
-					this.animationTime = 0;
+					this.animationTime = (currentTime - lastTime) / 1000;
 					this.translateX = leftDifference;
 				}
 			} else {
 				const rightDifference = this.currentX + Math.abs(difference);
 				if (0 < rightDifference) {
-					this.animationTime = 0;
+					this.animationTime = (currentTime - lastTime) / 1000;
 					this.translateX = 0;
 				} else {
-					this.animationTime = 0;
+					this.animationTime = (currentTime - lastTime) / 1000;
 					this.translateX = rightDifference;
 				}
 			}
+            lastTime = currentTime;
 		},
 		// 手指触摸动作被打断，如来电提醒，弹窗
 		onTouchcancel(e) {

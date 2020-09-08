@@ -2,7 +2,7 @@
 	<view>
 		<view
 			:class="[{ header_fixed: navFixed, header_absolute: type == 'transparent', header_shadow: navShadow, header_colorWhite: isWhite }, themeBgColorName]"
-			:style="[navBgColor ? { backgroundImage: navBgColor } : {}, { paddingTop: statusBarHeight + 'px', color: navFontColor, opacity: transparentValue }]"
+			:style="[navBgColor ? { backgroundImage: navBgColor } : {}, { paddingTop: statusBarHeight + 'px', color: navFontColor, opacity: transparentValue}]"
 		>
 			<view class="header_content">
 				<view class="header_left_box">
@@ -36,7 +36,7 @@
 		<view
 			class="header_transparentFixed header_fixed"
 			v-if="type == 'transparentFixed'"
-			:style="{ paddingTop: statusBarHeight + 'px', color: navTransparentFixedFontColor, opacity: 1 - transparentValue, zIndex: transparentValue < 0.3 ? 100 : 90 }"
+			:style="{ paddingTop: statusBarHeight + 'px', color: navTransparentFixedFontColor, opacity: 1 - transparentValue, zIndex: transparentValue < 0.3 ? 100 : 90}"
 		>
 			<view class="header_content">
 				<view class="header_left_box">
@@ -82,7 +82,7 @@ const mainPagePath = ['pages/home/home', 'pages/my/my', 'pages/demo/common', 'pa
 //返回首页的地址
 const homePath = '/pages/demo/common';
 //白色表达值
-const whiteList = ['#FFF', '#fff', '#FFFFFF', '#ffffff', 'white', 'rgb(255,255,255)', 'rgba(255,255,255,1)'];
+const whiteList = ['#FFF', '#FFFFFF', 'white', 'rgb(255,255,255)', 'rgba(255,255,255,1)'];
 export default {
 	props: {
 		//是否显示返回按钮
@@ -90,15 +90,19 @@ export default {
 		// 2000 不显示返回按钮
 		// 3000 自定义返回按钮方法，点击返回箭头后会发送一个backClick事件
 		backState: {
+            type: [String, Number],
 			default: function() {
 				return 1000;
 			}
 		},
 		//是否显示返回首页按钮
-		home: {
-			type: Boolean,
+        // 1000 显示首页按钮
+        // 2000 不显示首页按钮
+        // 3000 自定义首页按钮方法，点击首页箭头后会发送一个homeClick事件
+		homeState: {
+			type: [String, Number],
 			default: function() {
-				return false;
+				return 1000;
 			}
 		},
 		//导航背景色，支持渐变
@@ -186,12 +190,15 @@ export default {
 			statusBarHeight: 0,
 			// 上次显示的导航栏颜色
 			lastFrontColor: '',
-			themeBgColorName: ''
+			themeBgColorName: '',
 		};
 	},
 	computed: {
 		back() {
 			return this.backState == 1000 || this.backState == 3000;
+		},
+        home() {
+			return this.homeState == 1000 || this.homeState == 3000;
 		},
 		//导航固定
 		navFixed() {
@@ -215,7 +222,7 @@ export default {
 		},
 		//右上角是否有两个按钮
 		isTwoBtn() {
-			return (this.backState == 1000 || this.backState == 3000) && this.home && !this.firstPage;
+			return (this.backState == 1000 || this.backState == 3000) && (this.homeState == 1000 || this.homeState == 3000) && !this.firstPage;
 		}
 	},
 	watch: {
@@ -270,9 +277,13 @@ export default {
 		},
 		//返回首页
 		onBackHome() {
-			uni.switchTab({
-				url: homePath
-			});
+            if(this.backState == 3000){
+                this.$emit('homeClick');
+            } else {
+                uni.switchTab({
+                	url: homePath
+                });
+            }
 		},
 		pageScroll(e) {
 			if (this.type == 'transparentFixed') {

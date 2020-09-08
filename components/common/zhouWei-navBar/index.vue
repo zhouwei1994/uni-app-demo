@@ -102,7 +102,7 @@ export default {
 		homeState: {
 			type: [String, Number],
 			default: function() {
-				return 1000;
+				return 2000;
 			}
 		},
 		//导航背景色，支持渐变

@@ -82,7 +82,7 @@ const mainPagePath = ['pages/home/home', 'pages/my/my', 'pages/demo/common', 'pa
 //返回首页的地址
 const homePath = '/pages/demo/common';
 //白色表达值
-const whiteList = ['#FFF', '#FFFFFF', 'white', 'rgb(255,255,255)', 'rgba(255,255,255,1)'];
+const whiteList = ['#FFF', '#fff', '#FFFFFF', '#ffffff', 'white', 'rgb(255,255,255)', 'rgba(255,255,255,1)'];
 export default {
 	props: {
 		//是否显示返回按钮
@@ -198,7 +198,7 @@ export default {
 			return this.backState == 1000 || this.backState == 3000;
 		},
         home() {
-			return this.homeState == 1000 || this.homeState == 3000;
+			return this.homeState == 1000;
 		},
 		//导航固定
 		navFixed() {
@@ -222,7 +222,7 @@ export default {
 		},
 		//右上角是否有两个按钮
 		isTwoBtn() {
-			return (this.backState == 1000 || this.backState == 3000) && (this.homeState == 1000 || this.homeState == 3000) && !this.firstPage;
+			return (this.backState == 1000 || this.backState == 3000) && this.homeState == 1000 && !this.firstPage;
 		}
 	},
 	watch: {
@@ -277,10 +277,10 @@ export default {
 		},
 		//返回首页
 		onBackHome() {
-            if(this.backState == 3000){
+            if(this.homeState == 3000){
                 this.$emit('homeClick');
             } else {
-                uni.switchTab({
+                uni.reLaunch({
                 	url: homePath
                 });
             }

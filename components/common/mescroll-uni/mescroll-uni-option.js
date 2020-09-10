@@ -13,7 +13,6 @@ const GlobalOption = {
 		// 其他up的配置参数也可以写,这里只展示了常用的配置:
 		textLoading: '加载中 ...', // 加载中的提示文本
 		textNoMore: '没有更多了', // 没有更多数据的提示文本
-		textErr: "加载失败",
 		offset: 80, // 距底部多远时,触发upCallback
 		isBounce: false, // 默认禁止橡皮筋的回弹效果, 必读事项: http://www.mescroll.com/qa.html?v=190725#q25
 		toTop: {
@@ -27,7 +26,7 @@ const GlobalOption = {
 		empty: {
 			use: true, // 是否显示空布局
 			icon: "http://www.mescroll.com/img/mescroll-empty.png?v=1", // 图标路径 (建议放入static目录, 如 /static/img/mescroll-empty.png )
-			tip: '~ 暂无相关数据 ~' // 提示
+			tip: '~ 空空如也 ~' // 提示
 		}
 	}
 }

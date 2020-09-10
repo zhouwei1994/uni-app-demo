@@ -7,7 +7,7 @@ import MescrollEmpty from '@/components/mescroll-uni/components/mescroll-empty.v
 -->
 <template>
 	<view class="mescroll-empty" :class="{ 'empty-fixed': option.fixed }" :style="{ 'z-index': option.zIndex, top: option.top }">
-		<image v-if="icon" class="empty-icon" :src="icon" mode="widthFix" />
+		<view> <image v-if="icon" class="empty-icon" :src="icon" mode="widthFix" /> </view>
 		<view v-if="tip" class="empty-tip">{{ tip }}</view>
 		<view v-if="option.btnText" class="empty-btn" @click="emptyClick">{{ option.btnText }}</view>
 	</view>
@@ -53,6 +53,7 @@ export default {
 	box-sizing: border-box;
 	width: 100%;
 	padding: 100rpx 50rpx;
+	text-align: center;
 	/* #ifndef APP-NVUE */
 	display: flex;
 	/* #endif */
@@ -84,9 +85,9 @@ export default {
 	min-width: 200rpx;
 	padding: 18rpx;
 	font-size: 28rpx;
-	border: 1rpx solid $themeColor;
+	border: 1rpx solid #e04b28;
 	border-radius: 60rpx;
-	color: $themeColor;
+	color: #e04b28;
 }
 
 .mescroll-empty .empty-btn:active {

@@ -1,12 +1,12 @@
 /* mescroll
- * version 1.2.5
- * 2020-03-15 wenju
+ * version 1.2.8
+ * 2020-06-28 wenju
  * http://www.mescroll.com
  */
 
 export default function MeScroll(options, isScrollBody) {
 	let me = this;
-	me.version = '1.2.5'; // mescroll版本号
+	me.version = '1.2.8'; // mescroll版本号
 	me.options = options || {}; // 配置
 	me.isScrollBody = isScrollBody || false; // 滚动区域是否为原生页面滚动; 默认为scroll-view
 
@@ -22,7 +22,7 @@ export default function MeScroll(options, isScrollBody) {
 	// 自动加载
 	setTimeout(function() { // 待主线程执行完毕再执行,避免new MeScroll未初始化,在回调获取不到mescroll的实例
 		// 自动触发下拉刷新 (只有配置了down的callback才自动触发下拉刷新)
-		if (me.optDown.use && me.optDown.auto && hasDownCallback) {
+		if ((me.optDown.use || me.optDown.native) && me.optDown.auto && hasDownCallback) {
 			if (me.optDown.autoShowLoading) {
 				me.triggerDownScroll(); // 显示下拉进度,执行下拉回调
 			} else {
@@ -30,9 +30,9 @@ export default function MeScroll(options, isScrollBody) {
 			}
 		}
 		// 自动触发上拉加载
-		setTimeout(function() { // 延时确保先执行down的callback,再执行up的callback,因为部分小程序emit是异步,会导致isUpAutoLoad判断有误
+		setTimeout(function(){ // 延时确保先执行down的callback,再执行up的callback,因为部分小程序emit是异步,会导致isUpAutoLoad判断有误
 			me.optUp.use && me.optUp.auto && !me.isUpAutoLoad && me.triggerUpScroll();
-		}, 100)
+		},100)
 	}, 30); // 需让me.optDown.inited和me.optUp.inited先执行
 }
 
@@ -83,14 +83,14 @@ MeScroll.prototype.extendUpScroll = function(optUp) {
 		isBounce: false, // 默认禁止橡皮筋的回弹效果, 必读事项: http://www.mescroll.com/qa.html?v=190725#q25
 		callback: null, // 上拉加载的回调;function(page,mescroll){ }
 		page: {
-			num: 0, // 当前页码,默认0,回调之前会加1,即callback(page)会从1开始
+			num: 1, // 当前页码,默认0,回调之前会加1,即callback(page)会从1开始
 			size: 10, // 每页数据的数量
 			time: null // 加载第一页数据服务器返回的时间; 防止用户翻页时,后台新增了数据从而导致下一页数据重复;
 		},
 		noMoreSize: 5, // 如果列表已无数据,可设置列表的总数量要大于等于5条才显示无更多数据;避免列表数据过少(比如只有一条数据),显示无更多数据会不好看
 		offset: 80, // 距底部多远时,触发upCallback
 		textLoading: '加载中 ...', // 加载中的提示文本
-		textNoMore: '没有更多了', // 没有更多数据的提示文本
+		textNoMore: '-- END --', // 没有更多数据的提示文本
 		bgColor: "transparent", // 背景颜色 (建议在pages.json中再设置一下backgroundColorBottom)
 		textColor: "gray", // 文本颜色 (当bgColor配置了颜色,而textColor未配置时,则textColor会默认为白色)
 		inited: null, // 初始化完毕的回调
@@ -148,7 +148,7 @@ MeScroll.extend = function(userOption, defaultOption) {
 
 /* 简单判断是否配置了颜色 (非透明,非白色) */
 MeScroll.prototype.hasColor = function(color) {
-	if (!color) return false;
+	if(!color) return false;
 	let c = color.toLowerCase();
 	return c != "#fff" && c != "#ffffff" && c != "transparent" && c != "white"
 }
@@ -158,16 +158,16 @@ MeScroll.prototype.initDownScroll = function() {
 	let me = this;
 	// 配置参数
 	me.optDown = me.options.down || {};
-	if (!me.optDown.textColor && me.hasColor(me.optDown.bgColor)) me.optDown.textColor = "#fff"; // 当bgColor有值且textColor未设置,则textColor默认白色
+	if(!me.optDown.textColor && me.hasColor(me.optDown.bgColor)) me.optDown.textColor = "#fff"; // 当bgColor有值且textColor未设置,则textColor默认白色
 	me.extendDownScroll(me.optDown);
-
+	console.log("----------333333333");
 	// 如果是mescroll-body且配置了native,则禁止自定义的下拉刷新
-	if (me.isScrollBody && me.optDown.native) {
+	if(me.isScrollBody && me.optDown.native){
 		me.optDown.use = false
-	} else {
+	}else{
 		me.optDown.native = false // 仅mescroll-body支持,mescroll-uni不支持
 	}
-
+	
 	me.downHight = 0; // 下拉区域的高度
 
 	// 在页面中加入下拉布局
@@ -195,7 +195,7 @@ MeScroll.prototype.touchmoveEvent = function(e) {
 	// #ifdef H5
 	window.isPreventDefault = false // 标记不需要阻止window事件
 	// #endif
-
+	
 	if (!this.optDown.use) return;
 	if (!this.startPoint) return;
 	let me = this;
@@ -206,7 +206,7 @@ MeScroll.prototype.touchmoveEvent = function(e) {
 		return;
 	} else {
 		me.moveTime = t
-		if (!me.moveTimeDiff) me.moveTimeDiff = 1000 / me.optDown.fps
+		if(!me.moveTimeDiff) me.moveTimeDiff = 1000 / me.optDown.fps
 	}
 
 	let scrollTop = me.getScrollTop(); // 当前滚动条的距离
@@ -219,8 +219,9 @@ MeScroll.prototype.touchmoveEvent = function(e) {
 	// scroll-view在滚动时不会触发touchmove,当触顶/底/左/右时,才会触发touchmove
 	// scroll-view滚动到顶部时,scrollTop不一定为0; 在iOS的APP中scrollTop可能为负数,不一定和startTop相等
 	if (moveY > 0 && (
-			(me.isScrollBody && scrollTop <= 0) ||
-			(!me.isScrollBody && (scrollTop <= 0 || (scrollTop <= me.optDown.startTop && scrollTop === me.startTop)))
+			(me.isScrollBody && scrollTop <= 0)
+			||
+			(!me.isScrollBody && (scrollTop <= 0 || (scrollTop <= me.optDown.startTop && scrollTop === me.startTop)) )
 		)) {
 		// 可下拉的条件
 		if (!me.inTouchend && !me.isDownScrolling && !me.optDown.isLock && (!me.isUpScrolling || (me.isUpScrolling &&
@@ -236,7 +237,7 @@ MeScroll.prototype.touchmoveEvent = function(e) {
 				me.touchendEvent(); // 提前触发touchend
 				return;
 			}
-
+			
 			// #ifdef H5
 			window.isPreventDefault = true // 标记阻止window事件
 			// #endif
@@ -347,6 +348,9 @@ MeScroll.prototype.triggerDownScroll = function() {
 	if (this.optDown.beforeLoading && this.optDown.beforeLoading(this)) {
 		//return true则处于完全自定义状态
 	} else {
+        console.log("----------444444");
+        let page = this.optUp.page;
+        page.num = this.startNum; // 重置为第一页
 		this.showDownScroll(); // 下拉刷新中...
 		this.optDown.callback && this.optDown.callback(this); // 执行回调,联网加载数据
 	}
@@ -358,7 +362,7 @@ MeScroll.prototype.showDownScroll = function() {
 	if (this.optDown.native) {
 		uni.startPullDownRefresh(); // 系统自带的下拉刷新
 		this.optDown.showLoading && this.optDown.showLoading(this, 0); // 仍触发showLoading,因为上拉加载用到
-	} else {
+	} else{
 		this.downHight = this.optDown.offset; // 更新下拉区域高度
 		this.optDown.showLoading && this.optDown.showLoading(this, this.downHight); // 下拉刷新中...
 	}
@@ -413,17 +417,15 @@ MeScroll.prototype.lockUpScroll = function(isLock) {
 MeScroll.prototype.initUpScroll = function() {
 	let me = this;
 	// 配置参数
-	me.optUp = me.options.up || {
-		use: false
-	}
-	if (!me.optUp.textColor && me.hasColor(me.optUp.bgColor)) me.optUp.textColor = "#fff"; // 当bgColor有值且textColor未设置,则textColor默认白色
+	me.optUp = me.options.up || {use: false}
+	if(!me.optUp.textColor && me.hasColor(me.optUp.bgColor)) me.optUp.textColor = "#fff"; // 当bgColor有值且textColor未设置,则textColor默认白色
 	me.extendUpScroll(me.optUp);
 
 	if (!me.optUp.isBounce) me.setBounce(false); // 不允许bounce时,需禁止window的touchmove事件
 
 	if (me.optUp.use === false) return; // 配置不使用上拉加载时,则不初始化上拉布局
 	me.optUp.hasNext = true; // 如果使用上拉,则默认有下一页
-	me.startNum = me.optUp.page.num + 1; // 记录page开始的页码
+	me.startNum = me.optUp.page.num; // 记录page开始的页码
 
 	// 初始化完毕的回调
 	if (me.optUp.inited) {
@@ -445,7 +447,7 @@ MeScroll.prototype.onReachBottom = function() {
 /*列表滚动事件 (仅mescroll-body生效)*/
 MeScroll.prototype.onPageScroll = function(e) {
 	if (!this.isScrollBody) return;
-
+	
 	// 更新滚动条的位置 (主要用于判断下拉刷新时,滚动条是否在顶部)
 	this.setScrollTop(e.scrollTop);
 
@@ -498,7 +500,8 @@ MeScroll.prototype.triggerUpScroll = function(isCheck) {
 			if (canUp === false) return;
 		}
 		this.showUpScroll(); // 上拉加载中...
-		this.optUp.page.num++; // 预先加一页,如果失败则减回
+        console.log("----------222222");
+		// this.optUp.page.num++; // 预先加一页,如果失败则减回
 		this.isUpAutoLoad = true; // 标记上拉已经自动执行过,避免初始化时多次触发上拉回调
 		this.num = this.optUp.page.num; // 把最新的页数赋值在mescroll上,避免对page的影响
 		this.size = this.optUp.page.size; // 把最新的页码赋值在mescroll上,避免对page的影响
@@ -515,14 +518,10 @@ MeScroll.prototype.showUpScroll = function() {
 
 /* 显示上拉无更多数据 */
 MeScroll.prototype.showNoMore = function() {
-	
 	this.optUp.hasNext = false; // 标记无更多数据
 	this.optUp.showNoMore && this.optUp.showNoMore(this); // 回调
 }
-/* 显示加载失败 */
-MeScroll.prototype.showErr = function() {
-	this.options.showErr && this.options.showErr(this); // 回调
-}
+
 /* 隐藏上拉区域**/
 MeScroll.prototype.hideUpScroll = function() {
 	this.optUp.hideUpScroll && this.optUp.hideUpScroll(this); // 回调
@@ -551,6 +550,7 @@ MeScroll.prototype.resetUpScroll = function(isShowLoading) {
 		let page = this.optUp.page;
 		this.prePageNum = page.num; // 缓存重置前的页码,加载失败可退回
 		this.prePageTime = page.time; // 缓存重置前的时间,加载失败可退回
+        console.log("----------");
 		page.num = this.startNum; // 重置为第一页
 		page.time = null; // 重置时间为空
 		if (!this.isDownScrolling && isShowLoading !== false) { // 如果不是下拉刷新触发的resetUpScroll并且不配置列表静默更新,则显示进度;
@@ -571,7 +571,8 @@ MeScroll.prototype.resetUpScroll = function(isShowLoading) {
 
 /* 设置page.num的值 */
 MeScroll.prototype.setPageNum = function(num) {
-	this.optUp.page.num = num - 1;
+    console.log("----------111111");
+	this.optUp.page.num = num;
 }
 
 /* 设置page.size的值 */
@@ -611,12 +612,16 @@ MeScroll.prototype.endBySize = function(dataSize, totalSize, systime) {
  */
 MeScroll.prototype.endSuccess = function(dataSize, hasNext, systime) {
 	let me = this;
+	// 结束下拉刷新
+	if (me.isDownScrolling) me.endDownScroll();
+
 	// 结束上拉加载
 	if (me.optUp.use) {
 		let isShowNoMore; // 是否已无更多数据
 		if (dataSize != null) {
 			let pageNum = me.optUp.page.num; // 当前页码
 			let pageSize = me.optUp.page.size; // 每页长度
+			
 			// 如果是第一页
 			if (pageNum === 1) {
 				if (systime) me.optUp.page.time = systime; // 设置加载列表数据第一页的时间
@@ -639,6 +644,7 @@ MeScroll.prototype.endSuccess = function(dataSize, hasNext, systime) {
 					me.removeEmpty(); // 移除空布局
 				}
 			} else {
+				this.optUp.page.num += 1;
 				// 还有下一页
 				isShowNoMore = false;
 				me.optUp.hasNext = true;
@@ -649,11 +655,6 @@ MeScroll.prototype.endSuccess = function(dataSize, hasNext, systime) {
 		// 隐藏上拉
 		me.endUpScroll(isShowNoMore);
 	}
-	// 结束下拉刷新
-	if (me.isDownScrolling) {
-		this.optUp.page.num = 1;
-		me.endDownScroll();
-	};
 }
 
 /* 回调失败,结束下拉刷新和上拉加载 */
@@ -666,16 +667,14 @@ MeScroll.prototype.endErr = function(errDistance) {
 			page.time = this.prePageTime;
 		}
 		this.endDownScroll();
-		this.showErr();
 	}
 	// 结束上拉,回调失败重置回原来的页码
 	if (this.isUpScrolling) {
-		this.optUp.page.num--;
+		// this.optUp.page.num--;
 		this.endUpScroll(false);
-		this.showErr();
 		// 如果是mescroll-body,则需往回滚一定距离
-		if (this.isScrollBody && errDistance !== 0) { // 不处理0
-			if (!errDistance) errDistance = this.optUp.errDistance; // 不传,则取默认
+		if(this.isScrollBody && errDistance !== 0){ // 不处理0
+			if(!errDistance) errDistance = this.optUp.errDistance; // 不传,则取默认
 			this.scrollTo(this.getScrollTop() - errDistance, 0) // 往上回滚的距离
 		}
 	}
@@ -813,8 +812,8 @@ MeScroll.prototype.setBounce = function(isBounce) {
 		window.isSetBounce = true;
 		// 需禁止window的touchmove事件才能有效的阻止bounce
 		window.bounceTouchmove = function(e) {
-			if (!window.isPreventDefault) return; // 根据标记判断是否阻止
-
+			if(!window.isPreventDefault) return; // 根据标记判断是否阻止
+			
 			let el = e.target;
 			// 当前touch的元素及父元素是否要拦截touchmove事件
 			let isPrevent = true;

@@ -160,7 +160,6 @@ MeScroll.prototype.initDownScroll = function() {
 	me.optDown = me.options.down || {};
 	if(!me.optDown.textColor && me.hasColor(me.optDown.bgColor)) me.optDown.textColor = "#fff"; // 当bgColor有值且textColor未设置,则textColor默认白色
 	me.extendDownScroll(me.optDown);
-	console.log("----------333333333");
 	// 如果是mescroll-body且配置了native,则禁止自定义的下拉刷新
 	if(me.isScrollBody && me.optDown.native){
 		me.optDown.use = false
@@ -348,7 +347,6 @@ MeScroll.prototype.triggerDownScroll = function() {
 	if (this.optDown.beforeLoading && this.optDown.beforeLoading(this)) {
 		//return true则处于完全自定义状态
 	} else {
-        console.log("----------444444");
         let page = this.optUp.page;
         page.num = this.startNum; // 重置为第一页
 		this.showDownScroll(); // 下拉刷新中...
@@ -500,7 +498,6 @@ MeScroll.prototype.triggerUpScroll = function(isCheck) {
 			if (canUp === false) return;
 		}
 		this.showUpScroll(); // 上拉加载中...
-        console.log("----------222222");
 		// this.optUp.page.num++; // 预先加一页,如果失败则减回
 		this.isUpAutoLoad = true; // 标记上拉已经自动执行过,避免初始化时多次触发上拉回调
 		this.num = this.optUp.page.num; // 把最新的页数赋值在mescroll上,避免对page的影响
@@ -550,7 +547,6 @@ MeScroll.prototype.resetUpScroll = function(isShowLoading) {
 		let page = this.optUp.page;
 		this.prePageNum = page.num; // 缓存重置前的页码,加载失败可退回
 		this.prePageTime = page.time; // 缓存重置前的时间,加载失败可退回
-        console.log("----------");
 		page.num = this.startNum; // 重置为第一页
 		page.time = null; // 重置时间为空
 		if (!this.isDownScrolling && isShowLoading !== false) { // 如果不是下拉刷新触发的resetUpScroll并且不配置列表静默更新,则显示进度;
@@ -571,7 +567,6 @@ MeScroll.prototype.resetUpScroll = function(isShowLoading) {
 
 /* 设置page.num的值 */
 MeScroll.prototype.setPageNum = function(num) {
-    console.log("----------111111");
 	this.optUp.page.num = num;
 }
 

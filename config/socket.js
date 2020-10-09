@@ -1,5 +1,5 @@
 import base from '@/config/baseUrl';
-import store from '@/config/store';
+import store from '@/store';
 class socket {
 	constructor(options) {
 		//地址

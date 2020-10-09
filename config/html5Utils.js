@@ -1,5 +1,5 @@
 import base from '@/config/baseUrl';
-import store from '@/config/store';
+import store from '@/store';
 import $http from '@/config/requestConfig'
 import { getLocation, setShare } from '@/plugins/wxJsSDK';
 

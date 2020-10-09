@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App'
 //数据管理中心
-import store from '@/config/store'
+import store from '@/store'
 Vue.prototype.$store = store;
 //权限配置中心
 import base from '@/config/baseUrl'

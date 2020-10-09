@@ -1,5 +1,5 @@
 import request from "@/plugins/request";
-import store from '@/config/store';
+import store from '@/store';
 import base from '@/config/baseUrl';
 // #ifdef H5
 import {

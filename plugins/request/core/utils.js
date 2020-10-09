@@ -1,7 +1,7 @@
 // 获取合并的数据
 export const mergeConfig = function(_this, options) {
 	//判断url是不是链接
-	let urlType = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~/])+$/.test(options.url);
+	let urlType = /^(http|https):\/\//.test(options.url);
 	let config = Object.assign({}, _this.config, options);
 	if (options.method == "FILE") {
 		config.url = urlType ? options.url : _this.fileUrl + options.url;

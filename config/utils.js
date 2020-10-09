@@ -1,5 +1,5 @@
 import $http from '@/config/requestConfig'
-import store from '@/config/store';
+import store from '@/store';
 import base from '@/config/baseUrl';
 import { getAppWxLatLon } from '@/plugins/utils';
 // #ifdef H5

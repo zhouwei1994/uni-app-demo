@@ -1,4 +1,4 @@
-import store from '@/config/store';
+import store from '@/store';
 import $http from '@/config/requestConfig'
 import base from '@/config/baseUrl';
 // #ifdef H5

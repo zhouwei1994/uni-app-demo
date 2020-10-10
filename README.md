@@ -102,12 +102,7 @@
 ├── components                              // 组件
 │   ├── common                              // 公共组件
 │   └── module                              // 项目组件
-├── config                                  // 配置
-│   ├── store                          		// vuex商店
-│   │	├── modules							// vuex分类
-│   │	│	├── common.js					// vuex通用数据管理
-│   │	│	└── user.js						// vuex用户数据管理
-│   │	└── index.js						// vuex主文件
+├── config                                  // 配置						// vuex主文件
 │   ├── baseUrl.js                          // 项目配置
 │   ├── html5Utils.js                       // H5相关的功能（公众号支付、公众号登录）
 │   ├── login.js                            // 小程序登录js代码部分和登录拦截器代码
@@ -129,7 +124,13 @@
 │   ├── mp-h5                          		// H5第三方包（公众号JS-SDK）
 │   ├── mp-weixin                          	// 微信小程序第三方包
 │   ├── share                          		// 分享SDK的图标
-│   └── zhouWei-navBar                      // 导航组件的图标                                
+│   └── zhouWei-navBar                      // 导航组件的图标                  
+├── store                          		    // vuex商店
+│	├── modules							    // vuex分类
+│	│	├── common.js					    // vuex通用数据管理
+│	│	├── user.js						    // vuex用户数据管理
+│   │	└── order.js                        // vuex订单数据管理
+│   └── index.js                          	// vuex方法集合
 ├── style
 │   ├── common.scss                         // 公共样式文件
 │   ├── input.scss                         	// 公共表单样式

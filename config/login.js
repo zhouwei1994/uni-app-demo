@@ -92,57 +92,64 @@ function getUserInfo(info, type, callback) {
 }
 //判断是否登录（所有端）
 function judgeLogin(callback, type = "judge"){
-	let storeUserInfo = store.state.userInfo;
-	if(!storeUserInfo.token){ // nvue页面读取不到vuex里面数据，将取缓存
-		storeUserInfo = uni.getStorageSync("userInfo");
-	}
-	if (type != "force" && storeUserInfo.token) {
-		callback();
-	} else if (storeUserInfo.token && !storeUserInfo.phone) {
-		if (type == "force") {
-			uni.navigateTo({
-				url: '/pages/user/bindPhone'
-			});
-		} else {
-			uni.showModal({
-				title: "提示",
-				content: "您还未绑定手机号，请先绑定~",
-				confirmText: "去绑定",
-				cancelText: "再逛会",
-				success: (res) => {
-					if (res.confirm) {
-						uni.navigateTo({
-							url: '/pages/user/bindPhone'
-						});
-					}
-				}
-			});
-		}
-	} else {
-		// #ifdef MP
-		onLogin(type, callback);
-		// #endif
-		// #ifdef APP-PLUS
-		uni.showModal({
-			title: "登录提示",
-			content: "此时此刻需要您登录喔~",
-			confirmText: "去登录",
-			cancelText: "再逛会",
-			success: (res) => {
-				if (res.confirm) {
-					uni.navigateTo({
-						url: "/pages/user/login"
-					});
-				}
-			}
-		});
-		// #endif
-		// #ifdef H5
-		h5Login(type, () => {
-			callback();
-		});
-		// #endif
-	}
+    if(store.state.chatScenesInfo.scene == 1154){
+        uni.showToast({
+        	title: '请前往小程序使用完整服务',
+            icon: "none"
+        });
+    } else {
+        let storeUserInfo = store.state.userInfo;
+        if(!storeUserInfo.token){ // nvue页面读取不到vuex里面数据，将取缓存
+            storeUserInfo = uni.getStorageSync("userInfo");
+        }
+        if (type != "force" && storeUserInfo.token) {
+            callback();
+        } else if (storeUserInfo.token && !storeUserInfo.phone) {
+            if (type == "force") {
+                uni.navigateTo({
+                    url: '/pages/user/bindPhone'
+                });
+            } else {
+                uni.showModal({
+                    title: "提示",
+                    content: "您还未绑定手机号，请先绑定~",
+                    confirmText: "去绑定",
+                    cancelText: "再逛会",
+                    success: (res) => {
+                        if (res.confirm) {
+                            uni.navigateTo({
+                                url: '/pages/user/bindPhone'
+                            });
+                        }
+                    }
+                });
+            }
+        } else {
+            // #ifdef MP
+            onLogin(type, callback);
+            // #endif
+            // #ifdef APP-PLUS
+            uni.showModal({
+                title: "登录提示",
+                content: "此时此刻需要您登录喔~",
+                confirmText: "去登录",
+                cancelText: "再逛会",
+                success: (res) => {
+                    if (res.confirm) {
+                        uni.navigateTo({
+                            url: "/pages/user/login"
+                        });
+                    }
+                }
+            });
+            // #endif
+            // #ifdef H5
+            h5Login(type, () => {
+                callback();
+            });
+            // #endif
+        }
+    }
 }
 export {
 	onLogin,

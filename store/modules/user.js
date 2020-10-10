@@ -1,5 +1,3 @@
-import Vue from "vue";
-
 export const state = {
   //用户数据
   userInfo: {},

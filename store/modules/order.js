@@ -1,12 +1,9 @@
-import Vue from "vue";
-
-const state = {
+export const state = {
   
 };
-const mutations = {
+export const mutations = {
   
 };
-const actions = {
+export const actions = {
   
 };
-export default { state, mutations, actions };

@@ -26,7 +26,7 @@ import '@/plugins/wxJsSDK.js';
 //全局组件
 import zhouWeiNavBar from "@/components/common/zhouWei-navBar";
 Vue.component("nav-bar", zhouWeiNavBar);
-import publicModule from "@/components/common/public_module.vue";
+import publicModule from "@/components/common/public-module.vue";
 Vue.component("public-module", publicModule);
 import MescrollBody from "@/components/common/mescroll-uni/mescroll-body.vue";
 Vue.component("mescroll-body", MescrollBody);

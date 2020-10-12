@@ -1,19 +1,19 @@
 <template>
 	<view>
 		<view
-			:class="[{ header_fixed: navFixed, header_absolute: type == 'transparent', header_shadow: navShadow, header_colorWhite: isWhite }, themeBgColorName]"
+			:class="[navFixed ? 'header_fixed' : '', type == 'transparent' ? 'header_absolute': '', navShadow ? 'header_shadow': '', themeBgColorName]"
 			:style="[navBgColor ? { backgroundImage: navBgColor } : {}, { paddingTop: statusBarHeight + 'px', color: navFontColor, opacity: transparentValue}]"
 		>
 			<view class="header_content">
 				<view class="header_left_box">
 					<slot name="left">
-						<view class="header_left_info" :class="{ header_btnMongol: isTwoBtn, header_colorWhite_btnMongol: isWhite && isTwoBtn }" v-if="back || $slots.left || home">
-							<view class="header_left_back" :class="{ header_btnMongol_left_back: isTwoBtn }" v-if="back && !firstPage" @click="onBackPage">
+						<view class="header_left_info" :class="[isTwoBtn ? 'header_btnMongol' : '' , isWhite && isTwoBtn ? 'header_colorWhite_btnMongol' : '']" v-if="back || $slots.left || home">
+							<view class="header_left_back" :class="[ isTwoBtn ? 'header_btnMongol_left_back' : '' ]" v-if="back && !firstPage" @click="onBackPage">
 								<image class="header_icon" v-if="isWhite" src="/static/zhouWei-navBar/icon_back_white.png" mode="aspectFit"></image>
 								<image class="header_icon" v-else src="/static/zhouWei-navBar/icon_back_black.png" mode="aspectFit"></image>
 							</view>
-							<text class="header_left_line" :class="{ header_colorWhite_left_line: isWhite }" v-if="isTwoBtn"></text>
-							<view class="header_left_home" :class="{ header_btnMongol_left_home: isTwoBtn }" v-if="(firstPage && back) || home" @click="onBackHome">
+							<text class="header_left_line" :class="[isWhite ? 'header_colorWhite_left_line' : '']" v-if="isTwoBtn"></text>
+							<view class="header_left_home" :class="[isTwoBtn ? 'header_btnMongol_left_home' : '']" v-if="(firstPage && back) || home" @click="onBackHome">
 								<image class="header_icon" v-if="isWhite" src="/static/zhouWei-navBar/icon_home_white.png" mode="aspectFit"></image>
 								<image class="header_icon" v-else src="/static/zhouWei-navBar/icon_home_black.png" mode="aspectFit"></image>
 							</view>
@@ -43,15 +43,15 @@
 					<slot name="transparentFixedLeft">
 						<view
 							class="header_left_info header_transparentFixed_left_info"
-							:class="{ header_transparentFixed_colorWhite_left_info: isWhite }"
+							:class="[ isWhite ? 'header_transparentFixed_colorWhite_left_info' : '' ]"
 							v-if="back || $slots.left || home"
 						>
-							<view class="header_left_back" :class="{ header_btnMongol_left_back: isTwoBtn }" v-if="back && !firstPage" @click="onBackPage">
+							<view class="header_left_back" :class="[ isTwoBtn ? 'header_btnMongol_left_back' : '' ]" v-if="back && !firstPage" @click="onBackPage">
 								<image class="header_icon" v-if="isWhite" src="/static/zhouWei-navBar/icon_back_white.png" mode="aspectFit"></image>
 								<image class="header_icon" v-else src="/static/zhouWei-navBar/icon_back_black.png" mode="aspectFit"></image>
 							</view>
 							<text class="header_left_line" v-if="isTwoBtn"></text>
-							<view class="header_left_home" :class="{ header_btnMongol_left_home: isTwoBtn }" v-if="(firstPage && back) || home" @click="onBackHome">
+							<view class="header_left_home" :class="[isTwoBtn ? 'header_btnMongol_left_home' : '']" v-if="(firstPage && back) || home" @click="onBackHome">
 								<image class="header_icon" v-if="isWhite" src="/static/zhouWei-navBar/icon_home_white.png" mode="aspectFit"></image>
 								<image class="header_icon" v-else src="/static/zhouWei-navBar/icon_home_black.png" mode="aspectFit"></image>
 							</view>

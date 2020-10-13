@@ -77,7 +77,23 @@ export default {
 			});
 		},
         onIm(){
-            window.open("http://8.129.186.35/chat/index.html");
+            uni.showModal({
+                title: "提示",
+                content: "IM聊天uni-app代码50元一份，加微信zhou0612wei发送源代码",
+                showCancel:false,
+                confirmText: "跳转IM体验",
+                success: () => {
+                    // #ifdef H5
+                    window.open("http://8.129.186.35/chat/index.html");
+                    // #endif
+                    // #ifndef H5
+                    this.$store.commit("setWebViewUrl", "http://8.129.186.35/chat/index.html");
+                    uni.navigateTo({
+                    	url: '/pages/template/webView'
+                    });
+                    // #endif
+                }
+            })
         }
 	},
 	//页面隐藏

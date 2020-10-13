@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import addressPopup from '@/components/common/address_popup';
+import addressPopup from '@/components/common/address-popup';
 import zAddress from '@/components/common/address';
 export default {
 	components:{

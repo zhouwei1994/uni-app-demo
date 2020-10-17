@@ -5,7 +5,7 @@
 		padding: 30upx;
 		&.required::before {
 			content: '*';
-			font-size: 30upx;
+			font-size: 28upx;
 			color: #f73333;
 		}
 	}
@@ -20,18 +20,18 @@
 			border-top: 1upx solid #f7f7f7;
 		}
 		&.btm_line {
-			border-bottom: 1upx solid #f7f7f7;
+			border-bottom: 1upx solid #e5e5e5;
 		}
 		.name {
-			font-size: 30upx;
-			color: #666666;
+			font-size: 28upx;
+			color: #333333;
 			min-width: 120upx;
 			flex-shrink: 0;
 			padding: 30upx 0;
 
 			&.required::before {
 				content: '*';
-				font-size: 30upx;
+				font-size: 28upx;
 				color: #f73333;
 			}
 		}
@@ -52,16 +52,23 @@
 		display: flex;
 		flex: 1;
 		align-items: center;
+        justify-content: flex-end;
 		> text {
 			font-size: 24upx;
 			color: #555555;
 			margin-left: 10upx;
 			flex-shrink: 0;
 		}
+        > view {
+            font-size: 28upx;
+            color: #333;
+            margin-left: 10upx;
+            flex-shrink: 0;
+        }
 		input {
 			width: 100%;
 			text-align: right;
-			font-size: 30upx;
+			font-size: 28upx;
 		}
 		button {
 			flex-shrink: 0;
@@ -134,14 +141,14 @@
 		align-items: center;
 	
 		.value {
-			font-size: 30upx;
+			font-size: 28upx;
 			color: #333;
 			text-align: right;
 		}
 	
 		.select {
-			font-size: 30upx;
-			color: #999999;
+			font-size: 28upx;
+			color: #ccc;
 		}
 	
 		.head_img {
@@ -152,14 +159,37 @@
 	
 		&::after {
 			content: '';
-			@include bis('http://qn.kemean.cn/upload/201907/23/me_lise_more.png', 100% 100%);
-			width: 15upx;
-			height: 26upx;
-			margin-left: 20upx;
+			@include bis('http://qn.kemean.cn/upload/202009/17/1600306951172qyyjj3hh.png', 100% 100%);
+			width: 12upx;
+			height: 20upx;
+			margin-left: 24upx;
 			flex-shrink: 0;
 		}
 	}
-	
+	.time_limit_box {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        margin-top: -30rpx;
+        .value {
+            flex: 1;
+        	font-size: 28upx;
+        	color: #333;
+        	text-align: right;
+            padding: 30rpx 0;
+        }
+        .to {
+            font-size: 28rpx;
+            color: #333333;
+            padding: 0 30rpx;
+        }
+        .select {
+            flex: 1;
+        	font-size: 28upx;
+        	color: #ccc;
+            padding: 30rpx 0;
+        }
+    }
 	.upload_info {
 		width: 100%;
 		display: flex;
@@ -198,8 +228,9 @@
 			}
 	
 			&.upload {
-				border: 1upx dashed #b2b2b2;
-				background-image: url('https://qn.kemean.cn/upload/201908/05/d68df2873cd04f18a70104e340a14884');
+				border: none;
+                background-color: #f7f7f7;
+				background-image: url(./static/icon/ic_upload.png);
 				background-position: center center;
 				background-repeat: no-repeat;
 				background-size: 60% 60%;
@@ -215,12 +246,14 @@
 		textarea {
 			width: 100%;
 			height: 154upx;
-			font-size: 30upx;
+			font-size: 28upx;
 			line-height: 150%;
 		}
 	}
 }
-
+.placeholder {
+    color: #ccc;
+}
 .protocol {
 	margin-top: 20upx;
 	display: flex;

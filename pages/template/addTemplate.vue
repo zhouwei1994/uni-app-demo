@@ -84,10 +84,10 @@ export default {
                 confirmText: "跳转IM体验",
                 success: () => {
                     // #ifdef H5
-                    window.open("http://8.129.186.35/chat/index.html");
+                    window.open("https://twin-ui.com/chat/index.html");
                     // #endif
                     // #ifndef H5
-                    this.$store.commit("setWebViewUrl", "http://8.129.186.35/chat/index.html");
+                    this.$store.commit("setWebViewUrl", "https://twin-ui.com/chat/index.html");
                     uni.navigateTo({
                     	url: '/pages/template/webView'
                     });

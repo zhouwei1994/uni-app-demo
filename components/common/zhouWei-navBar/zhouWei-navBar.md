@@ -16,9 +16,10 @@
 2. 页面为第一个页面时左上角自动显示返回主页的图标(具体看组件：zhouWei-navBar/index.vue =>页面script)
 3. nvue页面必须在当前页面引入本组件才可以使用
 
-| `QQ交流群(607391225)`         | `微信交流群`                  |
+| `QQ交流群(607391225)`         | `微信交流群（加我好友备注"进群"）`                  |
 | ----------------------------|--------------------------- |
-|![QQ交流群](http://qn.kemean.cn//upload/202004/14/15868301778472k7oubi6.png)|![微信交流群](http://8.129.186.35/images/weiXin_group_code.jpg)|
+|![QQ交流群](http://qn.kemean.cn//upload/202004/14/15868301778472k7oubi6.png)|![微信交流群](https://qn.kemean.cn/upload/202010/13/weiXin_group_code.jpg)|
+| QQ群号：607391225 |微信号：zhou0612wei|
 
 ### [点击跳转-5年的web前端开源的uni-app快速开发模板-下载看文档](https://ext.dcloud.net.cn/plugin?id=2009)
 

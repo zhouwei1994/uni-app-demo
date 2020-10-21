@@ -27,17 +27,17 @@
 
 2.下载到本地运行，接口不能调用报错？
 
-答：在`config => baseUrl.js`文件里面`开发环境`的`baseUrl`和`socketUrl`域名设置为`http://8.129.186.35/`和`ws://8.129.186.35:6001/`
+答：在`config => baseUrl.js`文件里面`开发环境`的`baseUrl`和`socketUrl`域名设置为`https://twin-ui.com/`和`wss://twin-ui.com:6001/`
 
 
-### [H5预览地址](http://8.129.186.35/index.html)
+### [H5预览地址](https://twin-ui.com/uniappDemo/index.html)
 ### [安卓APP安装包下载地址1.0.1（可体验版本更新）](http://qn.kemean.cn/upload/202006/10/1591785853646tulgw1o4.apk)
 ### [安卓APP安装包下载地址1.1.0（最新版）](http://qn.kemean.cn/upload/202008/19/1597832954922s442039o.apk)
 ### [Demo版GitHub地址](https://github.com/zhouwei1994/uni-app-demo)
 ### [空项目模板GitHub地址（开发用这个）](https://github.com/zhouwei1994/uni-app-template)
 
 ## 聊天案例项目
-### [聊天案例项目H5地址](http://8.129.186.35/chat/index.html)
+### [聊天案例项目H5地址](https://twin-ui.com/chat/index.html)
 ### [聊天案例项目安卓APP安装包下载地址](http://qn.kemean.cn/upload/202008/20/1597887768449e63qg66n.apk)
 
 ### 文件说明

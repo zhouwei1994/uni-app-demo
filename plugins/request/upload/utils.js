@@ -25,7 +25,11 @@ export const chooseImage = function(data) {
 				resolve(res.tempFiles);
 			},
 			fail: err => {
-				reject(err);
+				reject({
+					errMsg: "【request】" + err.errMsg, 
+					errCode: err.errCode, 
+					statusCode: 0,
+				});
 			}
 		});
 	});
@@ -54,7 +58,11 @@ export const chooseVideo = function(data) {
 				resolve(files);
 			},
 			fail: err => {
-				reject(err);
+				reject({
+					errMsg: "【request】" + err.errMsg, 
+					errCode: err.errCode, 
+					statusCode: 0,
+				});
 			}
 		});
 	});

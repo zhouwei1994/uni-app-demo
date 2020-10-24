@@ -2,7 +2,9 @@
 export const mergeConfig = function(_this, options) {
 	//判断url是不是链接
 	let urlType = /^(http|https):\/\//.test(options.url);
-	let config = Object.assign({}, _this.config, options);
+	let config = Object.assign({
+		timeout: _this.timeout
+	}, _this.config, options);
 	if (options.method == "FILE") {
 		config.url = urlType ? options.url : _this.fileUrl + options.url;
 	} else {
@@ -54,7 +56,10 @@ export const dispatchRequest = function(requestInfo) {
 			requestData.withCredentials = requestInfo.withCredentials;
 		}
 		// #endif
-		uni.request(requestData);
+		let requestTask = uni.request(requestData);
+		setTimeout(() => {
+			requestTask.abort();
+		}, requestInfo.timeout)
 	})
 }
 // jsonp请求

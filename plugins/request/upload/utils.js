@@ -26,7 +26,7 @@ export const chooseImage = function(data) {
 			},
 			fail: err => {
 				reject({
-					errMsg: "【request】" + err.errMsg, 
+					errMsg: err.errMsg, 
 					errCode: err.errCode, 
 					statusCode: 0,
 				});
@@ -59,7 +59,7 @@ export const chooseVideo = function(data) {
 			},
 			fail: err => {
 				reject({
-					errMsg: "【request】" + err.errMsg, 
+					errMsg: err.errMsg, 
 					errCode: err.errCode, 
 					statusCode: 0,
 				});

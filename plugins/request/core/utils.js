@@ -21,14 +21,24 @@ export const mergeConfig = function(_this, options) {
 // 请求
 export const dispatchRequest = function(requestInfo) {
 	return new Promise((resolve, reject) => {
+		let requestAbort = true;
 		let requestData = {
 			url: requestInfo.url,
 			header: requestInfo.header, //加入请求头
 			success: (res) => {
+				requestAbort = false;
 				resolve(res);
 			},
 			fail: (err) => {
-				reject(err);
+				requestAbort = false;
+				if(err.errMsg == "request:fail abort"){
+					reject({
+						errMsg: "请求超时，请重新尝试",
+						statusCode: 0,
+					});
+				} else {
+					reject(err);
+				}
 			}
 		};
 		//请求类型
@@ -58,7 +68,9 @@ export const dispatchRequest = function(requestInfo) {
 		// #endif
 		let requestTask = uni.request(requestData);
 		setTimeout(() => {
-			requestTask.abort();
+			if(requestAbort){
+				requestTask.abort();
+			}
 		}, requestInfo.timeout)
 	})
 }

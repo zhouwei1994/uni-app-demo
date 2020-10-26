@@ -5,10 +5,10 @@ export default class request {
 		this.baseUrl = options.baseUrl || "";
 		//公共文件上传请求地址
 		this.fileUrl = options.fileUrl || "";
+		// 超时时间
+		this.timeout = options.timeout || 6000;
 		// 服务器上传图片默认url
 		this.defaultUploadUrl = options.defaultUploadUrl || "";
-		// 超时时间
-		this.timeout = options.timeout || 5000;
 		//默认请求头
 		this.header = options.header || {};
 		//默认配置

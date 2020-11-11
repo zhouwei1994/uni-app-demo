@@ -304,11 +304,11 @@ export default {
 			if (typeof val == 'string') {
 				if (this.type == 'transparent') {
 					this.navBgColor = '';
-				} else if (val.indexOf('#') === -1) {
-					this.themeBgColorName = val;
-					this.navBgColor = '';
+				} else if (/^#|rgb\(|rgba\(/.test(val)) {
+                    this.navBgColor = 'linear-gradient(90deg,' + val + ',' + val + ')';
 				} else {
-					this.navBgColor = 'linear-gradient(90deg,' + val + ',' + val + ')';
+                    this.themeBgColorName = val;
+                    this.navBgColor = '';
 				}
 			} else if (Array.isArray(val) && val.length >= 2) {
 				let navBgColor = 'linear-gradient(' + this.bgColorAngle + 'deg';

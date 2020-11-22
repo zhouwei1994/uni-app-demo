@@ -82,7 +82,7 @@ export default {
 			if(val){
 				this.animationTime = 350;
 				this.translateX = -this.maxWidth;
-			}else {
+			} else {
 				this.animationTime = 350;
 				this.translateX = 0;
 			}

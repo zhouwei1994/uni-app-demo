@@ -12,6 +12,9 @@
     "versionName" : "1.1.0",
     "versionCode" : 110,
     "app-plus" : {
+        "compatible" : {
+            "ignoreVersion" : true //true表示忽略版本检查提示框，HBuilderX1.9.0及以上版本支持  
+        },
         "privacy" : {
             "prompt" : "template",
             "template" : {

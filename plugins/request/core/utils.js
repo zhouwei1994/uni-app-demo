@@ -14,7 +14,7 @@ export const mergeConfig = function(_this, options) {
 	if (options.header) {
 		config.header = Object.assign({}, _this.header, options.header);
 	} else {
-		config.header = _this.header;
+		config.header = Object.assign({}, _this.header);
 	}
 	return config;
 }

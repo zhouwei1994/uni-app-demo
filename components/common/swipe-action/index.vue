@@ -1,16 +1,16 @@
 <template>
 	<view class="swipe_action_box" @touchstart="onTouchstart" @touchmove="onTouchmove" @touchcancel="onTouchcancel" @touchend="onTouchend">
 		<view class="swipe_action_item" :style="{ width: (screenWidth + maxWidth) + 'px', transform: 'translateX(' + translateX + 'px)', transition: 'transform ' + animationTime + 'ms cubic-bezier(.165, .84, .44, 1)'  }">
-			<view class="swipe_action_content" @click="onClick"><slot></slot></view>
+			<view class="swipe_action_content"><slot></slot></view>
 			<view class="swipe_action_btn_box" ref="swipeActionBtnBox">
-				<view v-for="(item,index) of options" :key="index" class="swipe_action_btn" :style="{
+				<view v-for="(item,index) of optionsList" :key="index" class="swipe_action_btn" :style="{
 				  backgroundColor: item.style && item.style.backgroundColor ? item.style.backgroundColor : '#C7C6CD'
 				}" @click.stop="onBtn(index,item)">
-					<text :style="{
-					  fontSize: item.style && item.style.fontSize ? item.style.fontSize : '14px',
-					  color: item.style && item.style.color ? item.style.color : '#FFFFFF'
-					}">{{ item.text }}</text>
-				</view>
+				<text :style="{
+				  fontSize: item.style && item.style.fontSize ? item.style.fontSize : '14px',
+				  color: item.style && item.style.color ? item.style.color : '#FFFFFF'
+				}">{{ item.text }}</text>
+			</view>
 			</view>
 		</view>
 	</view>
@@ -20,7 +20,6 @@
 // #ifdef APP-NVUE
 const dom = weex.requireModule('dom');
 // #endif
-let lastTime = 0;
 export default {
 	props: {
 		/**
@@ -74,7 +73,8 @@ export default {
 			animationTime: 0,
 			//上次的位置
 			currentX: 0,
-			screenWidth: 0
+			screenWidth: 0,
+			optionsList: []
 		};
 	},
 	watch:{
@@ -86,11 +86,15 @@ export default {
 				this.animationTime = 350;
 				this.translateX = 0;
 			}
-		}
+		},
+		options(val){
+			this.optionsList = val;
+		},
 	},
 	created() {
 		let systemInfo = uni.getSystemInfoSync();
 		this.screenWidth = systemInfo.screenWidth;
+		this.optionsList = this.options;
 	},
 	mounted() {
 		const _this = this;
@@ -118,9 +122,6 @@ export default {
 	},
 	//方法
 	methods: {
-        onClick(e){
-            this.$emit('click', e);
-        },
 		onBtn(index, item) {
 			this.$emit('button', {
 				content: item,
@@ -144,9 +145,7 @@ export default {
 			// #ifndef APP-NVUE
 			this.touchStartX = e.changedTouches[0].clientX;
 			// #endif
-            let currentTime = new Date().getTime();
-            this.startTime = currentTime;
-            lastTime = currentTime;
+			this.startTime = new Date().getTime();
 			this.currentX = this.translateX;
 		},
 		// 手指触摸后移动
@@ -163,30 +162,28 @@ export default {
 			// #endif
 			//计算滑动距离
 			const difference = this.touchStartX - clientX;
-            let currentTime = new Date().getTime();
 			//判断左滑还是右滑
 			if (difference > 0) {
 				//计算当前已滑动距离
 				const leftDifference = this.currentX - Math.abs(difference);
 				//判断是否大于滑动的最大宽度
 				if (this.maxWidth < Math.abs(leftDifference)) {
-					this.animationTime = (currentTime - lastTime) / 1000;
+					this.animationTime = 0;
 					this.translateX = -this.maxWidth;
 				} else {
-					this.animationTime = (currentTime - lastTime) / 1000;
+					this.animationTime = 0;
 					this.translateX = leftDifference;
 				}
 			} else {
 				const rightDifference = this.currentX + Math.abs(difference);
 				if (0 < rightDifference) {
-					this.animationTime = (currentTime - lastTime) / 1000;
+					this.animationTime = 0;
 					this.translateX = 0;
 				} else {
-					this.animationTime = (currentTime - lastTime) / 1000;
+					this.animationTime = 0;
 					this.translateX = rightDifference;
 				}
 			}
-            lastTime = currentTime;
 		},
 		// 手指触摸动作被打断，如来电提醒，弹窗
 		onTouchcancel(e) {

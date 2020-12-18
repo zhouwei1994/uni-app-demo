@@ -4,12 +4,12 @@ if (process.env.NODE_ENV === 'development') {
 	// 开发环境
 	// baseUrl = "http://localhost:7001/";
 	// socketUrl = "ws://localhost:6001/";
-	baseUrl = "https://twin-ui.com/";
+	baseUrl = "https://twin-ui.com/demo/";
 	// socketUrl = "ws://8.129.186.35:6001/";
 } else if (process.env.NODE_ENV === 'production') {
 	// 生产环境
-	baseUrl = "https://twin-ui.com/";
-	socketUrl = "ws://twin-ui.com:6001/";
+	baseUrl = "https://twin-ui.com/demo/";
+	// socketUrl = "ws://twin-ui.com:6001/";
 }
 const courtConfig = {
 	//微信公众号APPID

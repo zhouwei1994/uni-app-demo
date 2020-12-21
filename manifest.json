@@ -9,11 +9,11 @@
             "src" : "图片路径"
         }
     ],
-    "versionName" : "1.1.0",
-    "versionCode" : 110,
+    "versionName" : "1.0.0",
+    "versionCode" : 100,
     "app-plus" : {
         "compatible" : {
-            "ignoreVersion" : true //true表示忽略版本检查提示框，HBuilderX1.9.0及以上版本支持  
+            "ignoreVersion" : true
         },
         "privacy" : {
             "prompt" : "template",
@@ -24,9 +24,6 @@
                 "buttonRefuse" : "暂不同意"
             }
         },
-        "compatible" : {
-            "ignoreVersion" : true
-        },
         "modules" : {
             "Payment" : {},
             "OAuth" : {},
@@ -36,14 +33,14 @@
         },
         "distribute" : {
             "android" : {
-				"permissionPhoneState" : {
-					"request" : "once",
-					"prompt" : "为保证您正常、安全地使用，需要获取设备识别码（部分手机提示为获取手机号码）使用权限，请允许。"
-				},
-				"permissionExternalStorage" : {
-					"request" : "once",
-					"prompt" : "应用保存运行状态等信息，需要获取读写手机存储（系统提示为访问设备上的照片、媒体内容和文件）权限，请允许。"
-				},
+                "permissionPhoneState" : {
+                    "request" : "once",
+                    "prompt" : "为保证您正常、安全地使用，需要获取设备识别码（部分手机提示为获取手机号码）使用权限，请允许。"
+                },
+                "permissionExternalStorage" : {
+                    "request" : "once",
+                    "prompt" : "应用保存运行状态等信息，需要获取读写手机存储（系统提示为访问设备上的照片、媒体内容和文件）权限，请允许。"
+                },
                 "permissions" : [
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
                     "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",

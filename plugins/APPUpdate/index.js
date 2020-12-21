@@ -261,7 +261,7 @@ function updatePopup(data, callback) {
 	// 描述的列表
 	const descriptionList = drawtext(data.versionInfo, viewContentWidth);
 	// 弹窗容器高度
-	let popupViewHeight = 80 + 20 + 20 + 90  + 10;
+	let popupViewHeight = 80 + 20 + 20 + 90 + 10;
 	let popupViewContentList = [{
 			src: $iconUrl,
 			id: "logo", 
@@ -319,61 +319,77 @@ function updatePopup(data, callback) {
 			popupViewHeight += 10;
 		}
 	});
-	// 弹窗内容
-	let popupView = new plus.nativeObj.View("popupView", { //创建底部图标菜单
-		tag: "rect",
-		top: (screenHeight - popupViewHeight) / 2 + "px",
-		left: '15%',
-		height: popupViewHeight + "px",
-		width: "70%"
-	});
-	// 绘制白色背景
-	popupView.drawRect({
-		color: "#FFFFFF",
-		radius: "8px"
-	}, {
-		top: "40px",
-		height: popupViewHeight - 40 + "px",
-	});
-	// 绘制底边按钮
-	popupView.drawRect({
-		radius: "3px",
-		borderColor: "#f1f1f1",
-		borderWidth: "1px",
-	}, {
-		bottom: viewContentPadding + 'px',
-		left: viewContentPadding + "px",
-		width: (viewContentWidth - viewContentPadding) / 2 + "px",
-		height: "30px",
-	});
-	// 绘制底边按钮
-	popupView.drawRect({
-		radius: "3px",
-		color: $mainColor,
-	}, {
-		bottom: viewContentPadding + 'px',
-		left: ((viewContentWidth - viewContentPadding) / 2 + viewContentPadding * 2) + "px",
-		width: (viewContentWidth - viewContentPadding) / 2 + "px",
-		height: "30px",
-	});
-	popupViewContentList.push({
-		tag: 'font',
-		id: 'cancelText',
-		text: "暂不升级",
-		textStyles: {
-			size: '14px',
-			color: "#666",
-			lineSpacing: "0%",
-			whiteSpace: "normal"
-		},
-		position: {
+	
+	if(data.forceUpdate){
+		popupViewContentList.push({
+			tag: 'rect', //绘制底边按钮
+			rectStyles:{
+				radius: "6px",
+				color: $mainColor
+			},
+			position:{
+				bottom: viewContentPadding + 'px',
+				left: viewContentPadding + "px",
+				width: viewContentWidth + "px",
+				height: "30px"
+			}
+		});
+		popupViewContentList.push({
+			tag: 'font',
+			id: 'confirmText',
+			text: "立即升级",
+			textStyles: {
+				size: '14px',
+				color: "#FFF",
+				lineSpacing: "0%",
+			},
+			position: {
+				bottom: viewContentPadding + 'px',
+				left: viewContentPadding + "px",
+				width: viewContentWidth + "px",
+				height: "30px"
+			}
+		});
+	} else {
+		// 绘制底边按钮
+		popupView.drawRect({
+			radius: "3px",
+			borderColor: "#f1f1f1",
+			borderWidth: "1px",
+		}, {
 			bottom: viewContentPadding + 'px',
 			left: viewContentPadding + "px",
 			width: (viewContentWidth - viewContentPadding) / 2 + "px",
 			height: "30px",
-		}
-	});
-	popupViewContentList.push({
+		});
+		// 绘制底边按钮
+		popupView.drawRect({
+			radius: "3px",
+			color: $mainColor,
+		}, {
+			bottom: viewContentPadding + 'px',
+			left: ((viewContentWidth - viewContentPadding) / 2 + viewContentPadding * 2) + "px",
+			width: (viewContentWidth - viewContentPadding) / 2 + "px",
+			height: "30px",
+		});
+		popupViewContentList.push({
+			tag: 'font',
+			id: 'cancelText',
+			text: "暂不升级",
+			textStyles: {
+				size: '14px',
+				color: "#666",
+				lineSpacing: "0%",
+				whiteSpace: "normal"
+			},
+			position: {
+				bottom: viewContentPadding + 'px',
+				left: viewContentPadding + "px",
+				width: (viewContentWidth - viewContentPadding) / 2 + "px",
+				height: "30px",
+			}
+		});
+		popupViewContentList.push({
 			tag: 'font',
 			id: 'confirmText',
 			text: "立即升级",
@@ -390,29 +406,59 @@ function updatePopup(data, callback) {
 				height: "30px",
 			}
 		});
+	}
+	// 弹窗内容
+	let popupView = new plus.nativeObj.View("popupView", { //创建底部图标菜单
+		tag: "rect",
+		top: (screenHeight - popupViewHeight) / 2 + "px",
+		left: '15%',
+		height: popupViewHeight + "px",
+		width: "70%"
+	});
+	// 绘制白色背景
+	popupView.drawRect({
+		color: "#FFFFFF",
+		radius: "8px"
+	}, {
+		top: "40px",
+		height: popupViewHeight - 40 + "px",
+	});
+	
 	popupView.draw(popupViewContentList);
 	popupView.addEventListener("click", function(e) {
 		let maxTop = popupViewHeight - viewContentPadding;
 		let maxLeft = popupViewWidth - viewContentPadding;
 		let buttonWidth = (viewContentWidth - viewContentPadding) / 2;
 		if (e.clientY > maxTop - 30 && e.clientY < maxTop) {
-			// 暂不升级
-			if (e.clientX > viewContentPadding && e.clientX < maxLeft - buttonWidth - viewContentPadding) {
-				maskLayer.hide();
-				popupView.hide();
-			} else if (e.clientX > maxLeft - buttonWidth && e.clientX < maxLeft) {
-				// 立即升级
-				maskLayer.hide();
-				popupView.hide();
-				callback && callback();
+			if(data.forceUpdate){
+				if(e.clientX > viewContentPadding && e.clientX < maxLeft){
+					// 立即升级
+					maskLayer.hide();
+					popupView.hide();
+					callback && callback();
+				}
+			} else {
+				// 暂不升级
+				if (e.clientX > viewContentPadding && e.clientX < maxLeft - buttonWidth - viewContentPadding) {
+					maskLayer.hide();
+					popupView.hide();
+				} else if (e.clientX > maxLeft - buttonWidth && e.clientX < maxLeft) {
+					// 立即升级
+					maskLayer.hide();
+					popupView.hide();
+					callback && callback();
+				}
 			}
+			
 		}
 	});
-	// 点击遮罩层
-	maskLayer.addEventListener("click", function() { //处理遮罩层点击
-		maskLayer.hide();
-		popupView.hide();
-	});
+	if(!data.forceUpdate){
+		// 点击遮罩层
+		maskLayer.addEventListener("click", function() { //处理遮罩层点击
+			maskLayer.hide();
+			popupView.hide();
+		});
+	}
 	// 显示弹窗
 	maskLayer.show();
 	popupView.show();
@@ -771,17 +817,19 @@ export default function(isPrompt = false) {
 	getCurrentNo(versionInfo => {
 		getServerNo(versionInfo,isPrompt, res => {
 			if (res.forceUpdate) {
-				if (/\.wgt$/i.test(res.downloadUrl)) {
-					getDownload(res);
-				} else if(/\.html$/i.test(res.downloadUrl)){
-					plus.runtime.openURL(res.downloadUrl);
-				} else {
-					if (platform == "android") {
+				updatePopup(res, function() {
+					if (/\.wgt$/i.test(res.downloadUrl)) {
 						getDownload(res);
-					} else {
+					} else if(/\.html$/i.test(res.downloadUrl)){
 						plus.runtime.openURL(res.downloadUrl);
+					} else {
+						if (platform == "android") {
+							getDownload(res);
+						} else {
+							plus.runtime.openURL(res.downloadUrl);
+						}
 					}
-				}
+				});
 			} else {
 				updatePopup(res, function() {
 					if (/\.wgt$/i.test(res.downloadUrl)) {

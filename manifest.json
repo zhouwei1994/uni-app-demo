@@ -34,11 +34,11 @@
         "distribute" : {
             "android" : {
                 "permissionPhoneState" : {
-                    "request" : "once",
+                    "request" : "none",
                     "prompt" : "为保证您正常、安全地使用，需要获取设备识别码（部分手机提示为获取手机号码）使用权限，请允许。"
                 },
                 "permissionExternalStorage" : {
-                    "request" : "once",
+                    "request" : "none",
                     "prompt" : "应用保存运行状态等信息，需要获取读写手机存储（系统提示为访问设备上的照片、媒体内容和文件）权限，请允许。"
                 },
                 "permissions" : [

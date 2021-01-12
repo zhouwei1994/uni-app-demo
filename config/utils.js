@@ -23,21 +23,38 @@ export const closeAppShare = closeShare;
 
 // #ifdef MP-WEIXIN
 // 微信小程序分享
-export const wxShare = function (title,path) {
+export const wxShare = function (data = {}) {
 	let shareInfo = {
-		title: title || base.share.title,
+		title: data.title || "开米洗护",
 	};
-	if(path && typeof(path) == "string"){
-		shareInfo.path = path;
-	}else if(path === undefined){
-		shareInfo.path = base.share.path;
+	if(data.path && typeof(data.path) == "string"){
+		shareInfo.path = data.path;
+	} else if(data.path != 1){
+		shareInfo.path = "pages/index/index";
 	}
-	if (store.state.userInfo.token) {
-		if (shareInfo.path.indexOf("?") >= 0) {
-			shareInfo.path += "&recommendCode=" + store.state.userInfo.uid;
+	if(data.imageUrl){
+		shareInfo.imageUrl = data.imageUrl;
+	}
+	let userInfo = uni.getStorageSync("userInfo");
+	if (userInfo && userInfo.wechatOpenId) {
+		if(data.query && typeof(data.query) == "object"){
+			data.query.userId = userInfo.wechatOpenId;
 		} else {
-			shareInfo.path += "?recommendCode=" + store.state.userInfo.uid;
+			data.query = {
+				userId: userInfo.wechatOpenId
+			};
 		}
+	}
+	if(data.query && typeof(data.query) == "object"){
+		Object.keys(data.query).forEach((key,index) => {
+			if(index > 0 && shareInfo.query){
+				shareInfo.query += "&" + key + "=" + data.query[key];
+				shareInfo.path += "&" + key + "=" + data.query[key];
+			} else {
+				shareInfo.query = key + "=" + data.query[key];
+				shareInfo.path += "?" + key + "=" + data.query[key];
+			}
+		});
 	}
 	return shareInfo;
 }

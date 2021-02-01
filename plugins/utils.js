@@ -1,6 +1,28 @@
 // #ifdef APP-PLUS
 import { judgePermission } from './permission'
 // #endif
+import Vue from 'vue';
+//金额过滤
+Vue.filter('money', function(val) {
+	console.log(val);
+	if (val) {
+		let value = Math.round(parseFloat(val) * 100) / 100;
+		let valMoney = value.toString().split(".");
+		if (valMoney.length == 1) {
+			value = value.toString() + ".00";
+			return value;
+		}
+		if (valMoney.length > 1) {
+			if (valMoney[1].length < 2) {
+				value = value.toString() + "0";
+			}
+			return value;
+		}
+		return value;
+	} else {
+		return "0.00";
+	}
+})
 /**
  * 时间转换为XX前
  */

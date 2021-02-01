@@ -1,9 +1,16 @@
 // #ifdef APP-PLUS
-let alphaBg, shareMenu;
+let alphaBg, shareMenu, showState = false;
 // 关闭弹窗
 export const closeShare = function(){
 	alphaBg && alphaBg.close();
 	alphaBg && shareMenu.close();
+	if(showState){
+		showState = false;
+		return true
+	} else {
+		showState = false;
+		return false
+	}
 }
 // 复制
 function onCopy(item, shareInfo,callback) {
@@ -365,10 +372,12 @@ export default function (shareInfo, callback) {
 	});
 	alphaBg.show();
 	shareMenu.show();
+	showState = true;
 	return {
 		close: function(){
 			alphaBg && alphaBg.close();
 			alphaBg && shareMenu.close();
+			showState = false;
 		}
 	};
 };

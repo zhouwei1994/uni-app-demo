@@ -1,9 +1,9 @@
 <template>
 	<view @touchmove="onTouchMove">
 		<!-- 遮罩层动画 -->
-		<view class="mask" @click="hideOnBlur && (currentValue = false)" v-if="currentValue"></view>
+		<view class="mask" @click="hideOnBlur && (currentValue = false)" :style="{top:maskTop, bottom:maskBottom, zIndex: zIndex}" v-if="currentValue"></view>
 		<!-- 显示信息层 -->
-		<view class="popup_box" :class="{'bottom': type == 1000 ,'center':type == 2000}" :style="{opacity:opacity,transform:transform}">
+		<view class="popup_box" :class="{'bottom': type == 1000 ,'center':type == 2000}" :style="{opacity:opacity,transform:transform,top:popupTop, bottom:popupBottom,zIndex: zIndex + 1}">
 			<slot></slot>
 		</view>
 	</view>
@@ -32,16 +32,32 @@
 				default: true
 			},
 			// 类型
-			//  1000 靠下
-			//  2000 居中
+			//  bottom 靠下
+			//  center 居中
+			//  top 靠上
 			type: {
 				type: String,
 				default: function() {
-					return "1000";
+					return "bottom";
 				}
-			}
+			},
+			// 偏移
+			offset: {
+				type: Number,
+				default: function() {
+					return 0;
+				}
+			},
+			// index
+			zIndex: {
+				type: Number,
+				default: function() {
+					return 500;
+				}
+			},
 		},
 		created() {
+			this.systemInfo = uni.getSystemInfoSync();
 			if (typeof this.value !== "undefined") {
 				this.currentValue = this.value;
 				this.setAnimation(this.value);
@@ -62,29 +78,70 @@
 				// 传进来的值
 				currentValue: false,
 				opacity: 0,
-				transform: ""
+				popupTop: "inherit",
+				popupBottom: "inherit",
+				maskTop: "0rpx",
+				maskBottom: "0rpx",
+				transform: "",
+				systemInfo: {},
 			};
 		},
 		methods: {
 			onTouchMove: function(event) {
 				!this.scroll && event.preventDefault();
 			},
+			getPxRpx(px){
+				let ratio = 750 / this.systemInfo.screenWidth;
+				return ratio * px;
+			},
 			setAnimation(val) {
-				if (this.type == 1000) {
+				if (this.type == "bottom") {
 					if (val) {
 						this.transform = "translateY(0%)";
 						this.opacity = 1;
+						this.popupTop = "inherit";
+						if(this.offset > 0){
+							this.popupBottom = this.offset + "rpx";
+							this.maskBottom = this.offset + "rpx";
+						} else {
+							this.popupBottom = this.getPxRpx(this.systemInfo.windowBottom) + "rpx";
+							this.maskBottom = "0rpx";
+						}
 					} else {
 						this.opacity = 0;
 						this.transform = "translateY(100%)";
+						this.popupTop = "inherit";
+						this.popupBottom = "inherit";
+						this.maskTop = "0rpx";
+						this.maskBottom = "0rpx";
 					}
-				} else if (this.type == 2000) {
+				} else if (this.type == "center") {
 					if (val) {
 						this.opacity = 1;
 						this.transform = "translateX(-50%) translateY(-50%) scale(1)";
 					} else {
 						this.opacity = 0;
 						this.transform = "translateX(-50%) translateY(-50%) scale(0)";
+					}
+				} else if (this.type == "top") {
+					if (val) {
+						this.transform = "translateY(0%)";
+						this.opacity = 1;
+						this.popupBottom = "inherit";
+						if(this.offset > 0){
+							this.popupTop = (this.offset + this.getPxRpx(this.systemInfo.statusBarHeight)) +  "rpx";
+							this.maskTop = this.offset + "rpx";
+						} else {
+							this.popupTop = this.getPxRpx(this.systemInfo.statusBarHeight) + "rpx";
+							this.maskTop = "0rpx";
+						}
+					} else {
+						this.opacity = 0;
+						this.transform = "translateY(-100%)";
+						this.popupTop = "inherit";
+						this.popupBottom = "inherit";
+						this.maskTop = "0rpx";
+						this.maskBottom = "0rpx";
 					}
 				}
 			}
@@ -131,6 +188,13 @@
 			left: 50%;
 			top: 50%;
 			transform: translateX(-50%) translateY(-50%);
+		}
+		&.top {
+			left: 0upx;
+			top: 0rpx;
+			padding-top: var(--status-bar-height);
+			min-width: 100%;
+			transform: translateY(100%);
 		}
 	}
 </style>

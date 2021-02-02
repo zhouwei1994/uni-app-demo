@@ -3,7 +3,7 @@
 		<!-- 遮罩层动画 -->
 		<view class="mask" @click="hideOnBlur && (currentValue = false)" :style="{top:maskTop, bottom:maskBottom, zIndex: zIndex}" v-if="currentValue"></view>
 		<!-- 显示信息层 -->
-		<view class="popup_box" :class="{'bottom': type == 1000 ,'center':type == 2000}" :style="{opacity:opacity,transform:transform,top:popupTop, bottom:popupBottom,zIndex: zIndex + 1}">
+		<view class="popup_box" :class="{'bottom': type == 'bottom' ,'center':type == 'center', top: type == 'top'}" :style="{opacity:opacity,transform:transform,top:popupTop, bottom:popupBottom,zIndex: zIndex + 1}">
 			<slot></slot>
 		</view>
 	</view>
@@ -192,6 +192,7 @@
 		&.top {
 			left: 0upx;
 			top: 0rpx;
+			right: 0rpx;
 			padding-top: var(--status-bar-height);
 			min-width: 100%;
 			transform: translateY(100%);

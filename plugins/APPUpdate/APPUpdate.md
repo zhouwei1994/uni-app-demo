@@ -40,7 +40,7 @@
 
 
 ### 第一步配置APP更新接口
-在`APPUpdate.js`里面`getServerNo`函数方法配置更新接口
+在`APPUpdate/index.js`里面`getServerNo`函数方法配置更新接口
 ```
 let httpData = {
 	version:version
@@ -100,7 +100,7 @@ onLaunch: function(e) {
 ```
 
 ### 修改弹窗的主题色或弹窗图标
-在`APPUpdate.js`里面上面`$mainColor`常量中定义主题颜色，`$iconUrl`常量中定义图标地址
+在`APPUpdate/index.js`里面上面`$mainColor`常量中定义主题颜色，`$iconUrl`常量中定义图标地址
 
 ### 检查APP是否有新版本（一般在设置页面使用）
 ```

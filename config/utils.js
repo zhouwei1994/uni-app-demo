@@ -25,7 +25,7 @@ export const closeAppShare = closeShare;
 // 微信小程序分享
 export const wxShare = function (data = {}) {
 	let shareInfo = {
-		title: data.title || "开米洗护",
+		title: data.title || base.share.title,
 	};
 	if(data.path && typeof(data.path) == "string"){
 		shareInfo.path = data.path;

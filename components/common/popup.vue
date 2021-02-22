@@ -58,6 +58,7 @@
 		},
 		created() {
 			this.systemInfo = uni.getSystemInfoSync();
+			 console.log(this.systemInfo);
 			if (typeof this.value !== "undefined") {
 				this.currentValue = this.value;
 				this.setAnimation(this.value);
@@ -110,17 +111,21 @@
 					} else {
 						this.opacity = 0;
 						this.transform = "translateY(100%)";
-						this.popupTop = "inherit";
-						this.popupBottom = "inherit";
-						this.maskTop = "0rpx";
-						this.maskBottom = "0rpx";
+						setTimeout(() => {
+							this.popupTop = "inherit";
+							this.popupBottom = "inherit";
+							this.maskTop = "0rpx";
+							this.maskBottom = "0rpx";
+						},400);
 					}
 				} else if (this.type == "center") {
 					if (val) {
 						this.opacity = 1;
 						this.transform = "translateX(-50%) translateY(-50%) scale(1)";
+						this.popupTop = "50%";
 					} else {
 						this.opacity = 0;
+						this.popupTop = "50%";
 						this.transform = "translateX(-50%) translateY(-50%) scale(0)";
 					}
 				} else if (this.type == "top") {
@@ -130,18 +135,20 @@
 						this.popupBottom = "inherit";
 						if(this.offset > 0){
 							this.popupTop = (this.offset + this.getPxRpx(this.systemInfo.statusBarHeight)) +  "rpx";
-							this.maskTop = this.offset + "rpx";
+							this.maskTop = this.popupTop;
 						} else {
-							this.popupTop = this.getPxRpx(this.systemInfo.statusBarHeight) + "rpx";
+							this.popupTop = "0rpx";
 							this.maskTop = "0rpx";
 						}
 					} else {
 						this.opacity = 0;
 						this.transform = "translateY(-100%)";
-						this.popupTop = "inherit";
-						this.popupBottom = "inherit";
-						this.maskTop = "0rpx";
-						this.maskBottom = "0rpx";
+						setTimeout(() => {
+							this.popupTop = "inherit";
+							this.popupBottom = "inherit";
+							this.maskTop = "0rpx";
+							this.maskBottom = "0rpx";
+						},400);
 					}
 				}
 			}
@@ -193,7 +200,6 @@
 			left: 0upx;
 			top: 0rpx;
 			right: 0rpx;
-			padding-top: var(--status-bar-height);
 			min-width: 100%;
 			transform: translateY(100%);
 		}

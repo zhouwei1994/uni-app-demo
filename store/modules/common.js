@@ -49,10 +49,17 @@ export const mutations = {
   //数据加载状态
   setLoadingShow(state, data) {
   	if(state.loadingShow){
-  		clearTime && clearTimeout(clearTime);
-  		clearTime = setTimeout(function(){
-  			state.loadingShow = data;
-  		},300);
+  		if(data){
+  			clearTime && clearTimeout(clearTime);
+  			clearTime = setTimeout(function(){
+  				state.loadingShow = false;
+  			},5000);
+  		} else {
+  			clearTime && clearTimeout(clearTime);
+  			clearTime = setTimeout(function(){
+  				state.loadingShow = false;
+  			},50);
+  		}
   	} else {
   		state.loadingShow = data;
   	}

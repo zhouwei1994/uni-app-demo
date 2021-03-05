@@ -2,7 +2,7 @@
 //接口请求方法
 import $http from '@/config/requestConfig';
 import base from '@/config/baseUrl';
-import { publicShare } from '@/config/utils';
+import { publicShareFun } from '@/config/html5Utils';
 //获取地理位置
 export const getLocation = () => {
 	return new Promise((resolve, reject) => {
@@ -101,7 +101,7 @@ window.onload = function () {
 			] // 必填，需要使用的JS接口列表
 		});
 		//设置分享内容
-		publicShare();
+		publicShareFun();
 	});
 	//配置校验失败后执行
 	jWeixin.error(function (res) {

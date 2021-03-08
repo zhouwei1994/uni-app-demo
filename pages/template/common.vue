@@ -3,10 +3,6 @@
 		<nav-bar backState="2000" title="模板页面"></nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
-        <view class="nav_list" @click="onIm">
-        	<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
-        	<text>IM聊天</text>
-        </view>
 		<view class="nav_list" @click="onPageJump('/pages/user/login')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>登录</text>
@@ -75,26 +71,7 @@ export default {
 					url: url
 				});
 			});
-		},
-        onIm(){
-            uni.showModal({
-                title: "提示",
-                content: "IM聊天uni-app代码50元一份，加微信zhou0612wei发送源代码",
-                showCancel:false,
-                confirmText: "跳转IM体验",
-                success: () => {
-                    // #ifdef H5
-                    window.open("https://twin-ui.com/chat/index.html");
-                    // #endif
-                    // #ifndef H5
-                    this.$store.commit("setWebViewUrl", "https://twin-ui.com/chat/index.html");
-                    uni.navigateTo({
-                    	url: '/pages/template/webView'
-                    });
-                    // #endif
-                }
-            })
-        }
+		}
 	},
 	//页面隐藏
 	onHide() {},

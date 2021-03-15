@@ -30,18 +30,21 @@ export const wxShare = function (data = {}) {
 	if(data.path && typeof(data.path) == "string"){
 		shareInfo.path = data.path;
 	} else if(data.path != 1){
-		shareInfo.path = "pages/index/index";
+		shareInfo.path = "pages/home/home";
 	}
 	if(data.imageUrl){
 		shareInfo.imageUrl = data.imageUrl;
 	}
-	let userInfo = uni.getStorageSync("userInfo");
-	if (userInfo && userInfo.wechatOpenId) {
+	let userInfo = store.state.userInfo;
+	if(!(userInfo && userInfo.uid)){
+		userInfo = uni.getStorageSync("userInfo");
+	}
+	if (userInfo && userInfo.uid) {
 		if(data.query && typeof(data.query) == "object"){
-			data.query.userId = userInfo.wechatOpenId;
+			data.query.recommendCode = userInfo.uid;
 		} else {
 			data.query = {
-				userId: userInfo.wechatOpenId
+				recommendCode: userInfo.uid
 			};
 		}
 	}

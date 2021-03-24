@@ -3,7 +3,7 @@ import store from '@/store';
 import base from '@/config/baseUrl';
 import { getAppWxLatLon } from '@/plugins/utils';
 // #ifdef H5
-import { getLatLonH5, publicShareFun, wxPublicPay, getBrowser, appMutual } from '@/config/html5Utils';
+import { getLatLonH5, publicShareFun, wxPublicPay, getBrowser,appMutual } from '@/config/html5Utils';
 // 公众号分享
 export const publicShare = publicShareFun;
 // #endif
@@ -132,22 +132,31 @@ export const setPayAssign = function(orderInfo, callback) {
 	//支付
 	// #ifdef APP-PLUS
 	uni.navigateTo({
-		url: '/pages/template/pay?orderNo=' + orderInfo.orderNo + '&price=' + orderInfo.price + '&title=' + orderInfo.title
+		url: '/pages/home/weChatPay?orderNo=' + orderInfo.orderNo + '&price=' + orderInfo.price + '&title=' + orderInfo.title
 	});
 	// #endif 
 	// #ifdef MP-WEIXIN
 	setPay({
 		...orderInfo,
 		type: "smallPay"
-	}, callback);
+	}, res => {
+		if(res.success){
+			uni.redirectTo({
+				url: "/pages/shopCar/paySuccess?orderNo=" + orderInfo.orderNo
+			});
+		}
+	});
 	// #endif
 	// #ifdef H5
 	if (getBrowser() === '微信') {
 		wxPublicPay({
 			orderNo: orderInfo.orderNo
+		}, function(){
+			uni.redirectTo({
+				url: "/pages/shopCar/paySuccess?orderNo=" + orderInfo.orderNo
+			});
 		});
 	} else {
-		// H5嵌套在APP里面，调用app支付方法
 		appMutual('setJumpPay', orderInfo);
 	}
 	// #endif

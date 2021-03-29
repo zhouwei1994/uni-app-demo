@@ -58,7 +58,6 @@
 		},
 		created() {
 			this.systemInfo = uni.getSystemInfoSync();
-			 console.log(this.systemInfo);
 			if (typeof this.value !== "undefined") {
 				this.currentValue = this.value;
 				this.setAnimation(this.value);

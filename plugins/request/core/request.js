@@ -9,6 +9,8 @@ export default class request {
 		this.timeout = options.timeout || 6000;
 		// 服务器上传图片默认url
 		this.defaultUploadUrl = options.defaultUploadUrl || "";
+		// 服务器上传文件名称
+		this.defaultFileName = options.defaultFileName || "";
 		//默认请求头
 		this.header = options.header || {};
 		//默认配置

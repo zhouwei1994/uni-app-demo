@@ -157,6 +157,9 @@ export default class fileUpload extends request {
 		if (!requestInfo.url && this.defaultUploadUrl) {
 			requestInfo.url = this.defaultUploadUrl;
 		}
+		if (!requestInfo.name && this.defaultFileName) {
+			requestInfo.name = this.defaultFileName;
+		}
 		// 请求数据
 		// 是否运行过请求开始钩子
 		let runRequestStart = false;

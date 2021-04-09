@@ -1,12 +1,66 @@
 // #ifdef APP-PLUS
-import { judgePermission } from './permission'
+import {
+	judgePermission
+} from './permission'
 // #endif
 import Vue from 'vue';
-
+// 身份证格式校验
+export const CheckIdCard = function(sIdCard) {
+	//Wi 加权因子 Xi 余数0~10对应的校验码 Pi省份代码
+	let Wi: [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2],
+		Xi: [1, 0, "X", 9, 8, 7, 6, 5, 4, 3, 2],
+		Pi: [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33, 34, 35, 36, 37, 41, 42, 43, 44, 45, 46, 50, 51, 52, 53, 54,
+			61, 62, 63, 64, 65, 71, 81, 82, 91
+		],
+		checkStatus = 0;
+	// 检查身份证长度
+	if(sIdCard.length == 18){
+		checkStatus += 1;
+	}
+	//检验输入的省份编码是否有效
+	if(checkStatus >= 1){
+		let p2 = sIdCard.substr(0, 2);
+		for (let i = 0; i < Pi.length; i++) {
+			if (Pi[i] == p2) {
+				checkStatus += 1;
+			}
+		}
+	}
+	//检验18位身份证号码出生日期是否有效
+	//parseFloat过滤前导零，年份必需大于等于1900且小于等于当前年份，用Date()对象判断日期是否有效。
+	if(checkStatus >= 2){
+		 let year = parseFloat(sIdCard.substr(6, 4));
+		 let month = parseFloat(sIdCard.substr(10, 2));
+		 let day = parseFloat(sIdCard.substr(12, 2));
+		 let checkDay = new Date(year, month - 1, day);
+		 let nowDay = new Date();
+		 if (1900 <= year && year <= nowDay.getFullYear() && month == (checkDay.getMonth() + 1) && day == checkDay
+		 	.getDate()) {
+		 	checkStatus += 1;
+		 } 
+	}
+	//检验校验码是否有效  
+	if(checkStatus >= 3){
+		let aIdCard = sIdCard.split("");
+		let sum = 0;
+		for (let j = 0; j < Wi.length; j++) {
+			sum += Wi[j] * aIdCard[j]; //线性加权求和  
+		}
+		let index = sum % 11; //求模，可能为0~10,可求对应的校验码是否于身份证的校验码匹配  
+		if (Xi[index] == aIdCard[17].toUpperCase()) {
+			checkStatus += 1;
+		}
+	}
+	if (checkStatus == 4) {
+		return true;
+	} else {
+		return false;
+	}
+};
 /**
  * 时间转换为XX前
  */
-export const clickDateDiff = function (value) {
+export const clickDateDiff = function(value) {
 	var result;
 	var minute = 1000 * 60;
 	var hour = minute * 60;
@@ -42,7 +96,7 @@ export const clickDateDiff = function (value) {
  */
 //时间戳转换为时间 format('yyyy-MM-dd hh:mm:ss')
 //时间格式转换
-Date.prototype.format = function (fmt = 'yyyy-MM-dd hh:mm:ss') { //author: meizz 
+Date.prototype.format = function(fmt = 'yyyy-MM-dd hh:mm:ss') { //author: meizz 
 	var o = {
 		"M+": this.getMonth() + 1, //月份 
 		"d+": this.getDate(), //日 
@@ -54,22 +108,23 @@ Date.prototype.format = function (fmt = 'yyyy-MM-dd hh:mm:ss') { //author: meizz
 	};
 	if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
 	for (var k in o)
-		if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[
-			k]).substr(("" + o[k]).length)));
+		if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : ((
+			"00" + o[
+				k]).substr(("" + o[k]).length)));
 	return fmt;
 }
 // 保存图片
 let settingWritePhotosAlbum = false;
-export const saveImg = function(url,callback) {
+export const saveImg = function(url, callback) {
 	if (url) {
 		// #ifdef MP-WEIXIN
 		if (settingWritePhotosAlbum) {
 			uni.getSetting({
 				success: res => {
 					if (res.authSetting['scope.writePhotosAlbum']) {
-                        uni.showLoading({
-                            title: '正在下载'
-                        });
+						uni.showLoading({
+							title: '正在下载'
+						});
 						uni.downloadFile({
 							url: url,
 							success: data => {
@@ -77,35 +132,36 @@ export const saveImg = function(url,callback) {
 									uni.saveImageToPhotosAlbum({
 										filePath: data.tempFilePath,
 										success: () => {
-                                            uni.hideLoading();
+											uni.hideLoading();
 											callback && callback();
 											uni.showToast({
 												title: '保存成功'
 											});
 										},
-                                        fail(e) {
-                                            uni.hideLoading();
-                                            tip({
-                                                title: '下载失败，错误原因：' + e.errMsg,
-                                                icon: "none"
-                                            });
-                                        }
+										fail(e) {
+											uni.hideLoading();
+											tip({
+												title: '下载失败，错误原因：' + e
+													.errMsg,
+												icon: "none"
+											});
+										}
 									});
 								} else {
-                                    uni.hideLoading();
-                                    uni.showToast({
-                                    	title: '下载失败',
-                                        icon: "none"
-                                    });
-                                }
+									uni.hideLoading();
+									uni.showToast({
+										title: '下载失败',
+										icon: "none"
+									});
+								}
 							},
-                            fail(e) {
-                                uni.hideLoading();
-                                uni.showToast({
-                                	title: '下载失败，错误原因：' + e.errMsg,
-                                    icon: "none"
-                                });
-                            }
+							fail(e) {
+								uni.hideLoading();
+								uni.showToast({
+									title: '下载失败，错误原因：' + e.errMsg,
+									icon: "none"
+								});
+							}
 						});
 					} else {
 						uni.showModal({
@@ -127,9 +183,9 @@ export const saveImg = function(url,callback) {
 			uni.authorize({
 				scope: 'scope.writePhotosAlbum',
 				success: () => {
-                    uni.showLoading({
-                        title: '正在下载'
-                    });
+					uni.showLoading({
+						title: '正在下载'
+					});
 					uni.downloadFile({
 						url: url,
 						success: data => {
@@ -137,87 +193,87 @@ export const saveImg = function(url,callback) {
 								uni.saveImageToPhotosAlbum({
 									filePath: data.tempFilePath,
 									success: () => {
-                                        uni.hideLoading();
+										uni.hideLoading();
 										callback && callback();
 										uni.showToast({
 											title: '保存成功'
 										});
 									},
-                                    fail(e) {
-                                        uni.hideLoading();
-                                        tip({
-                                            title: '下载失败，错误原因：' + e.errMsg,
-                                            icon: "none"
-                                        });
-                                    }
+									fail(e) {
+										uni.hideLoading();
+										tip({
+											title: '下载失败，错误原因：' + e.errMsg,
+											icon: "none"
+										});
+									}
 								});
 							} else {
-                                uni.hideLoading();
-                                uni.showToast({
-                                    title: '下载失败',
-                                    icon: "none"
-                                });
-                            }
-                        },
-                        fail(e) {
-                            uni.hideLoading();
-                            uni.showToast({
-                                title: '下载失败，错误原因：' + e.errMsg,
-                                icon: "none"
-                            });
-                        }
+								uni.hideLoading();
+								uni.showToast({
+									title: '下载失败',
+									icon: "none"
+								});
+							}
+						},
+						fail(e) {
+							uni.hideLoading();
+							uni.showToast({
+								title: '下载失败，错误原因：' + e.errMsg,
+								icon: "none"
+							});
+						}
 					});
 				}
 			});
 		}
 		// #endif
 		// #ifdef H5
-        uni.showLoading({
-            title: '正在下载'
-        });
+		uni.showLoading({
+			title: '正在下载'
+		});
 		uni.downloadFile({
 			url: url,
 			success: data => {
-                uni.hideLoading();
+				uni.hideLoading();
 				if (data.statusCode == 200) {
 					callback && callback();
 					window.open(data.tempFilePath);
 				} else {
-                    uni.showToast({
-                        title: '下载失败',
-                        icon: "none"
-                    });
-                }
-            },
-            fail(e) {
-                uni.hideLoading();
-                uni.showToast({
-                    title: '下载失败，错误原因：' + e.errMsg,
-                    icon: "none"
-                });
-            }
+					uni.showToast({
+						title: '下载失败',
+						icon: "none"
+					});
+				}
+			},
+			fail(e) {
+				uni.hideLoading();
+				uni.showToast({
+					title: '下载失败，错误原因：' + e.errMsg,
+					icon: "none"
+				});
+			}
 		});
 		// #endif
 		// #ifdef APP-PLUS
-        uni.showLoading({
-            title: '正在下载'
-        });
+		uni.showLoading({
+			title: '正在下载'
+		});
 		uni.saveImageToPhotosAlbum({
 			filePath: url,
 			success: () => {
-                uni.hideLoading();
+				uni.hideLoading();
 				callback && callback();
 				uni.showToast({
 					title: '保存成功'
 				});
 			},
-            fail(e) {
-                uni.hideLoading();
-                uni.showToast({
-                    title: '下载失败，错误原因：' + e.errMsg,
-                    icon: "none"
-                });
-            }
+			fail(e) {
+				uni.hideLoading();
+				uni.showToast({
+					title: '下载失败，错误原因：' + e.errMsg,
+					icon: "none"
+				});
+			}
 		});
 		// #endif
 	} else {
@@ -228,61 +284,62 @@ export const saveImg = function(url,callback) {
 	}
 };
 // 保存视频
-function tip(data){
-    setTimeout(() => {
-        uni.showToast(data);
-    },500);
+function tip(data) {
+	setTimeout(() => {
+		uni.showToast(data);
+	}, 500);
 }
-export const saveVideo = function(url,callback) {
+export const saveVideo = function(url, callback) {
 	if (url) {
 		// #ifdef MP-WEIXIN
 		if (settingWritePhotosAlbum) {
 			uni.getSetting({
 				success: res => {
 					if (res.authSetting['scope.writePhotosAlbum']) {
-                        // let urlArr = url.split("/");
-                        // let updateUrl = urlArr[urlArr.length - 1];
-                        // let  filePath = wx.env.USER_DATA_PATH + '/' + updateUrl;
-                        uni.showLoading({
-                            title: '正在下载'
-                        });
+						// let urlArr = url.split("/");
+						// let updateUrl = urlArr[urlArr.length - 1];
+						// let  filePath = wx.env.USER_DATA_PATH + '/' + updateUrl;
+						uni.showLoading({
+							title: '正在下载'
+						});
 						uni.downloadFile({
 							url: url,
-                            // filePath: filePath,
+							// filePath: filePath,
 							success: data => {
 								if (data.statusCode == 200) {
 									uni.saveVideoToPhotosAlbum({
 										filePath: data.tempFilePath,
 										success: () => {
-                                            uni.hideLoading();
+											uni.hideLoading();
 											callback && callback();
 											tip({
 												title: '保存成功'
 											});
 										},
-                                        fail(e) {
-                                            uni.hideLoading();
-                                            tip({
-                                                title: '下载失败，错误原因：' + e.errMsg,
-                                                icon: "none"
-                                            });
-                                        }
+										fail(e) {
+											uni.hideLoading();
+											tip({
+												title: '下载失败，错误原因：' + e
+													.errMsg,
+												icon: "none"
+											});
+										}
 									});
 								} else {
-                                    uni.hideLoading();
-                                    tip({
-                                        title: '下载失败',
-                                        icon: "none"
-                                    });
-                                }
-                            },
-                            fail(e) {
-                                uni.hideLoading();
-                                tip({
-                                    title: '下载失败，错误原因：' + e.errMsg,
-                                    icon: "none"
-                                });
-                            }
+									uni.hideLoading();
+									tip({
+										title: '下载失败',
+										icon: "none"
+									});
+								}
+							},
+							fail(e) {
+								uni.hideLoading();
+								tip({
+									title: '下载失败，错误原因：' + e.errMsg,
+									icon: "none"
+								});
+							}
 						});
 					} else {
 						uni.showModal({
@@ -304,102 +361,102 @@ export const saveVideo = function(url,callback) {
 			uni.authorize({
 				scope: 'scope.writePhotosAlbum',
 				success: () => {
-                    // let urlArr = url.split("/");
-                    // let updateUrl = urlArr[urlArr.length - 1];
-                    // let filePath = wx.env.USER_DATA_PATH + '/' + updateUrl;
-                    uni.showLoading({
-                        title: '正在下载'
-                    });
+					// let urlArr = url.split("/");
+					// let updateUrl = urlArr[urlArr.length - 1];
+					// let filePath = wx.env.USER_DATA_PATH + '/' + updateUrl;
+					uni.showLoading({
+						title: '正在下载'
+					});
 					uni.downloadFile({
 						url: url,
-                        // filePath: filePath,
+						// filePath: filePath,
 						success: data => {
 							if (data.statusCode == 200) {
 								uni.saveVideoToPhotosAlbum({
 									filePath: data.tempFilePath,
 									success: () => {
-                                        uni.hideLoading();
+										uni.hideLoading();
 										callback && callback();
 										tip({
 											title: '保存成功'
 										});
 									},
-                                    fail(e) {
-                                        console.log("-----------------2", e);
-                                        uni.hideLoading();
-                                        tip({
-                                            title: '下载失败，错误原因：'+ e.errMsg,
-                                            icon: "none"
-                                        });
-                                    }
+									fail(e) {
+										console.log("-----------------2", e);
+										uni.hideLoading();
+										tip({
+											title: '下载失败，错误原因：' + e.errMsg,
+											icon: "none"
+										});
+									}
 								});
 							} else {
-                                uni.hideLoading();
-                                tip({
-                                    title: '下载失败，错误原因：'+ data.errMsg,
-                                    icon: "none"
-                                });
-                            }
-                        },
-                        fail(e) {
-                            uni.hideLoading();
-                            tip({
-                                title: '下载失败，错误原因：' + e.errMsg,
-                                icon: "none"
-                            });
-                        }
+								uni.hideLoading();
+								tip({
+									title: '下载失败，错误原因：' + data.errMsg,
+									icon: "none"
+								});
+							}
+						},
+						fail(e) {
+							uni.hideLoading();
+							tip({
+								title: '下载失败，错误原因：' + e.errMsg,
+								icon: "none"
+							});
+						}
 					});
 				}
 			});
 		}
 		// #endif
 		// #ifdef H5
-        uni.showLoading({
-            title: '正在下载'
-        });
+		uni.showLoading({
+			title: '正在下载'
+		});
 		uni.downloadFile({
 			url: url,
 			success: data => {
-                uni.hideLoading();
+				uni.hideLoading();
 				if (data.statusCode == 200) {
 					callback && callback();
 					window.open(data.tempFilePath);
 				} else {
-                    tip({
-                        title: '下载失败',
-                        icon: "none"
-                    });
-                }
-            },
-            fail(e) {
-                uni.hideLoading();
-                tip({
-                    title: '下载失败，错误原因：' + e.errMsg,
-                    icon: "none"
-                });
-            }
+					tip({
+						title: '下载失败',
+						icon: "none"
+					});
+				}
+			},
+			fail(e) {
+				uni.hideLoading();
+				tip({
+					title: '下载失败，错误原因：' + e.errMsg,
+					icon: "none"
+				});
+			}
 		});
 		// #endif
 		// #ifdef APP-PLUS
-        uni.showLoading({
-            title: '正在下载'
-        });
+		uni.showLoading({
+			title: '正在下载'
+		});
 		uni.saveVideoToPhotosAlbum({
 			filePath: url,
 			success: () => {
-                uni.hideLoading();
+				uni.hideLoading();
 				callback && callback();
 				tip({
 					title: '保存成功'
 				});
 			},
-            fail(e) {
-                uni.hideLoading();
-                tip({
-                    title: '下载失败，错误原因：' + e.errMsg,
-                    icon: "none"
-                });
-            }
+			fail(e) {
+				uni.hideLoading();
+				tip({
+					title: '下载失败，错误原因：' + e.errMsg,
+					icon: "none"
+				});
+			}
 		});
 		// #endif
 	} else {

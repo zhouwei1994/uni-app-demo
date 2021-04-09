@@ -5,7 +5,7 @@ import {
 // #endif
 import Vue from 'vue';
 // 身份证格式校验
-export const CheckIdCard = function(sIdCard) {
+export const checkIdCard = function(sIdCard) {
 	//Wi 加权因子 Xi 余数0~10对应的校验码 Pi省份代码
 	let Wi: [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2],
 		Xi: [1, 0, "X", 9, 8, 7, 6, 5, 4, 3, 2],

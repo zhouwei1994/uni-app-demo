@@ -1,24 +1,32 @@
 <template>
-	<view class="video_box">
+	<view class="video_box" :style="{ height: screenHeight + 'px'}">
 		<video
 			class="video_file"
 			:id="`video_${src}`"
 			:ref="`video_${src}`"
 			:src="src"
+			:poster="poster"
 			loop
+			object-fit="contain"
 			:show-play-btn="false"
 			:show-center-play-btn="false"
 			:controls="false"
 			:enable-progress-gesture="false"
-			object-fit="contain"
 			:autoplay="play"
+			:style="'height: '+screenHeight + 'px'"
 			@timeupdate="onScheduleChange"
 			@waiting="onWaiting"
+			@error="onError"
 		></video>
+		<!-- <view class="bottom_mask"></view> -->
 		<!-- 播放按钮 -->
-		<view class="play_btn" @click="onPlay"><image class="icon_play" v-if="playState == 1000" src="../../static/demo/ic_play.png" mode="aspectFit"></image></view>
-		<view class="play_schedule">
-			<view class="schedule" :style="{ width: schedule + '%' }"><view v-if="progressDrag" class="progress_drag_dot"></view></view>
+		<view class="play_btn" @click="onPlay">
+			<image class="icon_play" v-if="playState == 1000" src="http://qn.kemean.cn/upload/202103/08/1615183536616rn7yfe5g.png" mode="aspectFit"></image>
+		</view>
+		<view class="play_schedule" :style="{bottom: progressBottom + 'rpx'}">
+			<view class="schedule_bg"></view>
+			<view class="schedule" :style="{ width: schedule + 'rpx' }"></view>
+			<view class="progress_drag_dot" v-if="progressDrag"></view>
 		</view>
 	</view>
 </template>
@@ -46,7 +54,12 @@ export default {
 		progressValue: {
 			type: Number,
 			default: 0
-		}
+		},
+		bottom: {
+			default: function(){
+				return 88
+			}
+		},
 	},
 	data() {
 		return {
@@ -58,10 +71,16 @@ export default {
 			// 是否拖动进度
 			progressDrag: false,
 			// 视频总长度
-			duration: 0
+			duration: 0,
+			screenHeight: 1334,
+			progressBottom: 0
 		};
 	},
 	watch: {
+		bottom(val){
+			this.progressBottom = val;
+			console.log("---",val);
+		},
 		play(val) {
 			if (val) {
 				setTimeout(() => {
@@ -78,33 +97,40 @@ export default {
 			}
 		},
 		progress(val) {
-			if (this.play) {
-				if (val == 0) {
-					this.progressDrag = true;
-				} else {
-					this.schedule = val;
-				}
+			if (val == 1) {
+				this.progressDrag = true;
+			} else {
+				this.progressDrag = false;
 			}
 		},
 		progressValue(val) {
 			if (this.play) {
-				this.schedule = val;
-				this.progressDrag = false;
-				this.videoCtx.seek(this.duration * (val / 100));
+				this.schedule = val * 750;
+				this.videoCtx.seek(this.duration * val);
 			}
 		}
 	},
+	created() {
+		console.log(this.bottom);
+		this.progressBottom = this.bottom;
+	},
 	mounted() {
+		
+		let systemInfo = uni.getSystemInfoSync();
+		this.screenHeight = systemInfo.windowHeight;
 		this.videoCtx = uni.createVideoContext(`video_${this.src}`, this);
 		if(this.play){
-			this.playState = 2000;
+			setTimeout(() => {
+				this.videoCtx.play();
+				this.playState = 2000;
+			}, 200);
 		}
 	},
 	methods: {
 		onScheduleChange(e) {
 			this.duration = e.detail.duration;
 			if (!this.progressDrag) {
-				this.schedule = (e.detail.currentTime / e.detail.duration) * 100;
+				this.schedule = (parseFloat(e.detail.currentTime) / e.detail.duration) * 750;
 			}
 		},
 		onPlay() {
@@ -122,6 +148,9 @@ export default {
 		// 视频进入缓冲中
 		onWaiting() {
 			this.playState = 3000;
+		},
+		onError(e){
+			console.log("视频播放出错", e);
 		}
 	}
 };
@@ -131,30 +160,44 @@ export default {
 @import '@/style/mixin.scss';
 .video_box {
 	position: relative;
+	width: 750rpx;
+}
+.bottom_mask {
+	position: absolute;
+	left: 0rpx;
+	bottom: 0rpx;
+	right: 0rpx;
+	height: 300rpx;
+	width: 750rpx;
+	background-image: linear-gradient(to bottom, rgba(0,0,0,0) , rgba(0,0,0,0.7)); 
 }
 .video_file {
 	width: 750rpx;
-	height: calc(100vh - var(--window-bottom));
 }
 .play_schedule {
 	position: absolute;
 	bottom: 6rpx;
 	left: 0;
+	height: 16rpx;
+	width: 750rpx;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+}
+.schedule_bg {
+	position: absolute;
+	top: 7rpx;
+	left: 0;
+	right: 0;
 	height: 2rpx;
-	width: 100%;
-	background-color: rgba(255, 255, 255, 0.2);
-	z-index: 3;
+	background-color: rgba(255, 255, 255, 0.3);
 }
 .schedule {
 	background-color: #fff;
 	height: 2rpx;
-	width: 0%;
 	position: relative;
 }
 .progress_drag_dot {
-	position: absolute;
-	right: -8rpx;
-	top: -6rpx;
 	width: 16rpx;
 	height: 16rpx;
 	border-radius: 50%;
@@ -164,8 +207,8 @@ export default {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 100%;
+	right: 0;
+	bottom: 0;
 	justify-content: center;
 	align-items: center;
 }

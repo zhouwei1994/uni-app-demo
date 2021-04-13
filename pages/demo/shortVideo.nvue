@@ -1,248 +1,592 @@
 <template>
-	<view class="page">
-		<nav-bar type="transparentFixed"></nav-bar>
-		<swiper class="video_swiper" vertical :skip-hidden-item-layout="true"  @change="onSwiperChange">
-			<swiper-item v-for="(item,index) of 5" :key="index">
-				<short-video
-					:play="swiperIndex == index"
-					src="http://v.weishi.qq.com/shg_1047_1047_0bf2vabpiaacamaltjoj4bpblkae6s7qf4ca.f20.mp4"
-					:index="index"
-					:progress="progress"
-					:progressValue="progressValue"
-				></short-video>
+    <view class="page">
+		<direction-swiper :style="{height: screenHeight + 'px'}" :list="tabData" :current="swiperIndex" @changeX="onChangeX" @changeY="onChangeY">
+			<template v-slot="{ item, childItem, index, childIndex }">
+				<short-video 
+				:play="item.playIndex == childIndex" 
+				:src="childItem.url" 
+				:poster="childItem.img" 
+				:bottom="progressBottom" 
+				:index="childIndex" 
+				:progress="progress" 
+				:progressValue="progressValue"></short-video>
 				<view class="content_bottom_box">
-					<view class="content_goods_info">
-						<image class="content_goods_info_image" src="../../static/demo/ic_home_shoppingcart.png" mode="aspectFit"></image>
-						<text class="content_goods_info_text">圣芙蕾雅 照烧猪排109g</text>
+					<view class="content_goods_info_box" v-if="childItem.goodsId && childItem.goodClose">
+						<image class="content_goods_info_image" :src="childItem.goodsHeadImg" mode="aspectFill"></image>
+						<view class="content_goods_info">
+							<text class="content_goods_info_name">{{ childItem.goodsTitle }}</text>
+							<view class="content_goods_info_price_box">
+								<text class="content_goods_info_price">{{ childItem.goodsPrice }}</text>
+								<text class="content_goods_info_market_price" v-if="childItem.goodsPriceShop">{{ childItem.goodsPriceShop }}</text>
+							</view>
+						</view>
+						<image class="content_goods_close" @click.stop="onCloseGood(index, childIndex)" src="../../static/demo/ic_close_white.png" mode="aspectFit"></image>
 					</view>
-					<text class="content_user_name">@德丽莎·阿波卡利斯</text>
-					<text class="content_description">口感非常好吃的猪排，天命独门秘方，让大家垂涎欲滴~</text>
+					<text class="content_user_name">{{ childItem.anchorName }}</text>
+					<text class="content_description">{{ childItem.title }}</text>
+					<!-- <view class="content_music_box">
+						<image class="icon_music" src="../../static/icon/demo/ic_video_music.png" mode=""></image>
+						<text class="content_music_name">88rising - i love you 3000</text>
+					</view> -->
+					<view :style="{ height: bottomBlackLineHeight + 'rpx' }"></view>
 				</view>
 				<view class="right_suspended">
 					<view class="suspended_user_info">
-						<image class="suspended_user_info_image" src="../../static/demo/1.jpg" mode="aspectFill"></image>
-						<!-- <image class="suspended_user_info_icon" src="../../static/icon/theme/ic_attention.png" mode="aspectFit"></image> -->
+						<image class="suspended_user_info_image" @click="onPageJump('/pagesVideo/mainPage?objId=' + childItem.anchorId)" :src="childItem.anchorHeadImg" mode="aspectFill"></image>
+						<image class="suspended_user_info_icon" v-if="!childItem.followed" @click="onAttention(index,childIndex)" src="../../static/demo/ic_attention.png" mode="aspectFit"></image>
+					</view>
+					<view class="suspended_features_item" @click="onLike(index,childIndex)">
+						<image class="suspended_features_icon" v-if="childItem.liked" src="../../static/demo/ic_video_liked.png"  mode="aspectFit"></image>
+						<image class="suspended_features_icon" v-else src="../../static/demo/ic_video_like.png"
+							mode="aspectFit"></image>
+						<text class="suspended_features_text" v-if="childItem.likedCountStr && childItem.likedCountStr != '0'">{{ childItem.likedCountStr }}</text>
+						<text class="suspended_features_text">点赞</text>
+					</view>
+					<view class="suspended_features_item" @click="onCommentShow(childItem)">
+						<image class="suspended_features_icon" src="../../static/demo/ic_video_comment.png"
+							mode="aspectFit"></image>
+						<text class="suspended_features_text">评论</text>
+					</view>
+					<view class="suspended_features_item" @click="onCollect(index,childIndex)">
+						<image class="suspended_features_icon" v-if="childItem.collected" src="../../static/demo/ic_video_collected.png"  mode="aspectFit"></image>
+						<image class="suspended_features_icon" v-else src="../../static/demo/ic_video_collection.png"
+							mode="aspectFit"></image>
+						<text class="suspended_features_text">收藏</text>
 					</view>
 					<view class="suspended_features_item">
-						<image class="suspended_features_icon" src="../../static/demo/ic_video_phone.png" mode="aspectFit"></image>
-						<text class="suspended_features_text">电话</text>
-						<!-- <text class="suspended_features_dot">89</text> -->
-					</view>
-					<view class="suspended_features_item">
-						<image class="suspended_features_icon" src="../../static/demo/ic_video_weixin.png" mode="aspectFit"></image>
-						<text class="suspended_features_text">微信</text>
-						<!-- <text class="suspended_features_dot">89</text> -->
-					</view>
-					<view class="suspended_features_item" @click="shareShow = true">
-						<image class="suspended_features_icon" src="../../static/demo/ic_video_share.png" mode="aspectFit"></image>
-						<text class="suspended_features_text">分享</text>
-						<!-- <text class="suspended_features_dot">999</text> -->
+						<image class="suspended_features_icon" src="../../static/demo/ic_video_share.png"
+							mode="aspectFit"></image>
+						<text class="suspended_features_text">转发</text>
 					</view>
 				</view>
-			</swiper-item>
-		</swiper>
-		<view class="progress_drag" @touchstart="onTouchstart" @touchmove="onTouchmove" @touchcancel="onTouchcancel" @touchend="onTouchend"></view>
-	</view>
+			</template>
+		</direction-swiper>
+		<view class="top_mask"></view>
+		<view class="nav_operating_box" :style="{top: (statusBarHeight + 10) + 'px'}">
+			<view class="nav_tab_box">
+				<view class="nav_tab_item" v-for="(item,index) of tabData" :key="index">
+					<text class="nav_tab_item_text" :class="[index == swiperIndex ? 'nav_tab_active' : '']" @click="onTypeSelect(index)">{{ item.title }}</text>
+					<view class="nav_tab_item_text_line" v-if="index == swiperIndex"></view>
+				</view>
+			</view>
+			<image class="icon_search" src="../../static/demo/ic_search_white.png" mode="aspectFit"></image>
+		</view>
+		<navigation-video :bottomBlackLineHeight="bottomBlackLineHeight"></navigation-video>
+        <view class="progress_drag" :style="{bottom: (progressBottom - 6) + 'rpx'}" @touchstart="onTouchstart" @touchmove="onTouchmove" @touchcancel="onTouchcancel" @touchend="onTouchend"></view>
+    </view>
 </template>
 <script>
-import shortVideo from "@/components/module/short_video.vue"
-export default {
-	components:{
-		shortVideo,
-	},
-	data() {
-		return {
-			swiperIndex: 0,
-			progress: 10000,
-			progressValue: 0,
-			shareShow: false
-		};
-	},
-	//第一次加载
-	onLoad(e) {
-		// 隐藏原生的tabbar
-		// uni.hideTabBar();
-		let systemInfo = uni.getSystemInfoSync();
-		this.screenWidth = systemInfo.screenWidth;
-	},
-	//页面显示
-	onShow() {
-		// 隐藏原生的tabbar
-		// uni.hideTabBar();
-		// #ifdef APP-PLUS
-		uni.showModal({
-			title: "提示",
-			content: "APP体验效果不好，暂没做兼容",
-			showCancel:false
-		});
-		// #endif
-	},
-	//方法
-	methods: {
-		onPageJump(url) {
-			uni.navigateTo({
-				url: url
+    import shortVideo from '@/components/module/short_video.vue';
+    import directionSwiper from '@/components/common/direction-swiper';
+    import navigationVideo from '@/components/module/navigation-video.vue';
+    import { saveVideo } from '@/plugins/utils';
+    import { mapState, mapMutations } from 'vuex';
+	import $http from '@/config/requestConfig';
+	import {
+		judgeLogin
+	} from '@/config/login.js';
+    export default {
+        components: {
+            shortVideo,
+			navigationVideo,
+			directionSwiper
+        },
+        data() {
+            return {
+				tabData: [
+					{
+						title: "推荐",
+						key: "1006",
+						//滑动距离
+						translateY: 0,
+						swiperIndex: 0,
+						playIndex: 0,
+						list: [],
+						pageNo: 1,
+						pages: 1,
+						pageSize: 10,	
+					},
+					{
+						title: "关注",
+						key: "1005",
+						//滑动距离
+						translateY: 0,
+						swiperIndex: 0,
+						playIndex: 0,
+						list: [],
+						pageNo: 1,
+						pages: 1,
+						pageSize: 10,
+						emptyText: "您还没有关注，先去关注吧"
+					}
+				],
+				screenHeight: 1334,
+				screenWidth: 0,
+				statusBarHeight: 0,
+				progress: 10000,
+				progressValue: 0,
+				objId: '',
+				bottomBlackLineHeight: 0,
+				progressBottom: 98,
+				swiperIndex: 0,
+            };
+        },
+        computed: {
+        	...mapState(['userInfo'])
+        },
+		watch: {},
+        //第一次加载
+        onLoad(e) {
+            let systemInfo = uni.getSystemInfoSync();
+            this.screenWidth = systemInfo.screenWidth;
+            this.screenHeight = systemInfo.windowHeight;
+            this.statusBarHeight = systemInfo.statusBarHeight;
+			let iphoneXArr = ["iPhone X", "iPhone 11", "iPhone 11 Pro Max"];
+			if(iphoneXArr.includes(systemInfo.model)){
+				this.bottomBlackLineHeight = 40;
+				this.progressBottom = 138;
+			}
+        },
+        //页面显示
+        onShow() {
+			this.tabData.map((item,index) => {
+				if(index == this.swiperIndex){
+					item.playIndex = item.swiperIndex;
+					this.onChangeY(item);
+				} else {
+					item.playIndex = 99999;
+				}
+				return item;
+			});
+        },
+        //方法
+        methods: {
+            onPageJump(url) {
+                uni.navigateTo({
+                    url: url
+                });
+            },
+			onCommentShow(childItem){
+				// #ifdef APP-PLUS
+				uni.getSubNVueById('comment').show('slide-in-bottom', 300,()=>{
+					uni.$emit('showComment', childItem)
+				});
+				// #endif
+				// #ifndef APP-PLUS
+				uni.showToast({
+					title: "评论使用的是subnvue弹窗，暂只支持app",
+					icon: "none"
+				})
+				// #endif
+			},
+			onTypeSelect(index){
+				this.swiperIndex = index;
+			},
+            
+			// X轴滑动
+			onChangeX(index){
+				this.swiperIndex = index;
+			},
+			// Y轴滑动
+			onChangeY(item){
+				let len = item.list.length;
+				if(len - item.swiperIndex < 3 && item.pages >= item.pageNo && item.key == "1006"){
+					setTimeout(() => {
+						item.pages = 200;
+						let list = [
+							{"title":"清晰度调整到1080p 的","img":"https://qn.kemean.cn/file/3jiayun/202104/12/16182202059950nw0dcury8.jpg","url":"https://qn.kemean.cn/file/3jiayun/202104/12/1618220203901l91g4gc0v8.mp4","anchorId":5,"anchorName":"子不语-用户","anchorHeadImg":"http://qn.kemean.cn/file/3jiayun/202104/06/16176886958768klxd4j4hz.png","liked":true,"likedCountStr":"2","collected":false,"followed":false,"goodsTitle":null,"goodsId":0,"goodsPrice":null,"goodsPriceShop":null,"goodsHeadImg":null,"objId":16},
+							{"title":"测试，刚拍的视频","img":"http://qn.kemean.cn/file/3jiayun/202104/12/1618220019493x9q27w3gvt.jpg","url":"https://qn.kemean.cn/file/3jiayun/202104/12/1618220017480qng3bkdzc9.mp4","anchorId":5,"anchorName":"子不语-用户","anchorHeadImg":"http://qn.kemean.cn/file/3jiayun/202104/06/16176886958768klxd4j4hz.png","liked":false,"likedCountStr":"0","collected":false,"followed":false,"goodsTitle":null,"goodsId":0,"goodsPrice":null,"goodsPriceShop":null,"goodsHeadImg":null,"objId":15},
+							{"title":"没经过任何处理的","img":"http://qn.kemean.cn/file/3jiayun/202104/12/1618219915251i9bubs6vbj.jpg","url":"https://qn.kemean.cn/file/3jiayun/202104/12/16182199135044j9tts4a87.mp4","anchorId":5,"anchorName":"子不语-用户","anchorHeadImg":"http://qn.kemean.cn/file/3jiayun/202104/06/16176886958768klxd4j4hz.png","liked":true,"likedCountStr":"1","collected":false,"followed":false,"goodsTitle":null,"goodsId":0,"goodsPrice":null,"goodsPriceShop":null,"goodsHeadImg":null,"objId":14},
+							{"title":"哈哈","img":"http://qn.kemean.cn/file/3jiayun/202104/12/1618219819968zhisc51of5.jpg","url":"https://qn.kemean.cn/file/3jiayun/202104/12/1618219815750fwqrrfkxx3.mp4","anchorId":5,"anchorName":"子不语-用户","anchorHeadImg":"http://qn.kemean.cn/file/3jiayun/202104/06/16176886958768klxd4j4hz.png","liked":false,"likedCountStr":"0","collected":false,"followed":false,"goodsTitle":null,"goodsId":0,"goodsPrice":null,"goodsPriceShop":null,"goodsHeadImg":null,"objId":13},
+							{"title":"魔宫","img":"http://qn.kemean.cn/file/3jiayun/202104/12/16182195765791c14tlml8f.jpg","url":"https://qn.kemean.cn/file/3jiayun/202104/12/1618219576194g3iyoocjd4.mp4","anchorId":5,"anchorName":"子不语-用户","anchorHeadImg":"http://qn.kemean.cn/file/3jiayun/202104/06/16176886958768klxd4j4hz.png","liked":false,"likedCountStr":"0","collected":false,"followed":false,"goodsTitle":null,"goodsId":0,"goodsPrice":null,"goodsPriceShop":null,"goodsHeadImg":null,"objId":12},
+							{"title":"理解理解","img":"http://qn.kemean.cn/file/3jiayun/202104/12/1618219320610bw2k74jtqk.jpg","url":"https://qn.kemean.cn/file/3jiayun/202104/12/1618219319469l0qzt37bc1.mp4","anchorId":5,"anchorName":"子不语-用户","anchorHeadImg":"http://qn.kemean.cn/file/3jiayun/202104/06/16176886958768klxd4j4hz.png","liked":false,"likedCountStr":"0","collected":false,"followed":false,"goodsTitle":null,"goodsId":0,"goodsPrice":null,"goodsPriceShop":null,"goodsHeadImg":null,"objId":11},
+							{"title":"大魔鬼","img":"http://qn.kemean.cn/file/3jiayun/202104/12/16182121164950abz23eww8.jpg","url":"https://qn.kemean.cn/file/3jiayun/202104/12/1618212114296iwexj2z9tp.mp4","anchorId":5,"anchorName":"子不语-用户","anchorHeadImg":"http://qn.kemean.cn/file/3jiayun/202104/06/16176886958768klxd4j4hz.png","liked":true,"likedCountStr":"2","collected":false,"followed":false,"goodsTitle":"【演示数据】欧莱雅清润葡萄籽水嫩洁面乳125ml","goodsId":1346,"goodsPrice":"¥78.0","goodsPriceShop":"","goodsHeadImg":"http://qn.kemean.cn/upload/201912/16/d2cead460a8847a3a9b63ac42757e37c?imageView2/0/w/800","objId":10},
+							{"title":"哦哦哦哦哦哦哦哦哦","img":"http://qn.kemean.cn/file/3jiayun/202104/08/1617862092886k7ydaszsme.jpg","url":"https://qn.kemean.cn/upload/202104/09/1617948610327ex57uewe.mp4","anchorId":5,"anchorName":"子不语-用户","anchorHeadImg":"http://qn.kemean.cn/file/3jiayun/202104/06/16176886958768klxd4j4hz.png","liked":true,"likedCountStr":"1","collected":true,"followed":false,"goodsTitle":null,"goodsId":0,"goodsPrice":null,"goodsPriceShop":null,"goodsHeadImg":null,"objId":9},
+							{"title":"testTitle","img":"http://qn.kemean.cn/upload/202012/08/16074302835453y3lip8n.jpg","url":"https://qn.kemean.cn/upload/202104/09/1617948610327ex57uewe.mp4","anchorId":4,"anchorName":"188****5679","anchorHeadImg":"http://qn.kemean.cn/upload/202007/08/default_head_img.png","liked":true,"likedCountStr":"1","collected":false,"followed":false,"goodsTitle":"测试一下商品物流类型","goodsId":1773,"goodsPrice":"¥500.0","goodsPriceShop":"","goodsHeadImg":"http://qn.kemean.cn/3jiayun/202103/25/1616655654105zsdgp1o1.jpg?imageView2/0/w/800","objId":8},
+							{"title":"testTitle","img":"http://qn.kemean.cn/upload/202012/08/16074302835453y3lip8n.jpg","url":"https://qn.kemean.cn/upload/202104/09/1617948610327ex57uewe.mp4","anchorId":4,"anchorName":"188****5679","anchorHeadImg":"http://qn.kemean.cn/upload/202007/08/default_head_img.png","liked":false,"likedCountStr":"0","collected":false,"followed":false,"goodsTitle":null,"goodsId":0,"goodsPrice":null,"goodsPriceShop":null,"goodsHeadImg":null,"objId":7}];
+						list.map(item => {
+							item.goodClose = true;
+							return item;
+						});
+						if(item.pageNo == 1){
+							item.list = list;
+						} else {
+							item.list = list.concat(list);
+						}
+						if(list.length > 0){
+							item.pageNo += 1;
+						}
+						this.$set(this.tabData, this.swiperIndex, item);
+					}, 300);
+				}
+			},
+			// 收藏
+			onCollect(index, childIndex) {
+			    let item = this.tabData[index];
+			    let childItem = item.list[childIndex];
+				setTimeout(() => {
+					if (childItem.collected) {
+						uni.showToast({
+							title: "已取消收藏",
+							icon: "none"
+						});
+						item.list[childIndex].collected = false;
+						this.$set(this.tabData, index, item);
+					} else {
+						uni.showToast({
+							title: "收藏成功"
+						});
+						item.list[childIndex].collected = true;
+						this.$set(this.tabData, index, item);
+					}
+				}, 100);
+			},
+			// 点赞
+			onLike(index, childIndex){
+				let item = this.tabData[index];
+				let childItem = item.list[childIndex];
+				setTimeout(() => {
+					if (childItem.liked) {
+						uni.showToast({
+							title: "已取消点赞",
+							icon: "none"
+						});
+						item.list[childIndex].liked = false;
+						item.list[childIndex].likedCountStr = parseInt(childItem.likedCountStr) - 1;
+						this.$set(this.tabData, index, item);
+					} else {
+						uni.showToast({
+							title: "点赞成功"
+						});
+						item.list[childIndex].liked = true;
+						item.list[childIndex].likedCountStr = parseInt(childItem.likedCountStr) + 1;
+						this.$set(this.tabData, index, item);
+					}
+				}, 100);
+			},
+			// 
+			onAttention(index,childIndex){
+				let item = this.tabData[index];
+				let childItem = item.list[childIndex];
+				setTimeout(() => {
+					uni.showToast({
+						title: "关注成功"
+					});
+					item.list[childIndex].followed = true;
+					this.$set(this.tabData, index, item);
+				}, 100);
+			},
+            onTouchstart(e) {
+                this.progress = 0;
+            },
+            // 手指触摸后移动
+            onTouchmove(e) {
+                //手指当前坐标
+                // #ifdef APP-NVUE
+                const clientX = e.changedTouches[0].screenX;
+                // #endif
+                // #ifndef APP-NVUE
+                const clientX = e.changedTouches[0].clientX;
+                // #endif
+                this.progress = 1;
+                this.progressValue = clientX / this.screenWidth;
+				
+            },
+            // 手指触摸动作被打断，如来电提醒，弹窗
+            onTouchcancel(e) {
+                // #ifdef APP-NVUE
+                this.progressValue = e.changedTouches[0].screenX / this.screenWidth;
+                // #endif
+                // #ifndef APP-NVUE
+                this.progressValue = e.changedTouches[0].clientX / this.screenWidth;
+                // #endif
+				this.progress = 0;
+            },
+            // 手指触摸动作结束
+            onTouchend(e) {
+                // #ifdef APP-NVUE
+                this.progressValue = e.changedTouches[0].screenX / this.screenWidth;
+                // #endif
+                // #ifndef APP-NVUE
+                this.progressValue = e.changedTouches[0].clientX / this.screenWidth;
+                // #endif
+				this.progress = 0;
+            },
+            onCloseGood(index, childIndex) {
+				let item = this.tabData[index];
+				item.list[childIndex].goodClose = false;
+				this.$set(this.tabData, index, item);
+            },
+        },
+        //页面隐藏
+        onHide() {
+			this.tabData.map((item,index) => {
+				item.playIndex = 99999;
+				return item;
 			});
 		},
-		onSwiperChange(e){
-			this.swiperIndex = e.detail.current;
-		},
-		onTouchstart(e) {
-			this.progress = 0;
-		},
-		// 手指触摸后移动
-		onTouchmove(e) {
-			//手指当前坐标
-			// #ifdef APP-NVUE
-			const clientX = e.changedTouches[0].screenX;
-			// #endif
-			// #ifndef APP-NVUE
-			const clientX = e.changedTouches[0].clientX;
-			// #endif
-			this.progress = parseInt((clientX / this.screenWidth) * 100);
-		},
-		// 手指触摸动作被打断，如来电提醒，弹窗
-		onTouchcancel(e) {
-			// #ifdef APP-NVUE
-			this.progressValue = parseInt((e.changedTouches[0].screenX / this.screenWidth) * 100);
-			// #endif
-			// #ifndef APP-NVUE
-			this.progressValue = parseInt((e.changedTouches[0].clientX / this.screenWidth) * 100);
-			// #endif
-			
-		},
-		// 手指触摸动作结束
-		onTouchend(e) {
-			// #ifdef APP-NVUE
-			this.progressValue = parseInt((e.changedTouches[0].screenX / this.screenWidth) * 100);
-			// #endif
-			// #ifndef APP-NVUE
-			this.progressValue = parseInt((e.changedTouches[0].clientX / this.screenWidth) * 100);
-			// #endif
-		}
-	},
-	//页面隐藏
-	onHide() {},
-	//页面卸载
-	onUnload() {},
-	//页面下来刷新
-	onPullDownRefresh() {},
-	//页面上拉触底
-	onReachBottom() {},
-	//用户点击分享
-	onShareAppMessage(e) {
-		return this.wxShare();
-	}
-};
+        //页面卸载
+        onUnload() {},
+        //页面下来刷新
+        onPullDownRefresh() {},
+        //页面上拉触底
+        onReachBottom() {},
+    };
 </script>
 <style lang="scss" scoped>
-@import '@/style/mixin.scss';
-.page {
-	background-color: #1a1b20;
-	width: 750rpx;
-	position: relative;
-}
-.progress_drag {
-	position: absolute;
-	bottom: 0rpx;
-	left: 0;
-	width: 100%;
-	padding: 15rpx 0;
-	z-index: 5;
-}
-.video_swiper {
-	width: 750rpx;
-	height: calc(100vh - var(--window-bottom));
-}
-.video_file {
-	width: 750rpx;
-	height: 100%;
-}
-.content_bottom_box {
-	position: absolute;
-	bottom: 0rpx;
-	width: 750rpx;
-	padding: 0 0rpx 40rpx 0rpx;
-	background-image: linear-gradient(to, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4));
-	align-items: flex-start;
-	z-index: 1;
-}
-.content_goods_info {
-	height: 49rpx;
-	flex-direction: row;
-	align-items: center;
-	background-color: rgba($color: #000000, $alpha: 0.4);
-	padding: 0 12rpx;
-	margin: 0 182rpx 0 40rpx;
-}
-.content_goods_info_image {
-	width: 24rpx;
-	height: 24rpx;
-}
-.content_goods_info_text {
-	font-size: 24rpx;
-	color: #ffffff;
-	margin-left: 12rpx;
-}
-.content_user_name {
-	font-size: 36rpx;
-	color: #ffffff;
-	font-weight: bold;
-	margin: 70rpx 182rpx 0 40rpx;
-}
-.content_description {
-	font-size: 28rpx;
-	color: #ffffff;
-	margin: 30rpx 182rpx 0 40rpx;
-}
-.right_suspended {
-	position: absolute;
-	right: 30rpx;
-	bottom: 280rpx;
-	align-items: center;
-}
-.suspended_user_info {
-	position: relative;
-}
-.suspended_user_info_image {
-	width: 120rpx;
-	height: 120rpx;
-	border: solid 2rpx #ffffff;
-	border-radius: 50%;
-}
-.suspended_user_info_icon {
-	width: 40rpx;
-	height: 40rpx;
-	position: absolute;
-	bottom: 0;
-	left: 50%;
-	transform: translateX(-50%) translateY(50%);
-}
-.suspended_features_item {
-	align-items: center;
-	position: relative;
-	margin-top: 80rpx;
-}
-.suspended_features_icon {
-	width: 48rpx;
-	height: 48rpx;
-}
-.suspended_features_text {
-	margin-top: 12rpx;
-	font-size: 28rpx;
-	color: #ffffff;
-}
-.suspended_features_dot {
-	font-size: 20rpx;
-	color: #ffffff;
-	position: absolute;
-	top: -10rpx;
-	right: 0;
-	transform: translateX(50%);
-	height: 24rpx;
-	background-color: #ff3682;
-	border-radius: 12rpx;
-	line-height: 24rpx;
-	padding: 0 9rpx;
-}
+    @import '@/style/mixin.scss';
+	.top_mask {
+		position: fixed;
+		left: 0rpx;
+		top: 0rpx;
+		right: 0rpx;
+		height: 300rpx;
+		width: 750rpx;
+		background-image: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0)); 
+	}
+	.nav_operating_box {
+		position: fixed;
+		left: 0;
+		right: 0;
+		height: 88rpx;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0 30rpx;
+	}
+	.icon_live {
+		width: 48rpx;
+		height: 48rpx;
+	}
+	.icon_search {
+		width: 36rpx;
+		height: 36rpx;
+	}
+	.nav_tab_box {
+		flex-direction: row;
+	}
+	.nav_tab_item {
+		padding: 0 30rpx;
+		align-items: center;
+	}
+	.nav_tab_item_text {
+		color: #FFF;
+		opacity: 0.6;
+		font-size: 34rpx;
+	}
+	.nav_tab_item_text_line {
+		width: 40rpx;
+		height: 6rpx;
+		background-color: #ffffff;
+		border-radius: 3rpx;
+		margin-top: 10rpx;
+	}
+	.nav_tab_active {
+		opacity: 1;
+	}
+    .page {
+        background-color: #1a1b20;
+        width: 750rpx;
+        position: relative;
+    }
+
+    .progress_drag {
+        position: fixed;
+        bottom: 0rpx;
+        left: 0;
+        width: 750rpx;
+        padding: 15rpx 0;
+        z-index: 50;
+    }
+    .swiper_box {
+        width: 750rpx;
+		overflow: hidden;
+    }
+	.swiper_content_box {
+		width: 1500rpx;
+		flex-direction: row;
+	}
+	.swiper_container {
+		width: 750rpx;
+		position: relative;
+	}
+    .swiper_item {
+        position: absolute;
+        top: 1504rpx;
+        left: 0;
+        width: 750rpx;
+        height: 100vh;
+    }
+
+    .video_file {
+        width: 750rpx;
+        height: 100%;
+    }
+
+    .content_bottom_box {
+        position: absolute;
+        bottom: 0rpx;
+        width: 750rpx;
+        padding: 0 0rpx 160rpx 0rpx;
+        background-image: linear-gradient(to bottom, rgba(0,0,0,0) , rgba(0,0,0,0.7)); 
+        align-items: flex-start;
+        z-index: 1;
+    }
+
+    .content_goods_info_box {
+        padding: 12rpx 32rpx 12rpx 12rpx;
+        position: relative;
+        background-color: rgba(0, 0, 0, 0.4);
+        border-radius: 8rpx;
+        /* #ifndef APP-NVUE */
+        display: flex;
+        /* #endif */
+        flex-direction: row;
+        margin-left: 20rpx;
+    }
+
+    .content_goods_info_image {
+        width: 120rpx;
+        height: 120rpx;
+    }
+
+    .content_goods_info {
+        /* #ifndef APP-NVUE */
+        display: flex;
+        /* #endif */
+        flex-direction: column;
+        justify-content: space-between;
+        margin-left: 12rpx;
+        width: 250rpx;
+    }
+
+    .content_goods_close {
+        position: absolute;
+        width: 16rpx;
+        height: 16rpx;
+        top: 12rpx;
+        right: 12rpx;
+    }
+
+    .content_goods_info_name {
+        font-size: 24rpx;
+        color: #ffffff;
+        margin-left: 12rpx;
+		lines: 2;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		/* #ifndef APP-NVUE */
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		/* #endif */
+    }
+
+    .content_goods_info_price_box {
+        /* #ifndef APP-NVUE */
+        display: flex;
+        /* #endif */
+        flex-direction: row;
+    }
+
+    .content_goods_info_price {
+        font-size: 24rpx;
+        color: #ff403f;
+    }
+
+    .content_goods_info_market_price {
+        font-size: 24rpx;
+        color: #ffffff;
+        opacity: 0.6;
+        margin-left: 12rpx;
+    }
+
+    .content_user_name {
+        font-size: 36rpx;
+        color: #ffffff;
+        font-weight: bold;
+		margin: 32rpx 182rpx 0 32rpx;
+    }
+    .content_description {
+        font-size: 28rpx;
+        color: #ffffff;
+        margin: 12rpx 182rpx 0 32rpx;
+    }
+	.content_music_box {
+		margin: 12rpx 182rpx 0 32rpx;
+		align-items: center;
+		flex-direction: row;
+	}
+	.icon_music {
+		width: 22rpx;
+		height: 23rpx;
+	}
+	.content_music_name {
+		margin-left: 12rpx;
+		font-size: 28rpx;
+		color: #ffffff;
+	}
+    .right_suspended {
+        position: absolute;
+        right: 30rpx;
+        bottom: 200rpx;
+        align-items: center;
+        z-index: 5;
+    }
+
+    .suspended_user_info {
+        position: relative;
+		padding-bottom: 20rpx;
+    }
+    .suspended_user_info_image {
+        width: 80rpx;
+        height: 80rpx;
+        border: solid 2rpx #ffffff;
+        border-radius: 50%;
+    }
+
+    .suspended_user_info_icon {
+        width: 40rpx;
+        height: 40rpx;
+        position: absolute;
+        bottom: 0rpx;
+        left: 20rpx;
+    }
+
+    .suspended_features_item {
+        position: relative;
+        margin-top: 60rpx;
+        background-color: transparent;
+        /* #ifndef APP-NVUE */
+        display: flex;
+        /* #endif */
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .suspended_features_icon {
+        width: 48rpx;
+        height: 48rpx;
+    }
+
+    .suspended_features_text {
+        margin-top: 12rpx;
+        font-size: 28rpx;
+        color: #ffffff;
+        line-height: 30rpx;
+    }
+
+    .suspended_features_dot {
+        font-size: 20rpx;
+        color: #ffffff;
+        position: absolute;
+        top: 0rpx;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 24rpx;
+        background-color: red;
+        border-radius: 12rpx;
+        line-height: 24rpx;
+        padding: 0 9rpx;
+    }
 </style>

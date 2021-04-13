@@ -23,7 +23,17 @@
 			<view class="table_content">
 				<text>type</text>
 				<text>String</text>
-				<text>1000（默认值）靠下，2000 居中</text>
+				<text>bottom（默认值）靠下，center 居中, top 靠上</text>
+			</view>
+			<view class="table_content">
+				<text>offset</text>
+				<text>Number</text>
+				<text>偏移，type=bottom 朝上偏移，type=center无效， type=top 朝下偏移</text>
+			</view>
+			<view class="table_content">
+				<text>zIndex</text>
+				<text>Number</text>
+				<text>层级</text>
 			</view>
 			<view class="table_content">
 				<text>@change</text>
@@ -32,6 +42,12 @@
 			</view>
 		</view>
 		<view class="input_form_box">
+			<view class="input_box">
+				<view class="name required">上边弹窗</view>
+				<view class="select_info" @click="popupShow4 = true">
+					<text class="select">点击打开弹窗</text>
+				</view>
+			</view>
 			<view class="input_box">
 				<view class="name required">下边弹窗</view>
 				<view class="select_info" @click="popupShow = true">
@@ -50,6 +66,12 @@
 					<text class="select">点击打开弹窗</text>
 				</view>
 			</view>
+			<view class="input_box">
+				<view class="name required">弹窗偏移</view>
+				<view class="select_info" @click="popupShow5 = true">
+					<text class="select">点击打开弹窗</text>
+				</view>
+			</view>
 		</view>
 		<z-popup v-model="popupShow" @change="onChange">
 			<view class="popup_title">
@@ -61,7 +83,7 @@
 				弹窗内容
 			</view>
 		</z-popup>
-		<z-popup v-model="popupShow2" type="2000" @change="onChange">
+		<z-popup v-model="popupShow2" type="center" @change="onChange">
 			<view class="popup_box">
 				<view class="popup_title">
 					<text @click="popupShow2 = false">取消</text>
@@ -83,6 +105,30 @@
 				弹窗内容
 			</view>
 		</z-popup>
+		<z-popup v-model="popupShow4" type="top" @change="onChange">
+			<view class="popup_box">
+				<view class="popup_title">
+					<text @click="popupShow4 = false">取消</text>
+					<view>弹窗标题</view>
+					<text @click="popupShow4 = false">确定</text>
+				</view>
+				<view class="popup_content">
+					弹窗内容
+				</view>
+			</view>
+		</z-popup>
+		<z-popup v-model="popupShow5" type="top" :offset="55" :zIndex="1"  @change="onChange">
+			<view class="popup_box">
+				<view class="popup_title">
+					<text @click="popupShow5 = false">取消</text>
+					<view>我是故意被挡住的</view>
+					<text @click="popupShow5 = false">确定</text>
+				</view>
+				<view class="popup_content">
+					弹窗内容
+				</view>
+			</view>
+		</z-popup>
 	</view>
 </template>
 
@@ -97,6 +143,8 @@ export default {
 			popupShow: false,
 			popupShow2: false,
 			popupShow3: false,
+			popupShow4: false,
+			popupShow5: true,
 		};
 	},
 	//第一次加载
@@ -141,7 +189,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/style/mixin.scss';
 .popup_box {
-	width: 600rpx;
+	width: 100%;
 }
 .popup_title {
 	display: flex;

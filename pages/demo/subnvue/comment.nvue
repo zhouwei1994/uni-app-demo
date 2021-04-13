@@ -1,0 +1,269 @@
+<template>
+    <view class="comment_popup_box" :style="{height: (screenHeight * 0.8) + 'rpx'}" @click.stop="">
+		<view class="comment_popup_title">
+			<text class="comment_popup_title_text">2478条评论</text>
+		</view>
+		<view class="comment_popup_close" @click="onClose">
+			<image class="comment_popup_close_image" src="../../static/icon/ic_close.png" mode="aspectFit"></image>
+		</view>
+		<scroll-view scroll-y="true" class="comment_popup_scroll">
+			<view>
+				<view class="comment_item" v-for="(item,index) of 6" :key="index">
+					<image class="comment_item_image" src="../../static/icon/WeChatIcon.png" mode="aspectFill"></image>
+					<view class="comment_item_info">
+						<view class="name_like_box">
+							<text class="comment_item_name">采蘑菇的小红帽</text>
+							<view class="comment_item_like_box">
+								<image class="comment_item_like_image" src="../../static/icon/ic_comment_liked.png" mode="aspectFit"></image>
+								<text class="comment_item_like_text">6512</text>
+							</view>
+						</view>
+						<text class="comment_item_time">刚刚</text>
+						<text class="comment_item_content">主打中下铺，✨边路可补。✨脾气好性格好。时间多，✨双区星耀以下都有号...
+						</text>
+						<view class="unfold_comment_box">
+							<view class="unfold_comment_item" v-for="(childItem,childIndex) of 3" :key="childIndex">
+								<image class="unfold_comment_item_image" src="../../static/icon/WeChatIcon.png" mode="aspectFill"></image>
+								<view class="unfold_comment_item_info">
+									<text class="comment_item_name">采蘑菇的小红帽</text>
+									<text class="comment_item_time">刚刚</text>
+									<text class="comment_item_content">主打中下铺，✨边路可补。✨脾气好性格好。时间多，✨双区星耀以下都有号...
+									</text>
+									<text class="unfold_comment_item_reply">回复</text>
+								</view>
+							</view>
+						</view>
+						<view class="reply_unfold_box">
+							<text class="comment_item_reply">回复</text>
+							<view class="comment_item_unfold_box">
+								<text class="comment_item_unfold_text">展开2条回复</text>
+								<image class="comment_item_unfold_imgage" src="../../static/icon/ic_pull_down.png" mode="aspectFit"></image>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</scroll-view>
+		<view class="send_input_box" :style="{paddingBottom: bottomBlackLineHeight + 'rpx'}">
+			<view class="send_box">
+				<input class="send_input" type="text" placeholder="说说您的想法" />
+				<text class="send_button">发表</text>
+			</view>
+		</view>
+    </view>
+</template>
+
+<script>
+	//#ifdef APP-NVUE
+	const animation = weex.requireModule('animation')
+	//#endif
+    export default {
+		data() {
+			return {
+				screenWidth: 750,
+				screenHeight: 1334,
+				statusBarHeight: 0,
+				bottomBlackLineHeight: 0
+			}
+		},
+		created() {
+			let systemInfo = uni.getSystemInfoSync();
+			this.screenWidth = systemInfo.screenWidth;
+			this.screenHeight = this.getPxRpx(systemInfo.screenHeight);
+			this.statusBarHeight = systemInfo.statusBarHeight;
+			let iphoneXArr = ["iPhone X", "iPhone 11", "iPhone 11 Pro Max"];
+			if(iphoneXArr.includes(systemInfo.model)){
+				this.bottomBlackLineHeight = 40;
+			}
+		},
+        methods: {
+			getPxRpx(px){
+				let ratio = 750 / this.screenWidth;
+				return ratio * px;
+			},
+			onClose(){
+				uni.getSubNVueById('comment').hide("slide-out-bottom", 300);
+			}
+        }
+    }
+</script>
+
+<style  lang="scss" scoped>
+	.comment_popup_box {
+		background-color: #FFF;
+		border-top-left-radius: 40rpx;
+		border-top-right-radius: 40rpx;
+		position: relative;
+		flex-direction: column;
+	}
+	.comment_popup_title {
+		height: 88rpx;
+		align-items: center;
+		justify-content: center;
+		border-bottom-color: #e5e5e5;
+		border-bottom-width: 2rpx;
+	}
+	.comment_popup_title_text {
+		font-size: 36rpx;
+		color: #333333;
+	}
+	.comment_popup_close {
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 88rpx;
+		height: 88rpx;
+		align-items: center;
+		justify-content: center;
+	}
+	.comment_popup_close_image {
+		height: 24rpx;
+		width: 24rpx;
+	}
+	.comment_popup_scroll {
+		flex: 1;
+	}
+	.comment_item {
+		padding-left: 32rpx;
+		flex-direction: row;
+	}
+	.comment_item_image {
+		width: 64rpx;
+		height: 64rpx;
+		border-radius: 32rpx;
+		margin-top: 32rpx;
+	}
+	.comment_item_info {
+		width: 598rpx;
+		margin-left: 34rpx;
+		border-color: #e5e5e5;
+		border-bottom-width: 2rpx;
+		padding: 32rpx 32rpx 32rpx 0;
+	}
+	.name_like_box {
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
+	.comment_item_name {
+		font-size: 28rpx;
+		color: #333333;
+	}
+	.comment_item_like_box {
+		flex-direction: row;
+		align-items: center;
+	}
+	.comment_item_like_image {
+		width: 32rpx;
+		height: 32rpx;
+	}
+	.comment_item_like_text {
+		font-size: 24rpx;
+		color: #333333;
+		margin-left: 15rpx;
+	}
+	.comment_item_time {
+		margin-top: 2rpx;
+		font-size: 24rpx;
+		color: #999999;
+	}
+	.comment_item_content {
+		margin-top: 24rpx;
+		font-size: 28rpx;
+		color: #333333;
+	}
+	.unfold_comment_box {
+		width: 598rpx;
+		background-color: #f7f7f7;
+		border-radius: 8rpx;
+	}
+	.unfold_comment_item {
+		flex-direction: row;
+		padding-left: 24rpx;
+	}
+	.unfold_comment_item_image {
+		width: 64rpx;
+		height: 64rpx;
+		border-radius: 32rpx;
+		margin-top: 24rpx;
+	}
+	.unfold_comment_item_info {
+		margin-left: 24rpx;
+		width: 486rpx;
+		padding: 24rpx 24rpx 24rpx 0;
+		border-color: #e5e5e5;
+		border-bottom-width: 2rpx;
+	}
+	.reply_unfold_box {
+		margin-top: 24rpx;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
+	.comment_item_reply {
+		width: 80rpx;
+		height: 40rpx;
+		background-color: #f7f7f7;
+		border-radius: 29rpx;
+		font-size: 24rpx;
+		color: #999999;
+		text-align: center;
+		line-height: 40rpx;
+	}
+	.comment_item_unfold_box {
+		flex-direction: row;
+		align-items: center;
+		height: 40rpx;
+		background-color: #f7f7f7;
+		border-radius: 29rpx;
+		padding: 0 15rpx;
+	}
+	.comment_item_unfold_text {
+		font-size: 24rpx;
+		color: #999999;
+	}
+	.comment_item_unfold_imgage {
+		width: 24rpx;
+		height: 24rpx;
+		margin-left: 5rpx;
+	}
+	.unfold_comment_item_reply {
+		width: 80rpx;
+		height: 40rpx;
+		background-color: #cccccc;
+		border-radius: 29rpx;
+		font-size: 24rpx;
+		color: #FFF;
+		text-align: center;
+		line-height: 40rpx;
+	}
+	.send_input_box {
+		background-color: #FFF;
+	}
+	.send_box {
+		height: 98rpx;
+		padding: 0 32rpx;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.send_input {
+		width: 474rpx;
+		height: 74rpx;
+		background-color: #f7f7f7;
+		border-radius: 52rpx;
+		padding: 0 30rpx;
+		font-size: 28rpx;
+		color: #999999;
+	}
+	.send_button {
+		width: 188rpx;
+		height: 74rpx;
+		background-color: #3a8542;
+		border-radius: 52rpx;
+		font-size: 28rpx;
+		color: #ffffff;
+		line-height: 74rpx;
+		text-align: center;
+	}
+</style>

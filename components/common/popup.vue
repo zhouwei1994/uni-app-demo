@@ -112,7 +112,7 @@
 						this.transform = "translateY(100%)";
 						setTimeout(() => {
 							this.popupTop = "inherit";
-							this.popupBottom = "inherit";
+							this.popupBottom = "0rpx";
 							this.maskTop = "0rpx";
 							this.maskBottom = "0rpx";
 						},400);
@@ -143,7 +143,7 @@
 						this.opacity = 0;
 						this.transform = "translateY(-100%)";
 						setTimeout(() => {
-							this.popupTop = "inherit";
+							this.popupTop = "0rpx";
 							this.popupBottom = "inherit";
 							this.maskTop = "0rpx";
 							this.maskBottom = "0rpx";
@@ -172,20 +172,15 @@
 		position: fixed;
 		max-width: 100%;
 		max-height: 100%;
-		min-height: 50upx;
+		min-height: 50rpx;
 		z-index: 501;
 		opacity: 0;
-		font-size: 28upx;
+		font-size: 28rpx;
 		transition: all 0.4s;
 
 		&.bottom {
-			left: 0upx;
-			/* #ifdef H5 */
-			bottom: var(--window-bottom);
-			/* #endif */
-			/* #ifndef H5 */
-			bottom: 0;
-			/* #endif */
+			left: 0rpx;
+			bottom: 0rpx;
 			min-width: 100%;
 			transform: translateY(100%);
 		}
@@ -196,7 +191,7 @@
 			transform: translateX(-50%) translateY(-50%);
 		}
 		&.top {
-			left: 0upx;
+			left: 0rpx;
 			top: 0rpx;
 			right: 0rpx;
 			min-width: 100%;

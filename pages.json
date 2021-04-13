@@ -306,7 +306,8 @@
 		{
 			"path": "pages/demo/shortVideo",
 			"style": {
-				"navigationBarTitleText": "防抖音滑动视频"
+				"navigationBarTitleText": "防抖音滑动视频",
+				"navigationBarTextStyle":"white"
 			}
 		}, 
 		{

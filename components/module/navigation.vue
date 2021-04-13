@@ -13,7 +13,7 @@
 			</view>
 		</view>
 		<view v-if="bg" class="footer_station"></view>
-		<z-popup v-model="popupShow" type="2000">
+		<z-popup v-model="popupShow" type="center">
 			<view class="popup_content">
 				<view>凸起导航解决方案，请看components/module/navigation.vue</view>
 				<view>和pages/demo/common.vue</view>

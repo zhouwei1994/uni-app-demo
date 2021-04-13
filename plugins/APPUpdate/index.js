@@ -22,10 +22,12 @@ export const getCurrentNo = function(callback) {
 	});
 }
 // 发起ajax请求获取服务端版本号
-const getServerNo = function(version,isPrompt = false, callback) {
+const getServerNo = function(version, isPrompt = false, callback) {
 	let httpData = {
 		version: version.versionCode,
-        versionName: version.versionName
+        versionName: version.versionName,
+		// setupPage参数说明（判断用户是不是从设置页面点击的更新，如果是设置页面点击的更新，有不要用静默更新了，不然用户点击没反应很奇怪的）
+		setupPage: isPrompt   
 	};
 	if (platform == "android") {
 		httpData.type = 1101;
@@ -48,11 +50,21 @@ const getServerNo = function(version,isPrompt = false, callback) {
 		 * | versionCode	 | y	    | int	    | 版本号        |
 		 * | versionName	 | y	    | String	| 版本名称      |
 		 * | versionInfo	 | y	    | String	| 版本信息      |
-		 * | forceUpdate	 | y	    | boolean	| 是否强制更新  |
+		 * | updateType	     | y	    | String	| forcibly = 强制更新, solicit = 弹窗确认更新, silent = 静默更新 |
 		 * | downloadUrl	 | y	    | String	| 版本下载链接（IOS安装包更新请放跳转store应用商店链接,安卓apk和wgt文件放文件下载链接）  |
 		 */
 		if (res && res.downloadUrl) {
-			callback && callback(res);
+			// 兼容之前的版本（updateType是新版才有的参数）
+			if(res.updateType){
+				callback && callback(res);
+			} else {
+				if(res.forceUpdate){
+					res.updateType = "forcibly";
+				} else {
+					res.updateType = "solicit";
+				}
+				callback && callback(res);
+			}
 		} else if (isPrompt) {
 			uni.showToast({
 				title: "暂无新版本",
@@ -64,86 +76,103 @@ const getServerNo = function(version,isPrompt = false, callback) {
 }
 // 从服务器下载应用资源包（wgt文件）
 const getDownload = function(data) {
-	let popupData = {
-		progress: true,
-		buttonNum: 2
-	};
-	if(data.forceUpdate){
-		popupData.buttonNum = 0;
-	}
 	let dtask;
-	let lastProgressValue = 0;
-	let popupObj = downloadPopup(popupData);
-    dtask = plus.downloader.createDownload(data.downloadUrl, {
-        filename: "_doc/update/"
-    }, function(download, status) {
-        if (status == 200) {
-            popupObj.change({
-                progressValue: 100,
-                progressTip:"正在安装文件...",
-                progress: true,
-                buttonNum: 0
-            });
-            plus.runtime.install(download.filename, {}, function() {
-                popupObj.change({
-                    contentText: "应用资源更新完成！",
-                    buttonNum: 1,
-                    progress: false
-                });
-            }, function(e) {
-                popupObj.cancel();
-                plus.nativeUI.alert("安装文件失败[" + e.code + "]：" + e.message);
-            });
-        } else {
-            popupObj.change({
-                contentText: "文件下载失败...",
-                buttonNum: 1,
-                progress: false
-            });
-        }
-    });
-    dtask.start();
-    dtask.addEventListener("statechanged", function(task, status) {
-        switch (task.state) {
-            case 1: // 开始
-                popupObj.change({
-                    progressValue:0,
-                    progressTip:"准备下载...",
-                    progress: true
-                });
-                break;
-            case 2: // 已连接到服务器  
-                popupObj.change({
-                    progressValue:0,
-                    progressTip:"开始下载...",
-                    progress: true
-                });
-                break;
-            case 3:
-                const progress = parseInt(task.downloadedSize / task.totalSize * 100);
-                if(progress - lastProgressValue >= 2){
-                    lastProgressValue = progress;
-                    popupObj.change({
-                        progressValue:progress,
-                        progressTip: "已下载" + progress + "%",
-                        progress: true
-                    });
-                }
-                break;
-        }
-    });
-    // 取消下载
-    popupObj.cancelDownload = function(){
-        dtask && dtask.abort();
-        uni.showToast({
-        	title: "已取消下载",
-        	icon:"none"
-        });
-    }
-    // 重启APP
-    popupObj.reboot = function(){
-        plus.runtime.restart();
-    }
+	if(data.updateType == 'forcibly' || data.updateType == 'solicit'){
+		let popupData = {
+			progress: true,
+			buttonNum: 2
+		};
+		if(data.updateType == 'forcibly'){
+			popupData.buttonNum = 0;
+		}
+		let lastProgressValue = 0;
+		let popupObj = downloadPopup(popupData);
+		dtask = plus.downloader.createDownload(data.downloadUrl, {
+			filename: "_doc/update/"
+		}, function(download, status) {
+			if (status == 200) {
+				popupObj.change({
+					progressValue: 100,
+					progressTip:"正在安装文件...",
+					progress: true,
+					buttonNum: 0
+				});
+				plus.runtime.install(download.filename, {}, function() {
+					popupObj.change({
+						contentText: "应用资源更新完成！",
+						buttonNum: 1,
+						progress: false
+					});
+				}, function(e) {
+					popupObj.cancel();
+					plus.nativeUI.alert("安装文件失败[" + e.code + "]：" + e.message);
+				});
+			} else {
+				popupObj.change({
+					contentText: "文件下载失败...",
+					buttonNum: 1,
+					progress: false
+				});
+			}
+		});
+		dtask.start();
+		dtask.addEventListener("statechanged", function(task, status) {
+			switch (task.state) {
+				case 1: // 开始
+					popupObj.change({
+						progressValue:0,
+						progressTip:"准备下载...",
+						progress: true
+					});
+					break;
+				case 2: // 已连接到服务器  
+					popupObj.change({
+						progressValue:0,
+						progressTip:"开始下载...",
+						progress: true
+					});
+					break;
+				case 3:
+					const progress = parseInt(task.downloadedSize / task.totalSize * 100);
+					if(progress - lastProgressValue >= 2){
+						lastProgressValue = progress;
+						popupObj.change({
+							progressValue:progress,
+							progressTip: "已下载" + progress + "%",
+							progress: true
+						});
+					}
+					break;
+			}
+		});
+		// 取消下载
+		popupObj.cancelDownload = function(){
+			dtask && dtask.abort();
+			uni.showToast({
+				title: "已取消下载",
+				icon:"none"
+			});
+		}
+		// 重启APP
+		popupObj.reboot = function(){
+			plus.runtime.restart();
+		}
+	} else if(data.updateType == "silent"){
+		dtask = plus.downloader.createDownload(data.downloadUrl, {
+			filename: "_doc/update/"
+		}, function(download, status) {
+			if (status == 200) {
+				plus.runtime.install(download.filename, {}, function() {
+					console.log("应用资源更新完成");
+				}, function(e) {
+					plus.nativeUI.alert("安装文件失败[" + e.code + "]：" + e.message);
+				});
+			} else {
+				plus.nativeUI.alert("文件下载失败...");
+			}
+		});
+		dtask.start();
+	}
 }
 // 文字换行
 function drawtext(text, maxWidth) {
@@ -262,6 +291,7 @@ function updatePopup(data, callback) {
 	const descriptionList = drawtext(data.versionInfo, viewContentWidth);
 	// 弹窗容器高度
 	let popupViewHeight = 80 + 20 + 20 + 90 + 10;
+	
 	let popupViewContentList = [{
 			src: $iconUrl,
 			id: "logo", 
@@ -320,7 +350,7 @@ function updatePopup(data, callback) {
 		}
 	});
 	
-	if(data.forceUpdate){
+	if(data.updateType == "forcibly"){
 		popupViewContentList.push({
 			tag: 'rect', //绘制底边按钮
 			rectStyles:{
@@ -352,25 +382,34 @@ function updatePopup(data, callback) {
 		});
 	} else {
 		// 绘制底边按钮
-		popupView.drawRect({
-			radius: "3px",
-			borderColor: "#f1f1f1",
-			borderWidth: "1px",
-		}, {
-			bottom: viewContentPadding + 'px',
-			left: viewContentPadding + "px",
-			width: (viewContentWidth - viewContentPadding) / 2 + "px",
-			height: "30px",
+		popupViewContentList.push({
+			tag: 'rect',
+			id: 'cancelBox',
+			rectStyles: {
+				radius: "3px",
+				borderColor: "#f1f1f1",
+				borderWidth: "1px",
+			},
+			position: {
+				bottom: viewContentPadding + 'px',
+				left: viewContentPadding + "px",
+				width: (viewContentWidth - viewContentPadding) / 2 + "px",
+				height: "30px",
+			}
 		});
-		// 绘制底边按钮
-		popupView.drawRect({
-			radius: "3px",
-			color: $mainColor,
-		}, {
-			bottom: viewContentPadding + 'px',
-			left: ((viewContentWidth - viewContentPadding) / 2 + viewContentPadding * 2) + "px",
-			width: (viewContentWidth - viewContentPadding) / 2 + "px",
-			height: "30px",
+		popupViewContentList.push({
+			tag: 'rect',
+			id: 'confirmBox',
+			rectStyles: {
+				radius: "3px",
+				color: $mainColor,
+			},
+			position: {
+				bottom: viewContentPadding + 'px',
+				left: ((viewContentWidth - viewContentPadding) / 2 + viewContentPadding * 2) + "px",
+				width: (viewContentWidth - viewContentPadding) / 2 + "px",
+				height: "30px",
+			}
 		});
 		popupViewContentList.push({
 			tag: 'font',
@@ -430,7 +469,7 @@ function updatePopup(data, callback) {
 		let maxLeft = popupViewWidth - viewContentPadding;
 		let buttonWidth = (viewContentWidth - viewContentPadding) / 2;
 		if (e.clientY > maxTop - 30 && e.clientY < maxTop) {
-			if(data.forceUpdate){
+			if(data.updateType == "forcibly"){
 				if(e.clientX > viewContentPadding && e.clientX < maxLeft){
 					// 立即升级
 					maskLayer.hide();
@@ -452,7 +491,7 @@ function updatePopup(data, callback) {
 			
 		}
 	});
-	if(!data.forceUpdate){
+	if(data.updateType == "solicit"){
 		// 点击遮罩层
 		maskLayer.addEventListener("click", function() { //处理遮罩层点击
 			maskLayer.hide();
@@ -815,22 +854,20 @@ function downloadPopup(data) {
 }
 export default function(isPrompt = false) {
 	getCurrentNo(versionInfo => {
-		getServerNo(versionInfo,isPrompt, res => {
-			if (res.forceUpdate) {
-				updatePopup(res, function() {
-					if (/\.wgt$/i.test(res.downloadUrl)) {
+		getServerNo(versionInfo, isPrompt, res => {
+			if (res.updateType == "forcibly" || res.updateType == "silent") {
+				if (/\.wgt$/i.test(res.downloadUrl)) {
+					getDownload(res);
+				} else if(/\.html$/i.test(res.downloadUrl)){
+					plus.runtime.openURL(res.downloadUrl);
+				} else {
+					if (platform == "android") {
 						getDownload(res);
-					} else if(/\.html$/i.test(res.downloadUrl)){
-						plus.runtime.openURL(res.downloadUrl);
 					} else {
-						if (platform == "android") {
-							getDownload(res);
-						} else {
-							plus.runtime.openURL(res.downloadUrl);
-						}
+						plus.runtime.openURL(res.downloadUrl);
 					}
-				});
-			} else {
+				}
+			} else if(res.updateType == "solicit"){
 				updatePopup(res, function() {
 					if (/\.wgt$/i.test(res.downloadUrl)) {
 						getDownload(res);

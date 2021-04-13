@@ -25,15 +25,15 @@
 		data() {
 			return {
 				screenHeight: 667,
-				show: true
+				show: false
 			};
 		},
 		created() {
 			if(uni.getStorageSync('guidePages') != 2){
+				let systemInfo = uni.getSystemInfoSync();
+				this.screenHeight = systemInfo.screenHeight;
 				this.show = true;
 			}
-            let systemInfo = uni.getSystemInfoSync();
-            this.screenHeight = systemInfo.screenHeight;
 		},
 		methods:{
 			onClose(){

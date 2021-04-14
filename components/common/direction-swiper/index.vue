@@ -1,9 +1,9 @@
 <template>
 	<view class="direction_swiper" ref="directionSwiper" @touchstart="onSwiperTouchstart" @touchmove="onSwiperTouchmove" @touchcancel="onSwiperTouchcancel" @touchend="onSwiperTouchend">
 		<view class="swiper_content_box" ref="swiperContent" :style="{width: (screenWidth * tabData.length) + 'px',  height: screenHeight + 'px' ,transform: 'translateX(' + translateX + 'px)', transition: 'transform ' + animationTime + 'ms ease'}">
-			<view class="swiper_container" v-for="(item,index) of tabData" :key="index" :ref="'swiperContainer' + item.key" :style="{ width:  screenWidth + 'px', height: (screenHeight * (item.list.length || 1)) + 'px', transform: 'translateY(' + item.translateY + 'px)', transition: 'transform ' + animationTime + 'ms ease'}">
+			<view class="swiper_container" v-for="(item,index) of tabData" :key="index" :ref="'swiperContainer' + item.key" :style="{ width:  screenWidth + 'px', height: (screenHeight * (item.list.length || 1)) + 'px', transform: 'translateY(' + swiperData[index].translateY + 'px)', transition: 'transform ' + animationTime + 'ms ease'}">
 				<view v-if="item.list && item.list.length > 0" :style="{ width:  screenWidth + 'px', height: (screenHeight * (item.list.length || 1)) + 'px'}">
-					<view v-for="(childItem,childIndex) of item.list" :key="childIndex" class="swiper_item " v-if="Math.abs(item.swiperIndex - childIndex) < 3" :style="{ top: (childIndex * screenHeight) + 'px', width:  screenWidth + 'px', height: screenHeight + 'px' }">
+					<view v-for="(childItem,childIndex) of item.list" :key="childIndex" class="swiper_item " v-if="Math.abs(swiperData[swiperIndex].swiperIndex - childIndex) < 3" :style="{ top: (childIndex * screenHeight) + 'px', width:  screenWidth + 'px', height: screenHeight + 'px' }">
 						<slot :item="item" :childItem="childItem" :index="index" :childIndex="childIndex"></slot>
 					</view>
 				</view>
@@ -49,6 +49,7 @@
 				currentX: 0,
 				contentTranslateX: 0,
 				tabData: [],
+				swiperData: [],
 				animationTime: 0,
 				animationDirection: "Y",
 				screenHeight: 0,
@@ -68,27 +69,31 @@
 			this.screenHeight = systemInfo.screenHeight;
 			this.$nextTick(() => {
 				this.getContainerWidthHeight();
-				
 			});
+			let swiperData = [];
 			if(this.list && this.list.length > 0){
 				this.list.forEach(item => {
-					if(item.key){
+					if(item.key && item.list){
 						let objectData = Object.assign({
-							//滑动距离
-							translateY: 0,
-							swiperIndex: 0,
-							playIndex: 0,
 							list: [],
 						}, item);
 						this.tabData.push(objectData);
+						swiperData.push({
+							//滑动距离
+							translateY: 0,
+							swiperItemIndex: 0,
+							length: item.list.length || 0,
+							key: item.key
+						});
 					} else {
 						uni.showToast({
-							title: "【list】参数没有key",
+							title: "参数没有key或list",
 							icon: "none"
 						});
 					}
 				});
 			}
+			this.swiperData = swiperData;
 		},
 		watch: {
 			list(val){
@@ -96,13 +101,8 @@
 				if(val && val.length > 0){
 					val.forEach((item,index) => {
 						if(item.key){
-							let oldData = this.tabData[index];
-							tabData.push({
-								...item,
-								translateY: oldData.translateY,
-								swiperIndex: oldData.swiperIndex,
-								playIndex: oldData.playIndex,
-							});
+							tabData.push(item);
+							this.swiperData[index].length = item.list.length || 0;
 						} else {
 							uni.showToast({
 								title: "【list】参数没有key",
@@ -112,7 +112,6 @@
 					});
 				}
 				this.tabData = tabData;
-				this.$forceUpdate();
 			},
 			current(val){
 				this.onType(val);
@@ -120,16 +119,6 @@
 		},
         //方法
         methods: {
-			show(){
-				this.tabData.map((item,index) => {
-					if(index == this.swiperIndex){
-						item.playIndex = item.swiperIndex;
-					} else {
-						item.playIndex = 99999;
-					}
-					return item;
-				});
-			},
 			// 获取内容的高度
 			getContainerWidthHeight(){
 				// #ifdef APP-NVUE
@@ -176,32 +165,25 @@
 				// #endif
 			},
             onChangeY() {
-				this.tabData.map((item,index) => {
-					if(index == this.swiperIndex){
-						item.playIndex = item.swiperIndex;
-						this.$emit("changeY", item);
-					} else {
-						item.playIndex = 99999;
-					}
-					return item;
+				this.$emit("changeY", {
+					...this.tabData[this.swiperIndex],
+					...this.swiperData[this.swiperIndex],
 				});
             },
 			setAnimationY(translateY, animationTime, indexChange){
 				this.animationTime = animationTime;
-				let item = this.tabData[this.swiperIndex];
-				item.translateY = translateY;
+				let swiperItem = this.swiperData[this.swiperIndex];
+				swiperItem.translateY = translateY;
 				if(indexChange){
-					if(indexChange == "less" && item.swiperIndex > 0){
-						item.swiperIndex -= 1;
-						item.playIndex = item.swiperIndex;
-					} else if(indexChange == "plus" && item.swiperIndex < item.list.length - 1){
-						item.swiperIndex += 1;
-						item.playIndex = item.swiperIndex;
+					if(indexChange == "less" && swiperItem.swiperItemIndex > 0){
+						swiperItem.swiperItemIndex -= 1;
+					} else if(indexChange == "plus" && swiperItem.swiperItemIndex < swiperItem.length - 1){
+						swiperItem.swiperItemIndex += 1;
 					}
 				}
-				this.$set(this.tabData, this.swiperIndex, item);
+				this.$set(this.swiperData, this.swiperIndex, swiperItem);
 				// #ifdef APP-NVUE
-				let swiperContainer = this.$refs['swiperContainer' + item.key];
+				let swiperContainer = this.$refs['swiperContainer' + swiperItem.key];
 				if(swiperContainer){
 					if(Array.isArray(swiperContainer)){
 						swiperContainer = swiperContainer[0];
@@ -226,12 +208,18 @@
 					if(indexChange == "less" && this.swiperIndex > 0){
 						this.swiperIndex -= 1;
 						this.contentTranslateX = translateX;
-						this.$emit("changeX", this.swiperIndex);
+						this.$emit("changeX", {
+							swiperIndex: this.swiperIndex,
+							...this.swiperData[this.swiperIndex]
+						});
 						this.onChangeY();
-					} else if(indexChange == "plus" && this.swiperIndex < this.tabData.length - 1){
+					} else if(indexChange == "plus" && this.swiperIndex < this.swiperData.length - 1){
 						this.swiperIndex += 1;
 						this.contentTranslateX = translateX;
-						this.$emit("changeX", this.swiperIndex);
+						this.$emit("changeX", {
+							swiperIndex: this.swiperIndex,
+							...this.swiperData[this.swiperIndex]
+						});
 						this.onChangeY();
 					}
 				}
@@ -277,8 +265,8 @@
                     let startTime = new Date().getTime();
                     this.startTime = startTime;
                     lastTime = startTime;
-					if(this.tabData[this.swiperIndex]){
-						this.currentY = this.tabData[this.swiperIndex].translateY;
+					if(this.swiperData[this.swiperIndex]){
+						this.currentY = this.swiperData[this.swiperIndex].translateY;
 					} else {
 						this.currentY = 0;
 					}
@@ -303,16 +291,15 @@
                     const differenceX = this.touchStartX - clientX;
                     let currentTime = new Date().getTime();
                     if(Math.abs(differenceY) > Math.abs(differenceX)){
-						let item = this.tabData[this.swiperIndex];
-						let videoLength = item.list.length;
+						let item = this.swiperData[this.swiperIndex];
 						//判断最终滑动方向Y轴
 						if (differenceY < 0) {
-							if(item.swiperIndex > 0){
+							if(item.swiperItemIndex > 0){
 								this.animationDirection = "Y";
 								this.setAnimationY(this.currentY + Math.abs(differenceY), 0);
 							}
 						} else {
-							if(item.swiperIndex < (videoLength - 1)){
+							if(item.swiperItemIndex < (item.length - 1)){
 								this.animationDirection = "Y";
 								this.setAnimationY(this.currentY - differenceY, 0);
 							}
@@ -325,7 +312,7 @@
 								this.setAnimationX(this.currentX + Math.abs(differenceX), 0);
 							}
 						} else {
-							if(this.swiperIndex < this.tabData.length - 1){ 
+							if(this.swiperIndex < this.swiperData.length - 1){ 
 								this.animationDirection = "X";
 								this.setAnimationX(this.currentX - Math.abs(differenceX), 0);
 							}

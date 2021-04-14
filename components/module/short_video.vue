@@ -32,30 +32,29 @@
 </template>
 
 <script>
+	import { mapState, mapMutations } from 'vuex';
 export default {
 	props: {
 		src: {
 			type: String,
 			default: ''
 		},
-		play: {
-			type: Boolean,
-			default: false
+		objId: {
+			default: ""
 		},
 		poster: {
 			//视频封面的图片
 			type: String,
 			default: ''
 		},
-		progress: {
+		screenHeight: {
 			type: Number,
-			default: 0
+			default: function(){
+				return 1334
+			}
 		},
-		progressValue: {
+		progressBottom: {
 			type: Number,
-			default: 0
-		},
-		bottom: {
 			default: function(){
 				return 88
 			}
@@ -71,18 +70,15 @@ export default {
 			// 是否拖动进度
 			progressDrag: false,
 			// 视频总长度
-			duration: 0,
-			screenHeight: 1334,
-			progressBottom: 0
+			duration: 0
 		};
 	},
+	computed: {
+		...mapState(['videoPlayId'])
+	},
 	watch: {
-		bottom(val){
-			this.progressBottom = val;
-			console.log("---",val);
-		},
-		play(val) {
-			if (val) {
+		videoPlayId(val) {
+			if (val == this.objId) {
 				setTimeout(() => {
 					this.videoCtx.play();
 					this.playState = 2000;
@@ -95,36 +91,34 @@ export default {
 					this.schedule = 0;
 				},100);
 			}
-		},
-		progress(val) {
-			if (val == 1) {
-				this.progressDrag = true;
-			} else {
-				this.progressDrag = false;
-			}
-		},
-		progressValue(val) {
-			if (this.play) {
-				this.schedule = val * 750;
-				this.videoCtx.seek(this.duration * val);
-			}
 		}
 	},
-	created() {
-		console.log(this.bottom);
-		this.progressBottom = this.bottom;
-	},
 	mounted() {
-		
-		let systemInfo = uni.getSystemInfoSync();
-		this.screenHeight = systemInfo.windowHeight;
 		this.videoCtx = uni.createVideoContext(`video_${this.src}`, this);
-		if(this.play){
+		if(this.videoPlayId == this.objId){
 			setTimeout(() => {
 				this.videoCtx.play();
 				this.playState = 2000;
 			}, 200);
 		}
+		let throttling = true;
+		uni.$on("videoProgress", res => {
+			if(throttling){
+				throttling = false;
+				setTimeout(() => {
+					throttling = true;
+					if (res.progress == 1) {
+						this.progressDrag = true;
+					} else {
+						this.progressDrag = false;
+					}
+					if (this.videoPlayId == this.objId && res.progressValue) {
+						this.schedule = res.progressValue * 750;
+						this.videoCtx.seek(this.duration * res.progressValue);
+					}
+				}, 100);
+			}
+		});
 	},
 	methods: {
 		onScheduleChange(e) {

@@ -1,15 +1,14 @@
 <template>
     <view class="page">
 		<direction-swiper :style="{height: screenHeight + 'px'}" :list="tabData" :current="swiperIndex" @changeX="onChangeX" @changeY="onChangeY">
-			<template v-slot="{ item, childItem, index, childIndex }">
+			<template v-slot="{ item, childItem, index, childIndex, playId }">
 				<short-video 
-				:play="item.playIndex == childIndex" 
+				:objId="childItem.objId" 
 				:src="childItem.url" 
 				:poster="childItem.img" 
-				:bottom="progressBottom" 
-				:index="childIndex" 
-				:progress="progress" 
-				:progressValue="progressValue"></short-video>
+				:progressBottom="childItem.progressBottom" 
+				:screenHeight="childItem.screenHeight"
+				:index="childIndex"></short-video>
 				<view class="content_bottom_box">
 					<view class="content_goods_info_box" v-if="childItem.goodsId && childItem.goodClose">
 						<image class="content_goods_info_image" :src="childItem.goodsHeadImg" mode="aspectFill"></image>
@@ -129,6 +128,7 @@
 				bottomBlackLineHeight: 0,
 				progressBottom: 98,
 				swiperIndex: 0,
+				currentVideoId: ""
             };
         },
         computed: {
@@ -149,18 +149,11 @@
         },
         //页面显示
         onShow() {
-			this.tabData.map((item,index) => {
-				if(index == this.swiperIndex){
-					item.playIndex = item.swiperIndex;
-					this.onChangeY(item);
-				} else {
-					item.playIndex = 99999;
-				}
-				return item;
-			});
+			this.setVideoPlayId(this.currentVideoId);
         },
         //方法
         methods: {
+			...mapMutations(["setVideoPlayId"]),
             onPageJump(url) {
                 uni.navigateTo({
                     url: url
@@ -182,15 +175,21 @@
 			onTypeSelect(index){
 				this.swiperIndex = index;
 			},
-            
 			// X轴滑动
-			onChangeX(index){
-				this.swiperIndex = index;
+			onChangeX(data){
+				this.swiperIndex = data.swiperIndex;
+				if(this.tabData[data.swiperIndex].list && this.tabData[data.swiperIndex].list.length > 0){
+					this.currentVideoId = this.tabData[data.swiperIndex].list[data.swiperItemIndex].objId;
+					this.setVideoPlayId(this.currentVideoId);
+				} else {
+					this.currentVideoId = "";
+					this.setVideoPlayId("");
+				}
 			},
 			// Y轴滑动
 			onChangeY(item){
 				let len = item.list.length;
-				if(len - item.swiperIndex < 3 && item.pages >= item.pageNo && item.key == "1006"){
+				if(len - item.swiperItemIndex < 3 && item.pages >= item.pageNo && item.key == "1006"){
 					setTimeout(() => {
 						item.pages = 200;
 						let list = [
@@ -206,9 +205,15 @@
 							{"title":"testTitle","img":"http://qn.kemean.cn/upload/202012/08/16074302835453y3lip8n.jpg","url":"https://qn.kemean.cn/upload/202104/09/1617948610327ex57uewe.mp4","anchorId":4,"anchorName":"188****5679","anchorHeadImg":"http://qn.kemean.cn/upload/202007/08/default_head_img.png","liked":false,"likedCountStr":"0","collected":false,"followed":false,"goodsTitle":null,"goodsId":0,"goodsPrice":null,"goodsPriceShop":null,"goodsHeadImg":null,"objId":7}];
 						list.map(item => {
 							item.goodClose = true;
+							// 进度条位置和视频高度在微信小程序必须通过list数据带到视频组件里面去
+							item.progressBottom = this.progressBottom;
+							item.screenHeight = this.screenHeight;
 							return item;
 						});
 						if(item.pageNo == 1){
+							// 设置当前播放id
+							this.currentVideoId = list[0].objId;
+							this.setVideoPlayId(this.currentVideoId);
 							item.list = list;
 						} else {
 							item.list = list.concat(list);
@@ -218,6 +223,10 @@
 						}
 						this.$set(this.tabData, this.swiperIndex, item);
 					}, 300);
+				} else if(item.list.length > 0){
+					// 设置当前播放id
+					this.currentVideoId = item.list[item.swiperItemIndex].objId;
+					this.setVideoPlayId(this.currentVideoId);
 				}
 			},
 			// 收藏
@@ -277,7 +286,9 @@
 				}, 100);
 			},
             onTouchstart(e) {
-                this.progress = 0;
+				uni.$emit("videoProgress", {
+					progress: 1
+				});
             },
             // 手指触摸后移动
             onTouchmove(e) {
@@ -288,9 +299,10 @@
                 // #ifndef APP-NVUE
                 const clientX = e.changedTouches[0].clientX;
                 // #endif
-                this.progress = 1;
-                this.progressValue = clientX / this.screenWidth;
-				
+				uni.$emit("videoProgress", {
+					progress: 1,
+					progressValue: clientX / this.screenWidth,
+				});
             },
             // 手指触摸动作被打断，如来电提醒，弹窗
             onTouchcancel(e) {
@@ -300,7 +312,9 @@
                 // #ifndef APP-NVUE
                 this.progressValue = e.changedTouches[0].clientX / this.screenWidth;
                 // #endif
-				this.progress = 0;
+				uni.$emit("videoProgress", {
+					progress: 0
+				});
             },
             // 手指触摸动作结束
             onTouchend(e) {
@@ -310,7 +324,9 @@
                 // #ifndef APP-NVUE
                 this.progressValue = e.changedTouches[0].clientX / this.screenWidth;
                 // #endif
-				this.progress = 0;
+				uni.$emit("videoProgress", {
+					progress: 0
+				});
             },
             onCloseGood(index, childIndex) {
 				let item = this.tabData[index];
@@ -320,10 +336,7 @@
         },
         //页面隐藏
         onHide() {
-			this.tabData.map((item,index) => {
-				item.playIndex = 99999;
-				return item;
-			});
+			this.setVideoPlayId("");
 		},
         //页面卸载
         onUnload() {},

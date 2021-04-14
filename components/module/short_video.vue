@@ -2,8 +2,8 @@
 	<view class="video_box" :style="{ height: screenHeight + 'px'}">
 		<video
 			class="video_file"
-			:id="`video_${src}`"
-			:ref="`video_${src}`"
+			:id="`video_${objId}`"
+			:ref="`video_${objId}`"
 			:src="src"
 			:poster="poster"
 			loop
@@ -12,7 +12,7 @@
 			:show-center-play-btn="false"
 			:controls="false"
 			:enable-progress-gesture="false"
-			:autoplay="play"
+			:autoplay="videoPlayId == objId"
 			:style="'height: '+screenHeight + 'px'"
 			@timeupdate="onScheduleChange"
 			@waiting="onWaiting"
@@ -70,7 +70,8 @@ export default {
 			// 是否拖动进度
 			progressDrag: false,
 			// 视频总长度
-			duration: 0
+			duration: 0,
+			videoCtx: null
 		};
 	},
 	computed: {
@@ -94,7 +95,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.videoCtx = uni.createVideoContext(`video_${this.src}`, this);
+		this.videoCtx = uni.createVideoContext(`video_${this.objId}`, this);
 		if(this.videoPlayId == this.objId){
 			setTimeout(() => {
 				this.videoCtx.play();

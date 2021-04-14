@@ -43,7 +43,7 @@
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>瀑布流列表</text>
 		</view>
-		<view class="nav_list" @click="onPageJump('/pages/demo/shortVideo')">
+		<view class="nav_list" @click="onPageJump('/pages/shortVideo')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>防抖音滑动视频（进度调整，丝滑流畅，支持app，小程序、H5)</text>
 		</view>

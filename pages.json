@@ -304,10 +304,29 @@
 			}
 		},
 		{
-			"path": "pages/demo/shortVideo",
+			"path": "pages/shortVideo",
 			"style": {
 				"navigationBarTitleText": "防抖音滑动视频",
-				"navigationBarTextStyle":"white"
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white",
+				"app-plus": {
+					"bounce": "none",
+					"titleNView": false,
+					"subNVues": [{
+						"id": "comment",
+						"path": "pages/subnvue/comment",
+						"type": "popup",
+						"style": {
+							"height": "80%",
+							"dock": "bottom",
+							"position": "dock",
+							"bottom": "0",
+							"background": "transparent",
+							"zindex": 10,
+							"mask": "rgba(0,0,0,0.4)"
+						}
+					}]
+				}
 			}
 		}, 
 		{

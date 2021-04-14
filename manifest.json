@@ -9,8 +9,8 @@
             "src" : "图片路径"
         }
     ],
-    "versionName" : "1.1.5",
-    "versionCode" : 115,
+    "versionName" : "1.2.0",
+    "versionCode" : 120,
     "app-plus" : {
         "compatible" : {
             "ignoreVersion" : true

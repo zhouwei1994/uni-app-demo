@@ -31,8 +31,7 @@
 
 
 ### [H5预览地址](https://twin-ui.com/uniappDemo/index.html)
-### [安卓APP安装包下载地址1.0.1（可体验版本更新）](http://qn.kemean.cn/upload/202006/10/1591785853646tulgw1o4.apk)
-### [安卓APP安装包下载地址1.1.0（最新版）](http://qn.kemean.cn/upload/202008/19/1597832954922s442039o.apk)
+### [安卓APP安装包下载地址（最新版）](http://qn.kemean.cn/upload/202104/14/16183932977309iisprxe.apk)
 ### [Demo版GitHub地址](https://github.com/zhouwei1994/uni-app-demo)
 ### [空项目模板GitHub地址（开发用这个）](https://github.com/zhouwei1994/uni-app-template)
 ---

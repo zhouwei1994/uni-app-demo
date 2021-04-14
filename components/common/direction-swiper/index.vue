@@ -112,7 +112,6 @@
 						}
 					});
 				}
-				console.log("------2", tabData);
 				this.tabData = tabData;
 				this.$forceUpdate();
 			},

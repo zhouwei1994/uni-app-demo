@@ -188,7 +188,6 @@
 			},
 			// Y轴滑动
 			onChangeY(item){
-				console.log("---", item);
 				let len = item.list.length;
 				if(len - item.swiperItemIndex < 3 && item.pages >= item.pageNo && item.key == "1006"){
 					setTimeout(() => {

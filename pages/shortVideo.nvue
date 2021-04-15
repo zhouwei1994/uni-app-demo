@@ -149,7 +149,9 @@
         },
         //页面显示
         onShow() {
-			this.setVideoPlayId(this.currentVideoId);
+			this.$nextTick(() => {
+				this.$refs.directionSwiper.onChangeY();
+			});
         },
         //方法
         methods: {

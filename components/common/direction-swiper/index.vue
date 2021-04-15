@@ -126,7 +126,6 @@
 				dom.getComponentRect(this.$refs['directionSwiper'], (data) => {
 					this.screenWidth = data.size.width;
 					this.screenHeight = data.size.height;
-					this.onType(this.current);
 				});
 				// #endif
 				// #ifndef APP-NVUE
@@ -134,7 +133,6 @@
 					.boundingClientRect(data => {
 						this.screenWidth = data[0].width;
 						this.screenHeight = data[0].height;
-						this.onType(this.current);
 					}).exec()
 				// #endif
 			},

@@ -3,7 +3,6 @@
 		<view class="swiper_content_box" ref="swiperContent" :style="{width: (screenWidth * tabData.length) + 'px',  height: screenHeight + 'px' ,transform: 'translateX(' + translateX + 'px)', transition: 'transform ' + animationTime + 'ms ease'}">
 			<view class="swiper_container" v-for="(item,index) of tabData" :key="index" :ref="'swiperContainer' + item.key" :style="{ width:  screenWidth + 'px', height: (screenHeight * (item.list.length || 1)) + 'px', transform: 'translateY(' + swiperData[index].translateY + 'px)', transition: 'transform ' + animationTime + 'ms ease'}">
 				<view v-if="item.list && item.list.length > 0" :style="{ width:  screenWidth + 'px', height: (screenHeight * (item.list.length || 1)) + 'px'}">
-					111
 					<view v-for="(childItem,childIndex) of item.list" :key="childIndex" class="swiper_item " v-if="Math.abs(swiperData[swiperIndex].swiperItemIndex - childIndex) < 3" :style="{ top: (childIndex * screenHeight) + 'px', width:  screenWidth + 'px', height: screenHeight + 'px' }">
 						<slot :item="item" :childItem="childItem" :index="index" :childIndex="childIndex"></slot>
 					</view>

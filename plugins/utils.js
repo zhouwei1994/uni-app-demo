@@ -569,3 +569,297 @@ Vue.filter('timeFormat', function(val, fmt = 'yyyy-MM-dd hh:mm:ss') {
 		return "";
 	}
 });
+
+// #ifdef APP-PLUS
+// 文字换行
+function drawtext(text, maxWidth) {
+	let textArr = text.split("");
+	let len = textArr.length;
+	// 上个节点
+	let previousNode = 0;
+	// 记录节点宽度
+	let nodeWidth = 0;
+	// 文本换行数组
+	let rowText = [];
+	// 如果是字母，侧保存长度
+	let letterWidth = 0;
+	// 汉字宽度
+	let chineseWidth = 16;
+	// otherFont宽度
+	let otherWidth = 8;
+	for (let i = 0; i < len; i++) {
+		if (/[\u4e00-\u9fa5]|[\uFE30-\uFFA0]/g.test(textArr[i])) {
+			if(letterWidth > 0){
+				if(nodeWidth + chineseWidth + letterWidth * otherWidth > maxWidth){
+					rowText.push({
+						type: "text",
+						content: text.substring(previousNode, i)
+					});
+					previousNode = i;
+					nodeWidth = chineseWidth;
+					letterWidth = 0;
+				} else {
+					nodeWidth += chineseWidth + letterWidth * otherWidth;
+					letterWidth = 0;
+				}
+			} else {
+				if(nodeWidth + chineseWidth > maxWidth){
+					rowText.push({
+						type: "text",
+						content: text.substring(previousNode, i)
+					});
+					previousNode = i;
+					nodeWidth = chineseWidth;
+				}else{
+					nodeWidth += chineseWidth;
+				}
+			}
+		} else {
+			if(/\n/g.test(textArr[i])){
+				rowText.push({
+					type: "break",
+					content: text.substring(previousNode, i)
+				});
+				previousNode = i + 1;
+				nodeWidth = 0;
+				letterWidth = 0;
+			}else if(textArr[i] == "\\" && textArr[i + 1] == "n"){
+				rowText.push({
+					type: "break",
+					content: text.substring(previousNode, i)
+				});
+				previousNode = i + 2;
+				nodeWidth = 0;
+				letterWidth = 0;
+			}else if(/[a-zA-Z0-9]/g.test(textArr[i])){
+				letterWidth += 1;
+				if(nodeWidth + letterWidth * otherWidth > maxWidth){
+					rowText.push({
+						type: "text",
+						content: text.substring(previousNode, i + 1 - letterWidth)
+					});
+					previousNode = i + 1 - letterWidth;
+					nodeWidth = letterWidth * otherWidth;
+					letterWidth = 0;
+				}
+			} else{
+				if(nodeWidth + otherWidth > maxWidth){
+					rowText.push({
+						type: "text",
+						content: text.substring(previousNode, i)
+					});
+					previousNode = i;
+					nodeWidth = otherWidth;
+				}else{
+					nodeWidth += otherWidth;
+				}
+			}
+		}
+	}
+	if (previousNode < len) {
+		rowText.push({
+			type: "text",
+			content: text.substring(previousNode, len)
+		});
+	}
+	return rowText;
+}
+// 重写app弹窗
+uni.showModal = function(options){
+	let optionsObj = Object.assign({
+		title: "提示",
+		content: "自定义内容", 
+		align: "center", // 对齐方式 left/center/right
+		cancelText: "取消", // 取消按钮的文字
+		cancelColor: "#8F8F8F", // 取消按钮颜色
+		confirmText: "确定", // 确认按钮文字
+		confirmColor: "#1C79D6", // 确认按钮颜色 
+		showCancel: true, // 是否显示取消按钮，默认为 true
+	}, options);
+	// 以下为计算菜单的nview绘制布局，为固定算法，使用者无关关心
+	const screenWidth = plus.screen.resolutionWidth;
+	const screenHeight = plus.screen.resolutionHeight;
+	//弹窗容器宽度
+	const popupViewWidth = screenWidth * 0.8;
+	// 弹窗容器的Padding
+	const viewContentPadding = 20;
+	
+	// 弹窗容器的宽度
+	const viewContentWidth = parseInt(popupViewWidth - (viewContentPadding * 2));
+	// 描述的列表
+	const descriptionList = drawtext(optionsObj.content, viewContentWidth);
+	// 弹窗高度
+	let popupViewHeight = 168;
+	// 弹窗遮罩层
+	let maskLayer = new plus.nativeObj.View("maskLayer", { //先创建遮罩层
+		top: '0px',
+		left: '0px',
+		height: '100%',
+		width: '100%',
+		backgroundColor: 'rgba(0,0,0,0.5)'
+	});
+	let popupViewContentList = [{
+		tag: 'font',
+		id: 'title',
+		text: optionsObj.title,
+		textStyles: {
+			size: '18px',
+			color: "#333",
+			weight: "bold",
+			whiteSpace: "normal"
+		},
+		position: {
+			top: viewContentPadding + "px",
+			left: viewContentPadding + "px",
+			width: viewContentWidth + "px",
+			height: "30px",
+		}
+	}];
+	const textHeight = 22;
+	let contentTop = 65;
+	descriptionList.forEach((item,index) => {
+		if(index > 0){
+			popupViewHeight += textHeight;
+			contentTop += textHeight;
+		}
+		popupViewContentList.push({
+			tag: 'font',
+			id: 'content' + index + 1,
+			text: item.content,
+			textStyles: {
+				size: '16px',
+				color: "#333",
+				lineSpacing: "50%",
+				align: optionsObj.align
+			},
+			position: {
+				top: contentTop + "px",
+				left: viewContentPadding + "px",
+				width: viewContentWidth + "px",
+				height: textHeight + "px",
+			}
+		});
+		if(item.type == "break"){
+			contentTop += 10;
+			popupViewHeight += 10;
+		}
+	});
+	popupViewContentList.push({
+		tag: 'rect',
+		id: 'lineTop',
+		rectStyles: {
+			color: "#f1f1f1",
+		},
+		position: {
+			top: contentTop + 50 + "px",
+			left: "0px",
+			width: "100%",
+			height: "1px",
+		}
+	});
+	if(optionsObj.showCancel){
+		popupViewContentList.push({
+			tag: 'rect',
+			id: 'line',
+			rectStyles: {
+				color: "#f1f1f1",
+			},
+			position: {
+				top: contentTop + 50 + "px",
+				left: popupViewWidth / 2 + "px",
+				width: "1px",
+				height: "50px",
+			}
+		});
+		popupViewContentList.push({
+			tag: 'font',
+			id: 'cancelText',
+			text: optionsObj.cancelText,
+			textStyles: {
+				size: '16px',
+				color: optionsObj.cancelColor,
+			},
+			position: {
+				top: contentTop + 50 + "px",
+				left: "0px",
+				width: popupViewWidth / 2 + "px",
+				height: "50px",
+			}
+		});
+		popupViewContentList.push({
+			tag: 'font',
+			id: 'confirmText',
+			text: optionsObj.confirmText,
+			textStyles: {
+				size: '16px',
+				color: optionsObj.confirmColor,
+			},
+			position: {
+				top: contentTop + 50 + "px",
+				left: popupViewWidth / 2 + "px",
+				width: popupViewWidth / 2 + "px",
+				height: "50px",
+			}
+		});
+	} else {
+		popupViewContentList.push({
+			tag: 'font',
+			id: 'confirmText',
+			text: optionsObj.confirmText,
+			textStyles: {
+				size: '16px',
+				color: optionsObj.confirmColor,
+			},
+			position: {
+				top: contentTop + 50 + "px",
+				left: "0px",
+				width: "100%",
+				height: "50px",
+			}
+		});
+	}
+	// 弹窗内容
+	let popupView = new plus.nativeObj.View("popupView", { //创建底部图标菜单
+		tag: "rect",
+		top: (screenHeight - popupViewHeight) / 2 + "px",
+		left: '10%',
+		height: popupViewHeight + "px",
+		width: "80%"
+	});
+	// 绘制白色背景
+	popupView.drawRect({
+		color: "#FFFFFF",
+		radius: "8px"
+	}, {
+		top: "0px",
+		height: popupViewHeight + "px",
+	});
+	popupView.draw(popupViewContentList);
+	popupView.addEventListener("click", function(e) {
+		if(optionsObj.showCancel){
+			if (e.clientY > popupViewHeight - 50 && e.clientX < popupViewWidth / 2) {
+				// 取消
+				maskLayer.hide();
+				popupView.hide();
+				options.success && options.success({confirm: false, cancel: true});
+			} else if(e.clientY > popupViewHeight - 50 && e.clientX > popupViewWidth / 2){
+				// 确定
+				maskLayer.hide();
+				popupView.hide();
+				options.success && options.success({confirm: true, cancel: false});
+			}
+		} else {
+			if (e.clientY > popupViewHeight - 50) {
+				// 确定
+				maskLayer.hide();
+				popupView.hide();
+				options.success && options.success({confirm: true, cancel: false});
+			}
+		}
+	});
+	// 显示弹窗
+	maskLayer.show();
+	popupView.show();
+	options.complete && options.complete();
+};
+// #endif

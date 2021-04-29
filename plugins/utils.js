@@ -839,20 +839,20 @@ uni.showModal = function(options){
 		if(optionsObj.showCancel){
 			if (e.clientY > popupViewHeight - 50 && e.clientX < popupViewWidth / 2) {
 				// 取消
-				maskLayer.hide();
-				popupView.hide();
+				maskLayer.close();
+				popupView.close();
 				options.success && options.success({confirm: false, cancel: true});
 			} else if(e.clientY > popupViewHeight - 50 && e.clientX > popupViewWidth / 2){
 				// 确定
-				maskLayer.hide();
-				popupView.hide();
+				maskLayer.close();
+				popupView.close();
 				options.success && options.success({confirm: true, cancel: false});
 			}
 		} else {
 			if (e.clientY > popupViewHeight - 50) {
 				// 确定
-				maskLayer.hide();
-				popupView.hide();
+				maskLayer.close();
+				popupView.close();
 				options.success && options.success({confirm: true, cancel: false});
 			}
 		}

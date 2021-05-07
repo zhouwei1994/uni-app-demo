@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="footer_box" :class="{ footer_bg: bg }">
+		<view class="footer_box" :class="{ footer_bg: bg }" :style="{paddingBottom: bottomBlackLineHeight + 'rpx'}">
 			<view v-for="(item, index) of navigationList" :key="index" class="footer_item">
 				<view v-if="item.raised" class="footer_raised_item" @click="onRaised">
 					<image class="footer_raised_item_image" :src="'/' + item.iconPath" mode="aspectFit"></image>
@@ -12,7 +12,7 @@
 				</view>
 			</view>
 		</view>
-		<view v-if="bg" class="footer_station"></view>
+		<view v-if="bg" class="footer_station" :style="{paddingBottom: bottomBlackLineHeight + 'rpx'}"></view>
 		<z-popup v-model="popupShow" type="center">
 			<view class="popup_content">
 				<view>凸起导航解决方案，请看components/module/navigation.vue</view>
@@ -68,6 +68,7 @@ export default {
 				}
 			],
 			popupShow: false,
+			bottomBlackLineHeight : 0
 		};
 	},
 	//第一次加载
@@ -76,6 +77,11 @@ export default {
 		let currentPages = getCurrentPages();
 		let page = currentPages[currentPages.length - 1];
 		this.path = page.route;
+		let systemInfo = uni.getSystemInfoSync();
+		let iphoneXArr = ["iPhone X", "iPhone 11", "iPhone 11 Pro Max"];
+		if(iphoneXArr.includes(systemInfo.model)){
+			this.bottomBlackLineHeight = 40;
+		}
 	},
 	//方法
 	methods: {
@@ -96,6 +102,7 @@ export default {
 @import '@/style/mixin.scss';
 .footer_station {
 	height: 100rpx;
+	box-sizing: content-box;
 }
 .footer_box {
 	height: 100rpx;
@@ -108,6 +115,7 @@ export default {
 	/* #endif */
 	flex-direction: row;
 	z-index: 502;
+	box-sizing: content-box;
 }
 .footer_bg {
 	background-color: #FFF;

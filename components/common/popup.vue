@@ -1,15 +1,21 @@
 <template>
-	<view @touchmove="onTouchMove">
+	<view class="popup_view" :style="{top:popupTop, bottom: popupBottom, zIndex: zIndex}"
+		:class="{'popup_view_bottom': type == 'bottom' ,'popup_view_center':type == 'center', 'popup_view_top': type == 'top'}"
+	 @touchmove="onTouchMove" v-if="currentValue">
 		<!-- 遮罩层动画 -->
-		<view class="mask" @click="hideOnBlur && (currentValue = false)" :style="{top:maskTop, bottom:maskBottom, zIndex: zIndex}" v-if="currentValue"></view>
+		<view class="popup_mask" @click="hideOnBlur && setAnimationHide()"></view>
 		<!-- 显示信息层 -->
-		<view class="popup_box" :class="{'bottom': type == 'bottom' ,'center':type == 'center', top: type == 'top'}" :style="{opacity:opacity,transform:transform,top:popupTop, bottom:popupBottom,zIndex: zIndex + 1}">
+		<view class="popup_container" ref="popupContainer" :class="{'popup_container_bottom': type == 'bottom' ,'popup_container_center':type == 'center', 'popup_container_top': type == 'top'}" :style="{opacity:opacity,transform:transform}">
 			<slot></slot>
 		</view>
 	</view>
 </template>
 
 <script>
+	// #ifdef APP-NVUE
+	const animation = weex.requireModule('animation');
+	const dom = weex.requireModule('dom');
+	// #endif
 	export default {
 		props: {
 			//是否显示
@@ -59,18 +65,18 @@
 		created() {
 			this.systemInfo = uni.getSystemInfoSync();
 			if (typeof this.value !== "undefined") {
-				this.currentValue = this.value;
-				this.setAnimation(this.value);
+				if(this.value){
+					this.setAnimationShow();
+				}
 			}
 		},
 		watch: {
 			value(val) {
-				this.currentValue = val;
-				this.setAnimation(val);
-			},
-			currentValue(val) {
-				this.$emit("change", val);
-				this.$emit("input", val);
+				if(val){
+					this.setAnimationShow();
+				} else {
+					this.setAnimationHide();
+				}
 			}
 		},
 		data() {
@@ -80,10 +86,9 @@
 				opacity: 0,
 				popupTop: "inherit",
 				popupBottom: "inherit",
-				maskTop: "0rpx",
-				maskBottom: "0rpx",
 				transform: "",
 				systemInfo: {},
+				timer: null
 			};
 		},
 		methods: {
@@ -94,44 +99,40 @@
 				let ratio = 750 / this.systemInfo.screenWidth;
 				return ratio * px;
 			},
-			setAnimation(val) {
-				if (this.type == "bottom") {
-					if (val) {
-						this.transform = "translateY(0%)";
-						this.opacity = 1;
-						this.popupTop = "inherit";
+			setAnimationShow() {
+				this.currentValue = true;
+				this.$nextTick(() => {
+					this.timer && clearTimeout(this.timer);
+					this.$emit("input", true);
+					this.$emit("change", true);
+					
+					if (this.type == "bottom") {
+						this.animationParsing({
+							translateY: 0,
+							defaulTranslateY: 1,
+							opacity: 1
+						});
+						this.popupTop = "0rpx";
 						if(this.offset > 0){
 							this.popupBottom = this.offset + "rpx";
-							this.maskBottom = this.offset + "rpx";
 						} else {
 							this.popupBottom = this.getPxRpx(this.systemInfo.windowBottom) + "rpx";
-							this.maskBottom = "0rpx";
 						}
-					} else {
-						this.opacity = 0;
-						this.transform = "translateY(100%)";
-						setTimeout(() => {
-							this.popupTop = "inherit";
-							this.popupBottom = "0rpx";
-							this.maskTop = "0rpx";
-							this.maskBottom = "0rpx";
-						},400);
-					}
-				} else if (this.type == "center") {
-					if (val) {
-						this.opacity = 1;
-						this.transform = "translateX(-50%) translateY(-50%) scale(1)";
-						this.popupTop = "50%";
-					} else {
-						this.opacity = 0;
-						this.popupTop = "50%";
-						this.transform = "translateX(-50%) translateY(-50%) scale(0)";
-					}
-				} else if (this.type == "top") {
-					if (val) {
-						this.transform = "translateY(0%)";
-						this.opacity = 1;
-						this.popupBottom = "inherit";
+					} else if (this.type == "center") {
+						this.popupTop = "0rpx";
+						this.popupBottom = "0rpx";
+						this.animationParsing({
+							scale: 1,
+							defaulScale: 0,
+							opacity: 1
+						});
+					} else if (this.type == "top") {
+						this.animationParsing({
+							defaulTranslateY: -1,
+							translateY: 0,
+							opacity: 1
+						});
+						this.popupBottom = "0rpx";
 						if(this.offset > 0){
 							this.popupTop = (this.offset + this.getPxRpx(this.systemInfo.statusBarHeight)) +  "rpx";
 							this.maskTop = this.popupTop;
@@ -139,63 +140,155 @@
 							this.popupTop = "0rpx";
 							this.maskTop = "0rpx";
 						}
-					} else {
-						this.opacity = 0;
-						this.transform = "translateY(-100%)";
-						setTimeout(() => {
-							this.popupTop = "0rpx";
-							this.popupBottom = "inherit";
-							this.maskTop = "0rpx";
-							this.maskBottom = "0rpx";
-						},400);
 					}
+				});
+			},
+			setAnimationHide() {
+				this.timer && clearTimeout(this.timer);
+				this.timer = setTimeout(() => {
+					this.currentValue = false;
+					this.$emit("input", false);
+					this.$emit("change", false);
+				}, 300);
+				if (this.type == "bottom") {
+					this.animationParsing({
+						defaulTranslateY: 0,
+						translateY: 1,
+						opacity: 0
+					});
+					this.timer = setTimeout(() => {
+						this.popupTop = "inherit";
+						this.popupBottom = "0rpx";
+						this.maskTop = "0rpx";
+						this.maskBottom = "0rpx";
+					},300);
+				} else if (this.type == "center") {
+					this.popupTop = "0rpx";
+					this.popupBottom = "0rpx";
+					this.animationParsing({
+						scale: 0,
+						defaulScale: 1,
+						opacity: 0
+					});
+				} else if (this.type == "top") {
+					this.animationParsing({
+						defaulTranslateY: 0,
+						translateY: -1,
+						opacity: 0
+					});
+					this.timer = setTimeout(() => {
+						this.popupTop = "0rpx";
+						this.popupBottom = "inherit";
+						this.maskTop = "0rpx";
+						this.maskBottom = "0rpx";
+					}, 300);
 				}
-			}
+			},
+			animationParsing(data){
+				// #ifndef APP-NVUE
+				let transform = "";
+				if(data.hasOwnProperty("translateX")){
+					transform += " translateX("+ (data.translateX * 100) +"%)"
+				}
+				if(data.hasOwnProperty("translateY")){
+					transform += " translateY("+ (data.translateY * 100) +"%)"
+				}
+				if(data.hasOwnProperty("scale")){
+					transform += " scale("+ data.scale +")"
+				}
+				this.opacity = data.opacity;
+				this.transform = transform;
+				// #endif
+				// #ifdef APP-NVUE
+				let popupContainer = this.$refs.popupContainer;
+				if(popupContainer){
+					if(data.hasOwnProperty("defaulTranslateY") || data.hasOwnProperty("defaulScale")){
+						let defaulTransform = "";
+						if(data.hasOwnProperty("defaulTranslateY")){
+							defaulTransform = "translateY(" + (data.defaulTranslateY * 100) + "%)";
+						}
+						if(data.hasOwnProperty("defaulScale")){
+							defaulTransform = "scale(" + data.defaulScale + ")";
+						}
+						this.transform = defaulTransform;
+					}
+					if(Array.isArray(popupContainer)){
+						popupContainer = popupContainer[0];
+					}
+					let transform = "";
+					if(data.hasOwnProperty("translateX") || data.hasOwnProperty("translateY")){
+						transform += " translate("+ (data.translateX ? data.translateX * 100 : 0) +"%, " + (data.translateY ? data.translateY * 100 : 0) + "%)";
+					}
+					if(data.hasOwnProperty("scale")){
+						transform += " scale("+ data.scale +")"
+					}
+					animation.transition(popupContainer, {
+					  styles: {  
+						transform: transform, 
+						transformOrigin: 'center center',
+						opacity: data.opacity,
+					  },
+					  duration: 300, //ms  
+					  timingFunction: 'ease',  
+					  delay: 0 //ms  
+					}, function () { });
+				}
+				// #endif
+			},
 		}
 	};
 </script>
 
 <style lang="scss" scoped>
-	/*遮罩层*/
-	.mask {
+	.popup_view {
 		position: fixed;
 		z-index: 500;
 		top: 0;
 		right: 0;
 		left: 0;
 		bottom: 0;
-		background: rgba(0, 0, 0, 0.5);
-		transition: all 0.4s;
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: row;
 	}
-
-	.popup_box {
-		position: fixed;
-		max-width: 100%;
-		max-height: 100%;
+	.popup_view_bottom {
+		align-items: flex-end;
+	}
+	.popup_view_top {
+		align-items: flex-start;
+	}
+	.popup_view_center {
+		align-items: center;
+	}
+	/*遮罩层*/
+	.popup_mask {
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.5);
+	}
+	.popup_container {
+		/* #ifndef APP-NVUE */
+		max-width: 100vw;
+		max-height: 100vh;
 		min-height: 50rpx;
+		transition: all 0.4s;
+		z-index: 2;
+		/* #endif */
 		z-index: 501;
 		opacity: 0;
 		font-size: 28rpx;
-		transition: all 0.4s;
-
-		&.bottom {
-			left: 0rpx;
-			bottom: 0rpx;
-			min-width: 100%;
-			transform: translateY(100%);
-		}
-
-		&.center {
-			left: 50%;
-			top: 50%;
-			transform: translateX(-50%) translateY(-50%);
-		}
-		&.top {
-			left: 0rpx;
-			top: 0rpx;
-			right: 0rpx;
-			min-width: 100%;
-			transform: translateY(100%);
-		}
+		position: relative;
+	}
+	.popup_container_bottom {
+		transform: translateY(100%);
+	}
+	.popup_container_center {
+	}
+	.popup_container_top {
+		transform: translateY(-100%);
 	}
 </style>

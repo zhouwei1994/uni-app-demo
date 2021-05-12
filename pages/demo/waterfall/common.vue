@@ -1,6 +1,6 @@
 <template>
   <view>
-     <nav-bar title="瀑布流"></nav-bar>
+     <z-nav-bar title="瀑布流"></z-nav-bar>
 	 <!-- 公共组件-每个页面必须引入 -->
 	 <public-module></public-module>
 	 <view class="nav_list" @click="onPageJump('/pages/demo/waterfall/stableWaterfall')">

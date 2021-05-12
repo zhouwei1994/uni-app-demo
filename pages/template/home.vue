@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar backState="2000" title="首页"></nav-bar>
+		<z-nav-bar backState="2000" title="首页"></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<view class="video_box" v-if="videoShow" @click="onCloseVideo"><video :src="videoUrl" autoplay="true" controls></video></view>
@@ -13,11 +13,7 @@ import { mapState, mapMutations } from 'vuex';
 // #ifdef MP-WEIXIN
 import {onLogin} from '@/config/login';
 // #endif
-import zNavigation from '@/components/module/navigation.vue';
 export default {
-	components: {
-		zNavigation
-	},
 	data() {
 		return {
 			videoUrl: '',

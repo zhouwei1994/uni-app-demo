@@ -1,6 +1,6 @@
 <template>
 	<view class="">
-		<nav-bar title="下拉刷新/上拉加载列表"></nav-bar>
+		<z-nav-bar title="下拉刷新/上拉加载列表"></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<mescroll-body ref="mescrollRef" @init="mescrollInit" :down="downOption" @down="downCallback" @up="upCallback">
@@ -23,7 +23,7 @@
 	</view>
 </template>
 <script>
-	import MescrollMixin from "@/components/common/mescroll-uni/mescroll-mixins.js";
+	import MescrollMixin from "@/components/mescroll-uni/mescroll-mixins.js";
 	export default {
 		mixins: [MescrollMixin], // 使用mixin (在main.js注册全局组件)
 		data() {

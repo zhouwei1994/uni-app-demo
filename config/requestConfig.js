@@ -1,4 +1,4 @@
-import request from "@/plugins/request";
+import request from "@/uni_modules/zhouWei-request/js_sdk/request";
 import store from '@/store';
 import base from '@/config/baseUrl';
 // #ifdef H5

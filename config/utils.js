@@ -8,7 +8,7 @@ import { getLatLonH5, publicShareFun, wxPublicPay, getBrowser,appMutual } from '
 export const publicShare = publicShareFun;
 // #endif
 // #ifdef APP-PLUS
-import appShareFun, {closeShare} from '@/plugins/share';
+import appShareFun, {closeShare} from '@/uni_modules/zhouWei-APPshare/js_sdk/appShare';
 // APP分享
 export const appShare = function(data,callbcak){
 	return appShareFun({

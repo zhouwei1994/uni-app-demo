@@ -1,6 +1,6 @@
 <template>
     <view class="page">
-		<direction-swiper :style="{height: screenHeight + 'px'}" :list="tabData" :current="swiperIndex" @changeX="onChangeX" @changeY="onChangeY">
+		<direction-swiper ref="directionSwiper" :style="{height: screenHeight + 'px'}" :list="tabData" :current="swiperIndex" @changeX="onChangeX" @changeY="onChangeY">
 			<template v-slot="{ item, childItem, index, childIndex }">
 				<short-video 
 				:objId="childItem.objId" 
@@ -75,9 +75,6 @@
     </view>
 </template>
 <script>
-    import shortVideo from '@/components/module/short_video.vue';
-    import directionSwiper from '@/components/common/direction-swiper';
-    import navigationVideo from '@/components/module/navigation-video.vue';
     import { saveVideo } from '@/plugins/utils';
     import { mapState, mapMutations } from 'vuex';
 	import $http from '@/config/requestConfig';
@@ -85,11 +82,6 @@
 		judgeLogin
 	} from '@/config/login.js';
     export default {
-        components: {
-            shortVideo,
-			navigationVideo,
-			directionSwiper
-        },
         data() {
             return {
 				tabData: [

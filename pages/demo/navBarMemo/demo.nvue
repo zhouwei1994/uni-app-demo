@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<!-- 示例代码 开始-->
-		<nav-bar bgColor="rgba(255,255,0,0.5)">固定导航</nav-bar>
+		<z-nav-bar bgColor="rgba(255,255,0,0.5)">固定导航</z-nav-bar>
 		<!---示例代码 结束---->
 		<image class="image" src="../../../static/demo/1.jpg" mode="widthFix"></image>
 		<image class="image" src="../../../static/demo/2.jpg" mode="widthFix"></image>
@@ -13,11 +13,7 @@
 </template>
 
 <script>
-	import navBar from "@/components/common/zhouWei-navBar/index"
 	export default {
-		components:{
-			navBar
-		},
 		data() {
 			return {
 			}

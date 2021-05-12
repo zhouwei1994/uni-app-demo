@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar title="webSocket封装介绍"></nav-bar>
+		<z-nav-bar title="webSocket封装介绍"></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<view class="table_box">

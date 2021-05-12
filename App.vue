@@ -5,7 +5,7 @@ import socket from '@/config/socket';
 import { h5Login } from '@/config/html5Utils';
 // #endif
 // #ifdef APP-PLUS
-import APPUpdate from '@/plugins/APPUpdate';
+import APPUpdate from '@/uni_modules/zhouWei-APPUpdate/js_sdk/appUpdate';
 // #endif
 export default {
 	onLaunch: function(e) {

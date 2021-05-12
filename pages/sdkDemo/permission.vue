@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar title="APP权限判断和跳转到系统设置"></nav-bar>
+		<z-nav-bar title="APP权限判断和跳转到系统设置"></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<view class="table_box">

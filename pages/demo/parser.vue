@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar title="富文本编译"></nav-bar>
+		<z-nav-bar title="富文本编译"></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<view class="table_box">
@@ -13,11 +13,7 @@
 	</view>
 </template>
 <script>
-import jyfParser from '@/components/common/jyf-parser/jyf-parser';
 export default {
-	components: {
-		jyfParser
-	},
 	data() {
 		return {
 			html: `<p>微信小程序直播自2月14日开放内侧以来，关注度一直居高不下，现在商淘软件多个电商系统都已接入小程序直播，今天，商家云以多商户系统为例，讲解<span style="color: #e03e2d;"><a style="color: #e03e2d;" href="https://www.kemean.com/">微信小程序直播</a></span>在设计时应该注意到哪些方面呢？</p>

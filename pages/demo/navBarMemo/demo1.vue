@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<!-- 示例代码 开始-->
-		<nav-bar type="ordinary">不固定导航</nav-bar>
+		<z-nav-bar type="ordinary">不固定导航</z-nav-bar>
 		<!---示例代码 结束---->
 		<image class="image" src="../../../static/demo/1.jpg" mode="widthFix"></image>
 		<image class="image" src="../../../static/demo/2.jpg" mode="widthFix"></image>

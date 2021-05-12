@@ -1,0 +1,80 @@
+{
+  "id": "zhouWei-request",
+  "displayName": "request请求、配置简单、批量上传图片、视频、超强适应性（支持多域名请求）",
+  "version": "3.2.0",
+  "description": "适用于一项目多域名请求、七牛云图片上传、本地服务器图片上传、支持 Promise",
+  "keywords": [
+    "request",
+    "请求",
+    "http",
+    "ajax",
+    "上传"
+],
+  "repository": "https://github.com/zhouwei1994/uni-app-demo",
+  "engines": {
+    "HBuilderX": "^3.1.0"
+  },
+  "dcloudext": {
+    "category": [
+        "JS SDK",
+        "通用 SDK"
+    ],
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": "465081029"
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "无",
+      "permissions": "无"
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "y",
+        "aliyun": "y"
+      },
+      "client": {
+        "App": {
+          "app-vue": "y",
+          "app-nvue": "y"
+        },
+        "H5-mobile": {
+          "Safari": "y",
+          "Android Browser": "y",
+          "微信浏览器(Android)": "y",
+          "QQ浏览器(Android)": "y"
+        },
+        "H5-pc": {
+          "Chrome": "y",
+          "IE": "y",
+          "Edge": "y",
+          "Firefox": "y",
+          "Safari": "y"
+        },
+        "小程序": {
+          "微信": "y",
+          "阿里": "y",
+          "百度": "y",
+          "字节跳动": "y",
+          "QQ": "y"
+        },
+        "快应用": {
+          "华为": "y",
+          "联盟": "y"
+        }
+      }
+    }
+  }
+}

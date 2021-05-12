@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<nav-bar :back="false">案例展示</nav-bar>
+		<z-nav-bar :back="false">案例展示</z-nav-bar>
 		<view class="table_box">
 			<view class="table_title">使用文档</view>
 			<view class="table_content">

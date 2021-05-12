@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar title="七牛云图片上传"></nav-bar>
+		<z-nav-bar title="七牛云图片上传"></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
         <view class="table_box">

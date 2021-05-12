@@ -24,13 +24,8 @@ Vue.config.productionTip = false;
 //微信SDK
 import '@/plugins/wxJsSDK.js';
 // #endif
-
 //全局组件
-import zhouWeiNavBar from "@/components/common/zhouWei-navBar";
-Vue.component("nav-bar", zhouWeiNavBar);
-import publicModule from "@/components/common/public-module.vue";
-Vue.component("public-module", publicModule);
-import MescrollBody from "@/components/common/mescroll-uni/mescroll-body.vue";
+import MescrollBody from "@/components/mescroll-uni/mescroll-body.vue";
 Vue.component("mescroll-body", MescrollBody);
 App.mpType = 'app'
 

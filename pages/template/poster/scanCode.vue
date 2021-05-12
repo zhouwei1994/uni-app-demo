@@ -1,6 +1,6 @@
 <template>
 	<view class="poster_page">
-		<nav-bar title="海报"></nav-bar>
+		<z-nav-bar title="海报"></z-nav-bar>
 		<canvas canvas-id="poster" class="poster_canvas"></canvas>
 		<swiper class="poster_swiper" previous-margin="110rpx" circular :current="swiperIndex" next-margin="110rpx" @change="onSwiperChange">
 			<swiper-item v-for="(item, index) of promoteBgImgs" :key="index">

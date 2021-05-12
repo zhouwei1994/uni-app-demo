@@ -1,6 +1,6 @@
 <template>
 	<view class="we_chat_pay">
-		<nav-bar title="支付"></nav-bar>
+		<z-nav-bar title="支付"></z-nav-bar>
 		<!-- 支付订单信息 -->
 		<view class="pay_info_box">
 			<view class="title">订单编号：{{ orderNo }}</view>

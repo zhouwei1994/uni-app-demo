@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<nav-bar></nav-bar>
+		<z-nav-bar></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<view class="title">忘记密码</view>

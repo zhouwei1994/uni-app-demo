@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar title="地区选择"></nav-bar>
+		<z-nav-bar title="地区选择"></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<view class="table_box">
@@ -61,20 +61,14 @@
 		</view>
 		<view class="title">直接使用</view>
 		<z-address @change="addressChange1" :length="3" :force="true"></z-address>
-		<address-popup v-model="popupShow" @change="addressChange2"></address-popup>
-		<address-popup v-model="popupShow3" :length="2" @change="addressChange3"></address-popup>
-		<address-popup v-model="popupShow4" :length="3" :force="false"  @change="addressChange4"></address-popup>
+		<z-address-popup v-model="popupShow" @change="addressChange2"></z-address-popup>
+		<z-address-popup v-model="popupShow3" :length="2" @change="addressChange3"></z-address-popup>
+		<z-address-popup v-model="popupShow4" :length="3" :force="false"  @change="addressChange4"></z-address-popup>
 	</view>
 </template>
 
 <script>
-import addressPopup from '@/components/common/address-popup';
-import zAddress from '@/components/common/address';
 export default {
-	components:{
-		addressPopup,
-		zAddress
-	},
 	data() {
 		return {
 			popupShow: false,

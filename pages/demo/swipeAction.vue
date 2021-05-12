@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar title="滑动操作"></nav-bar>
+		<z-nav-bar title="滑动操作"></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<view class="table_box">
@@ -45,27 +45,21 @@
 			</view>
 		</view>
 		<view class="swipe_action_list">
-			<swipe-action :options="options" :show="show"><view class="swipe_action">滑动</view></swipe-action>
+			<z-swipe-action :options="options" :show="show"><view class="swipe_action">滑动</view></z-swipe-action>
 		</view>
 		<view class="swipe_action_list">
-			<swipe-action :options="options2" disabled><view class="swipe_action">禁止滑动</view></swipe-action>
+			<z-swipe-action :options="options2" disabled><view class="swipe_action">禁止滑动</view></z-swipe-action>
 		</view>
 		<view v-for="(item, index) of 3" :key="index" class="swipe_action_list">
-			<swipe-action :options="options3" :index="index" @button="onButton" @click="onClock(index)">
+			<z-swipe-action :options="options3" :index="index" @button="onButton" @click="onClock(index)">
 				<view class="swipe_action">滑动列表{{ index + 1 }}</view>
-			</swipe-action>
+			</z-swipe-action>
 		</view>
 	</view>
 </template>
 
 <script>
-import swipeAction from '@/components/common/swipe-action';
-import navBar from '@/components/common/zhouWei-navBar';
 export default {
-	components: {
-		swipeAction,
-		navBar
-	},
 	data() {
 		return {
 			options: [

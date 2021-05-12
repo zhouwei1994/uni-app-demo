@@ -1,0 +1,78 @@
+{
+  "id": "zhouWei-APPUpdate",
+  "displayName": "APP版本更新、强制更新、漂亮弹窗、下载进度（wgt更新）",
+  "version": "3.0.0",
+  "description": "APP版本更新、强制更新、漂亮弹窗、下载进度（wgt更新）",
+  "keywords": [
+    "APP版本更新",
+    "强制更新",
+    "版本更新"
+],
+  "repository": "https://github.com/zhouwei1994/uni-app-demo",
+  "engines": {
+    "HBuilderX": "^3.1.0"
+  },
+  "dcloudext": {
+    "category": [
+        "JS SDK",
+        "通用 SDK"
+    ],
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": "465081029"
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "无",
+      "permissions": "<uses-permission android:name=\\\"android.permission.INSTALL_PACKAGES\\\"/>  \n<uses-permission android:name=\\\"android.permission.REQUEST_INSTALL_PACKAGES\\\"/>"
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "y",
+        "aliyun": "y"
+      },
+      "client": {
+        "App": {
+          "app-vue": "y",
+          "app-nvue": "y"
+        },
+        "H5-mobile": {
+          "Safari": "n",
+          "Android Browser": "n",
+          "微信浏览器(Android)": "n",
+          "QQ浏览器(Android)": "n"
+        },
+        "H5-pc": {
+          "Chrome": "n",
+          "IE": "n",
+          "Edge": "n",
+          "Firefox": "n",
+          "Safari": "n"
+        },
+        "小程序": {
+          "微信": "n",
+          "阿里": "n",
+          "百度": "n",
+          "字节跳动": "n",
+          "QQ": "n"
+        },
+        "快应用": {
+          "华为": "n",
+          "联盟": "n"
+        }
+      }
+    }
+  }
+}

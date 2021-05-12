@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar title="稳定版瀑布流"></nav-bar>
+		<z-nav-bar title="稳定版瀑布流"></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<mescroll-body ref="mescrollRef" @init="mescrollInit" :down="downOption" @down="downCallback" @up="upCallback">
@@ -16,14 +16,10 @@
 </template>
 
 <script>
-import waterfallGoods from '@/components/module/stable_waterfall_goods';
 import allList from './data';
-import MescrollMixin from "@/components/common/mescroll-uni/mescroll-mixins.js";
+import MescrollMixin from "@/components/mescroll-uni/mescroll-mixins.js";
 export default {
 	mixins: [MescrollMixin], // 使用mixin (在main.js注册全局组件)
-	components:{
-		waterfallGoods
-	},
 	data() {
 		return {
 			downOption: {

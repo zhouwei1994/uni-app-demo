@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<!-- 示例代码 开始-->
-		<nav-bar home bgColor="#f37402" fontColor="#FFF" :titleCenter="false" title="案例展示4"></nav-bar>
+		<z-nav-bar home bgColor="#f37402" fontColor="#FFF" :titleCenter="false" title="案例展示4"></z-nav-bar>
 		<!---示例代码 结束---->
 		<image src="../../../static/demo/2.jpg" mode="widthFix"></image>
 		<image src="../../../static/demo/1.jpg" mode="widthFix"></image>

@@ -1,9 +1,9 @@
 <template>
 	<view class="content">
 		<!-- 示例代码 开始-->
-		<nav-bar title="右插槽-搜索图标">
+		<z-nav-bar title="右插槽-搜索图标">
 			<view slot="right" class="search_box"></view>
-		</nav-bar>
+		</z-nav-bar>
 		<!---示例代码 结束---->
 		<image src="../../../static/demo/2.jpg" mode="widthFix"></image>
 		<image src="../../../static/demo/1.jpg" mode="widthFix"></image>

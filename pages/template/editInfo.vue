@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<nav-bar title="个人信息" bgColor="#F5f5f5"></nav-bar>
+		<z-nav-bar title="个人信息" bgColor="#F5f5f5"></z-nav-bar>
 		<view class="cell_list" @click="onUnloadImg">
 			<view class="cell_left txt">头像</view>
 			<view class="cell_right">
@@ -25,15 +25,11 @@
 </template>
 
 <script>
-	import zPrompt from '@/components/common/prompt';
 	import {
 		mapState,
 		mapMutations
 	} from 'vuex';
 	export default {
-		components: {
-			zPrompt
-		},
 		data() {
 			return {
 				popupOptions: {

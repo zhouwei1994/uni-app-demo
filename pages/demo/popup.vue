@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar title="弹窗使用"></nav-bar>
+		<z-nav-bar title="弹窗使用"></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<view class="table_box">
@@ -133,11 +133,7 @@
 </template>
 
 <script>
-import zPopup from '@/components/common/popup';
 export default {
-	components:{
-		zPopup
-	},
 	data() {
 		return {
 			popupShow: false,

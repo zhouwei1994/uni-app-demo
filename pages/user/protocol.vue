@@ -1,6 +1,6 @@
 <template>
 	<view class="protocol_page">
-		<nav-bar title="协议"></nav-bar>
+		<z-nav-bar title="协议"></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<view class="title">{{title}}</view>
@@ -9,9 +9,7 @@
 </template>
 
 <script>
-import jyfParser from '@/components/common/jyf-parser/jyf-parser.vue';
 export default {
-	components: { jyfParser },
 	data() {
 		return {
 			type:1000,

@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<!-- 示例代码 开始-->
-		<nav-bar  type="transparent" fontColor="#FFF">透明导航</nav-bar>
+		<z-nav-bar  type="transparent" fontColor="#FFF">透明导航</z-nav-bar>
 		<!---示例代码 结束---->
 		<image src="../../../static/demo/2.jpg" mode="widthFix"></image>
 		<image src="../../../static/demo/1.jpg" mode="widthFix"></image>

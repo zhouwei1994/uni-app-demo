@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar title="常用工具"></nav-bar>
+		<z-nav-bar title="常用工具"></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<view class="input_form_box">

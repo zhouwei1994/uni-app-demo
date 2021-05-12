@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar backState="2000" title="通用方法示例"></nav-bar>
+		<z-nav-bar backState="2000" title="通用方法示例"></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
 		<view class="nav_list" @click="onPageJump('/pages/sdkDemo/request')">
@@ -68,11 +68,7 @@
 </template>
 
 <script>
-import zNavigation from '@/components/module/navigation.vue';
 export default {
-	components: {
-		zNavigation
-	},
 	data() {
 		return {};
 	},

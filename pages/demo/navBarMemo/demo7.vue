@@ -1,12 +1,12 @@
 <template>
 	<view class="content">
 		<!-- 示例代码 开始-->
-		<nav-bar title="中插槽-搜索框">
+		<z-nav-bar title="中插槽-搜索框">
 			<view class="search_box">
 				<text class="icon_search"></text>
 				<text class="prompt">搜索目的地/职位等</text>
 			</view>
-		</nav-bar>
+		</z-nav-bar>
 		<!---示例代码 结束---->
 		<image src="../../../static/demo/2.jpg" mode="widthFix"></image>
 		<image src="../../../static/demo/1.jpg" mode="widthFix"></image>

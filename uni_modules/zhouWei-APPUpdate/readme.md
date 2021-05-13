@@ -41,8 +41,12 @@
 ### 第一步`关键`配置APP更新接口（可以参考上面的示例）
 在项目目录下`config/componentConfig.js`里面如下配置
 ```
-// 此方法是接口请求方法
-import $http from '@/config/requestConfig'
+/**** 此文件说明请看注释 *****/
+// 可以用自己项目的请求方法
+// 请求配置说明：https://ext.dcloud.net.cn/plugin?id=822
+import $http from '@/config/requestConfig';
+/**** 结束 *****/
+const platform = uni.getSystemInfoSync().platform;
 export default {
 	// 发起ajax请求获取服务端版本号
 	getServerNo: (version, isPrompt = false, callback) => {
@@ -126,9 +130,6 @@ onLaunch: function(e) {
 <uses-permission android:name=\"android.permission.INSTALL_PACKAGES\"/>  
 <uses-permission android:name=\"android.permission.REQUEST_INSTALL_PACKAGES\"/>
 ```
-
-### 修改弹窗的主题色或弹窗图标
-在`APPUpdate/index.js`里面上面`$mainColor`常量中定义主题颜色，`$iconUrl`常量中定义图标地址
 
 ### 检查APP是否有新版本（一般在设置页面使用）
 ```

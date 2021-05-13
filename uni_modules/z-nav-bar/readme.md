@@ -38,27 +38,27 @@ export default {
 ### 案例一
 默认特性：左上角有返回箭头，nav-bar导航固定在顶部、标题居中
 ```
-<nav-bar>我的</nav-bar>
+<z-nav-bar>我的</z-nav-bar>
 ```
 
 ### 案例二
 特性：无返回箭头、字体色为白色、标题左对齐、nav-bar导航透明并不固定在顶部、右边插槽有按钮
 ```
-<nav-bar backState="2000" fontColor="#FFF" :titleCenter="false" type="transparent" title="我的">
+<z-nav-bar backState="2000" fontColor="#FFF" :titleCenter="false" type="transparent" title="我的">
 	<view class="icon_setUp" slot="right">设置</view>
-</nav-bar>
+</z-nav-bar>
 ```
 
 ### 案例三：颜色渐变导航
 特性：颜色渐变导航
 ```
-<nav-bar home :bgColor="['#f37402','#0f0']" bgColorAngle="90" fontColor="#FFF" title="颜色渐变导航"></nav-bar>
+<z-nav-bar home :bgColor="['#f37402','#0f0']" bgColorAngle="90" fontColor="#FFF" title="颜色渐变导航"></z-nav-bar>
 ```
 
 ### 案例四：颜色渐变导航
 特性：颜色渐变导航
 ```
-<nav-bar :bgColor="bgColorList" bgColorAngle="45" fontColor="#FFF" title="颜色渐变导航"></nav-bar>
+<z-nav-bar :bgColor="bgColorList" bgColorAngle="45" fontColor="#FFF" title="颜色渐变导航"></z-nav-bar>
 <!-- bgColor值 -->
 bgColorList:[
 	{color:"#f37402",scale:"0%"},
@@ -71,10 +71,10 @@ bgColorList:[
 ### 案例五：滑动透明导航
 特性：有返回箭头、nav-bar导航透明并固定在顶部、透明状态字体为白色、页面想下滑动nav-bar导航条逐渐变白色、右边插槽有按钮
 ```
-<nav-bar ref="navBar" :scrollTop="scrollTop" transparentFixedFontColor="#FFF" type="transparentFixed" title="我的简历">
+<z-nav-bar ref="navBar" :scrollTop="scrollTop" transparentFixedFontColor="#FFF" type="transparentFixed" title="我的简历">
 	<view class="transparent_fixed_preview" slot="transparentFixedRight" @click="onPreview">预览</view> //透明状态下的按钮
 	<view class="preview" slot="right" @click="onPreview">预览</view> //不状态下的按钮
-</nav-bar>
+</z-nav-bar>
 ```
 ```
 //设置滚动值方法一：
@@ -95,13 +95,13 @@ onPageScroll (e) {
 ### 案例六：搜索框|地区选择
 特性：无返回箭头、nav-bar导航固定在顶部、地区选择、搜索框
 ```
-<nav-bar backState="2000">
+<z-nav-bar backState="2000">
 	<view slot="left" class="address_select">深圳市</view>
 	<view slot="right" class="search_box" @click="onPageJump('/pages/home/search')">
 		<text class="icon_search"></text>
 		<text class="tips">搜索目的地/职位等</text>
 	</view>
-</nav-bar>
+</z-nav-bar>
 ```
 
 ### 属性

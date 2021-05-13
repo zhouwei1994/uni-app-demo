@@ -13,7 +13,7 @@ import {
 // #endif
 let version_code = '';
 // #ifdef APP-PLUS
-import { getCurrentNo } from '@/plugins/APPUpdate';
+import { getCurrentNo } from '@/uni_modules/zhouWei-APPUpdate/js_sdk/appUpdate';
 setTimeout(() => {
 	getCurrentNo(function(res){
 		console.log("版本号",res);

@@ -29,7 +29,7 @@
 
 <script>
 // #ifdef APP-PLUS
-import APPUpdate, { getCurrentNo } from '@/plugins/APPUpdate';
+import APPUpdate, { getCurrentNo } from '@/uni_modules/zhouWei-APPUpdate/js_sdk/appUpdate';
 // #endif
 export default {
 	data() {

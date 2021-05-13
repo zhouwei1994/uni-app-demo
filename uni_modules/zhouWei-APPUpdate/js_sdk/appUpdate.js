@@ -2,9 +2,9 @@
 import componentConfig from "@/config/componentConfig"
 const platform = uni.getSystemInfoSync().platform;
 // 主颜色
-const $mainColor = "FF5B78";
+const $mainColor = componentConfig.appUpdateColor ? componentConfig.appUpdateColor : "FF5B78";
 // 弹窗图标url
-const $iconUrl = "./../static/ic_ar.png";
+const $iconUrl = componentConfig.appUpdateIcon ? componentConfig.appUpdateIcon : "/uni_modules/zhouWei-APPUpdate/static/ic_ar.png";
 
 // 获取当前应用的版本号
 export const getCurrentNo = function(callback) {

@@ -1,4 +1,5 @@
 import $http from '@/config/requestConfig'
+const platform = uni.getSystemInfoSync().platform;
 export default {
 	/****************以下是z-nav-bar插件配置*******************/
 	// 主页页面的页面路径
@@ -62,5 +63,9 @@ export default {
 			}
 		});
 		/****************以上是示例*******************/
-	}
+	},
+	// 弹窗主颜色（不填默认粉色）
+	appUpdateColor: "f00",
+	// 弹窗图标（不填显示默认图标，链接配置示例如： '/static/demo/ic_attention.png'）
+	appUpdateIcon: ''
 }

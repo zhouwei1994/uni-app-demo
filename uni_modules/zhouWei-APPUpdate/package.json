@@ -1,12 +1,13 @@
 {
   "id": "zhouWei-APPUpdate",
-  "displayName": "APP版本更新、强制更新、漂亮弹窗、下载进度（wgt更新）",
-  "version": "3.0.0",
-  "description": "APP版本更新、强制更新、漂亮弹窗、下载进度（wgt更新）",
+  "displayName": "APP版本更新、强制更新、静默更新、下载进度（wgt更新）",
+  "version": "3.0.1",
+  "description": "APP版本更新、强制更新、静默更新、漂亮弹窗、下载进度（wgt更新）",
   "keywords": [
     "APP版本更新",
     "强制更新",
-    "版本更新"
+    "版本更新",
+    "静默更新"
 ],
   "repository": "https://github.com/zhouwei1994/uni-app-demo",
   "engines": {

@@ -61,15 +61,19 @@ export const checkIdCard = function(sIdCard) {
  * 时间转换为XX前
  */
 export const clickDateDiff = function(value) {
+	let dataValue = value;
+	if (typeof value == "string") {
+	  dataValue = new Date(value.replace(/-/g, "/")).getTime();
+	}
 	var result;
 	var minute = 1000 * 60;
 	var hour = minute * 60;
 	var day = hour * 24;
 	var month = day * 30;
 	var now = new Date().getTime();
-	var diffValue = parseInt(now) - parseInt(value);
+	var diffValue = parseInt(now) - parseInt(dataValue);
 	if (diffValue < 0) {
-		return;
+	  return;
 	}
 	var monthC = diffValue / month;
 	var weekC = diffValue / (7 * day);
@@ -77,17 +81,17 @@ export const clickDateDiff = function(value) {
 	var hourC = diffValue / hour;
 	var minC = diffValue / minute;
 	if (monthC >= 1) {
-		result = "" + parseInt(monthC) + '月前';
+	  result = "" + parseInt(monthC) + '月前';
 	} else if (weekC >= 1) {
-		result = "" + parseInt(weekC) + '周前';
+	  result = "" + parseInt(weekC) + '周前';
 	} else if (dayC >= 1) {
-		result = "" + parseInt(dayC) + '天前';
+	  result = "" + parseInt(dayC) + '天前';
 	} else if (hourC >= 1) {
-		result = "" + parseInt(hourC) + '小时前';
+	  result = "" + parseInt(hourC) + '小时前';
 	} else if (minC >= 1) {
-		result = "" + parseInt(minC) + '分钟前';
+	  result = "" + parseInt(minC) + '分钟前';
 	} else {
-		result = '刚刚';
+	  result = '刚刚';
 	}
 	return result;
 };
@@ -569,7 +573,25 @@ Vue.filter('timeFormat', function(val, fmt = 'yyyy-MM-dd hh:mm:ss') {
 		return "";
 	}
 });
-
+//时间距离现在多少天前
+Vue.filter('dateDiff', function(val) {
+	if (val) {
+		return clickDateDiff(val);
+	} else {
+		return "";
+	}
+});
+// 时间距离现在多少天前
+Vue.filter('timeFormat', function(val, fmt = 'yyyy-MM-dd hh:mm:ss') {
+	if (val) {
+		if(typeof val == "string"){
+			let timeText = val.replace(/-/g, "/");
+			return new Date(timeText).format(fmt);
+		} else if(typeof val == "number"){
+			return new Date(val).format(fmt);
+		}
+	}
+});
 // #ifdef APP-PLUS
 // 文字换行
 function drawtext(text, maxWidth) {

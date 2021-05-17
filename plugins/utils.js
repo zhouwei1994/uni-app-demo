@@ -386,7 +386,6 @@ export const saveVideo = function(url, callback) {
 										});
 									},
 									fail(e) {
-										console.log("-----------------2", e);
 										uni.hideLoading();
 										tip({
 											title: '下载失败，错误原因：' + e.errMsg,

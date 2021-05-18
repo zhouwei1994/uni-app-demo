@@ -22,6 +22,9 @@ export const chooseImage = function(data) {
 			sizeType: data.sizeType || ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
 			sourceType: data.sourceType || ['album', 'camera'], //从相册选择
 			success: function(res) {
+				for (var i = 0; i < res.tempFiles.length; i++) {
+					res.tempFiles[i].fileType = "image"
+				}
 				resolve(res.tempFiles);
 			},
 			fail: err => {
@@ -44,7 +47,8 @@ export const chooseVideo = function(data) {
 			camera: data.camera || 'back', //'front'、'back'，默认'back'
 			success: function(res) {
 				let files = [{
-					path: res.tempFilePath
+					path: res.tempFilePath,
+					fileType: "video"
 				}];
 				// #ifdef APP-PLUS || H5 || MP-WEIXIN
 				files[0].duration = res.duration;

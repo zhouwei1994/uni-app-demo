@@ -1,7 +1,7 @@
 {
   "id": "zhouWei-request",
   "displayName": "request请求、配置简单、批量上传图片、视频、超强适应性（支持多域名请求）",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "适用于一项目多域名请求、七牛云图片上传、本地服务器图片上传、支持 Promise",
   "keywords": [
     "request",

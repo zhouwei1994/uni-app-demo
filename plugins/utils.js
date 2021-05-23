@@ -564,7 +564,7 @@ Vue.filter('money', function(val) {
 		return "0.00";
 	}
 });
-//时间距离现在多少天前
+//时间格式化
 Vue.filter('dateDiff', function(val) {
 	if (val) {
 		return clickDateDiff(val);

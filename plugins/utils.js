@@ -564,14 +564,6 @@ Vue.filter('money', function(val) {
 		return "0.00";
 	}
 });
-//时间格式化
-Vue.filter('timeFormat', function(val, fmt = 'yyyy-MM-dd hh:mm:ss') {
-	if (val) {
-		return new Date(val).format(fmt);
-	} else {
-		return "";
-	}
-});
 //时间距离现在多少天前
 Vue.filter('dateDiff', function(val) {
 	if (val) {
@@ -589,6 +581,8 @@ Vue.filter('timeFormat', function(val, fmt = 'yyyy-MM-dd hh:mm:ss') {
 		} else if(typeof val == "number"){
 			return new Date(val).format(fmt);
 		}
+	} else {
+		return "";
 	}
 });
 // #ifdef APP-PLUS

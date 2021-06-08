@@ -98,8 +98,12 @@ $http.requestStart = function(options) {
 	}
 	// #endif
 	//请求前加入token
-	if (store.state.userInfo.token) {
-		options.header['user_token'] = store.state.userInfo.token;
+	let storeUserInfo = store.state.userInfo;
+	if(!storeUserInfo.token){ // nvue页面读取不到vuex里面数据，将取缓存
+	    storeUserInfo = uni.getStorageSync("userInfo");
+	}
+	if (storeUserInfo.token) {
+		options.header['user_token'] = storeUserInfo.token;
 	};
 	return options;
 }

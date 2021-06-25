@@ -135,13 +135,13 @@ function onShare(item, shareInfo,callback) {
 }
 let otherShareList = [
 	{
-		icon: "/static/share/icon_copy.png",
+		icon: "/uni_modules/zhouWei-APPshare/static/icon_copy.png",
 		text: "复制",
 		provider: "copy",
 		onClick: onCopy
 	},
 	{
-		icon: "/static/share/icon_more.png",
+		icon: "/uni_modules/zhouWei-APPshare/static/icon_more.png",
 		text: "更多",
 		provider: "more",
 		onClick: onMore
@@ -154,7 +154,7 @@ uni.getProvider({
 	success: function (res) {
 		if (res.provider.includes('sinaweibo')) {
 			platformShareList = [{
-				icon: "/static/share/icon_weibo.png", 
+				icon: "/uni_modules/zhouWei-APPshare/static/icon_weibo.png", 
 				text: "新浪微博",
 				onClick: onShare,
 				provider: "sinaweibo",
@@ -163,7 +163,7 @@ uni.getProvider({
 		}
 		if (res.provider.includes('qq')) {
 			platformShareList = [{
-				icon: "/static/share/icon_qq.png",
+				icon: "/uni_modules/zhouWei-APPshare/static/icon_qq.png",
 				text: "QQ",
 				onClick: onShare,
 				provider: "qq",
@@ -172,7 +172,7 @@ uni.getProvider({
 		}
 		if (res.provider.includes('weixin')) {
 			platformShareList = [{
-				icon: "/static/share/icon_weixin.png",
+				icon: "/uni_modules/zhouWei-APPshare/static/icon_weixin.png",
 				text: "微信好友",
 				onClick: onShare,
 				provider: "weixin",
@@ -180,7 +180,7 @@ uni.getProvider({
 				type: 0
 			},
 			{
-				icon: "/static/share/icon_pengyouquan.png",
+				icon: "/uni_modules/zhouWei-APPshare/static/icon_pengyouquan.png",
 				text: "朋友圈",
 				onClick: onShare,
 				provider: "weixin",
@@ -188,7 +188,7 @@ uni.getProvider({
 				type: 0
 			},
 			{
-				icon: "/static/share/ic_xiaochengxu.png",
+				icon: "/uni_modules/zhouWei-APPshare/static/ic_xiaochengxu.png",
 				text: "小程序",
 				onClick: onShare,
 				provider: "weixin",

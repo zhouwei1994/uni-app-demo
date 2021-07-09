@@ -109,7 +109,7 @@ export default class fileUpload extends request {
 		}
 	}
 	//阿里云上传视频
-	async qnVideoUpload(options = {}) {
+	async aliVideoUpload(options = {}) {
 		let files;
 		try {
 			files = await chooseVideo(options);

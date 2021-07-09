@@ -443,6 +443,63 @@ this.$http.qnFileUpload(
 	console.log("全部上传完返回结果：",res);
 });
 ```
+### 阿里云图片上传（支持多张上传）
+```
+this.$http.aliImgUpload({
+	count:"最大选择数", // 默认 9
+	sizeType:"选择压缩图原图，默认两个都选", // 默认 ['original', 'compressed']
+	sourceType:"选择相机拍照或相册上传 默认两个都选", // 默认 ['album','camera']
+	load: true, //（默认 true 说明：本接口是否提示加载动画）
+	maxSize: 300000, //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
+	onSelectComplete: res => {
+		console.log("选择完成返回：",res);
+	},
+	onEachUpdate: res => {
+		console.log("单张上传成功返回：",res);
+	},
+	onProgressUpdate: res => {
+		console.log("上传进度返回：",res);
+	}
+}).then(res => {
+	console.log("全部上传完返回结果：",res);
+});
+```
+### 阿里云视频上传
+```
+this.$http.aliVideoUpload({
+	sourceType:"选择相机拍照或相册上传 默认两个都选",//默认 ['album','camera']
+	compressed:"是否压缩所选的视频源文件，默认值为 true，需要压缩",//默认 false
+	maxDuration: "拍摄视频最长拍摄时间，单位秒。最长支持 60 秒", //默认 60
+	camera: '前置还是后置摄像头', //'front'、'back'，默认'back'
+	load: true,//（默认 true 说明：本接口是否提示加载动画）
+	maxSize: 300000, //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
+	onSelectComplete: res => {
+		console.log("选择完成返回：",res);
+	},
+	onProgressUpdate: res => {
+		console.log("上传进度返回：",res);
+	}
+}).then(res => {
+	console.log("全部上传完返回结果：",res);
+});
+```
+### 阿里云文件上传（支持多张上传）
+```
+this.$http.aliFileUpload(
+{
+	files:[], // 必填 临时文件路径 格式: [{path: "图片地址"}]
+	load: true, //（默认 true 说明：本接口是否提示加载动画）
+	maxSize: 300000, //（默认 无 说明：上传的文件最大字节数限制，默认不限制）
+	onEachUpdate: res => {
+		console.log("单张上传成功返回：",res);
+	},
+	onProgressUpdate: res => {
+		console.log("上传进度返回：",res);
+	}
+}).then(res => {
+	console.log("全部上传完返回结果：",res);
+});
+```
 ### jsonp 跨域请求（只支持H5）
 ```
 let data = await this.$http.jsonp('http://www.aaa.com/aid/region',{pid:0}, {

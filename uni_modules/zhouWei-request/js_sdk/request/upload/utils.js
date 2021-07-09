@@ -1,4 +1,5 @@
 const qiniuUploader = require("./qiniuUploader");
+const aliUploader =  require('./aliUploader');  
 //七牛云上传文件命名
 export const randomChar = function(l, url = "") {
 	const x = "0123456789qwertyuioplkjhgfdsazxcvbnm";
@@ -138,6 +139,85 @@ export const qiniuUpload = function(requestInfo, getQnToken) {
 			} else {
 				reject({
 					errMsg: "请添加七牛云回调方法：getQnToken",
+					statusCode: 0
+				});
+			}
+		} else {
+			reject({
+				errMsg: "files 必须是数组类型",
+				statusCode: 0
+			});
+		};
+	});
+}
+// 阿里云oss上传
+export const aliUpload = function(requestInfo, getAliToken) {
+	return new Promise((resolve, reject) => {
+		if (Array.isArray(requestInfo.files)) {
+			let len = requestInfo.files.length;
+			let fileList = new Array;
+			if (getAliToken) {
+				getAliToken(aliRes => {
+					/*
+					 *接口返回参数：
+					 *visitPrefix:访问文件的域名
+					 *folderPath:上传的文件夹
+					 *region: 地区 默认为：SCN
+					 *bucket: 您的 bucket
+					 *accessKeyId: 您的oss的访问ID
+					 *accessKeySecret: 您的oss的访问密钥
+					 *stsToken: 您的oss的访问token
+					 */
+                    let prefixLen = aliRes.visitPrefix.length;
+                    if(aliRes.visitPrefix.charAt(prefixLen - 1) == '/'){
+                        aliRes.visitPrefix = aliRes.visitPrefix.substring(0, prefixLen - 1)
+                    }
+					uploadFile(0);
+
+					function uploadFile(i) {
+						let item = requestInfo.files[i];
+						let updateUrl = randomChar(10, aliRes.folderPath);
+						let fileData = {
+							fileIndex: i,
+							files: requestInfo.files,
+							...item
+						};
+						if (item.name) {
+							fileData.name = item.name;
+							let nameArr = item.name.split(".");
+							updateUrl += "." + nameArr[nameArr.length - 1];
+						}
+						new aliUploader({
+							region: aliRes.region,  //区域   比如杭州的云仓库  oss-cn-hangzhou
+							secure: true,//*这句话很重要！！！！！！！！！ 
+							accessKeyId: aliRes.accessKeyId,  //您的oss的访问ID
+							accessKeySecret: aliRes.accessKeySecret,  //您的oss的访问密钥
+							bucket: aliRes.bucket,    //您的 bucket
+							stsToken: aliRes.stsToken,    //您的 bucket
+						}).multipartUpload(updateUrl, item, { 
+							progress: function (p, checkpoint) {
+								requestInfo.onProgressUpdate && requestInfo.onProgressUpdate(Object.assign({}, fileData, { progress: p }));
+							},
+						}).then(function (result) {
+							fileData.url = aliRes.visitPrefix + "/" + result.name;
+							requestInfo.onEachUpdate && requestInfo.onEachUpdate({
+								url: fileData.url,
+								...fileData
+							});
+							fileList.push(fileData.url);
+							if (len - 1 > i) {
+								uploadFile(i + 1);
+							} else {
+								resolve(fileList);
+							}
+						}).catch(function (err) {
+							reject(err);
+						});
+					}
+				});
+			} else {
+				reject({
+					errMsg: "请添加阿里云回调方法：getAliToken",
 					statusCode: 0
 				});
 			}

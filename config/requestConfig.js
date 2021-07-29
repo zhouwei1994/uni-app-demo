@@ -62,23 +62,18 @@ $http.getAliToken = function(callback){
 	$http.get("api/open/v1/ali_oss_upload").then(data => {
 		/*
 		 *接口返回参数：
-		 *visitPrefix: 访问文件的域名
-		 *folderPath: 上传的文件夹
-		 *region: 地区 
-		 *bucket: 阿里云的 bucket
-		 *accessKeyId: 阿里云的访问ID
-		 *accessKeySecret: 阿里云的访问密钥
-		 *stsToken: 阿里云的访问token
+		 *visitPrefix:访问文件的域名
+		 *folderPath:上传的文件夹
+		 *accessKeyId: 您的oss的访问ID
+		 *accessKeySecret: 您的oss的访问密钥
+		 *timeout: 签名过期时间（毫秒）默认1800000
 		 */
 		callback({
 			accessKeyId: data.accessKeyId,
 			accessKeySecret: data.accessKeySecret,
-			bucket: data.bucket,
-			region: data.region,
 			visitPrefix: data.visitPrefix,
-			token: data.token,
 			folderPath: data.folderPath,
-			stsToken: data.securityToken,
+			timeout: 1800000
 		});
 	});
 }

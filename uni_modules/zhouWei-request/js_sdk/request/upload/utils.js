@@ -162,12 +162,15 @@ export const aliUpload = function(requestInfo, getAliToken) {
 					 *接口返回参数：
 					 *visitPrefix:访问文件的域名
 					 *folderPath:上传的文件夹
-					 *region: 地区 默认为：SCN
-					 *bucket: 您的 bucket
 					 *accessKeyId: 您的oss的访问ID
 					 *accessKeySecret: 您的oss的访问密钥
-					 *stsToken: 您的oss的访问token
+					 * timeout: 签名过期时间（毫秒）
 					 */
+					let aliyunOssKey = aliUploader({
+						accessKeyId: aliRes.accessKeyId,
+						accessKeySecret: aliRes.accessKeySecret,
+						timeout: aliRes.timeout
+					});
                     let prefixLen = aliRes.visitPrefix.length;
                     if(aliRes.visitPrefix.charAt(prefixLen - 1) == '/'){
                         aliRes.visitPrefix = aliRes.visitPrefix.substring(0, prefixLen - 1)
@@ -187,31 +190,52 @@ export const aliUpload = function(requestInfo, getAliToken) {
 							let nameArr = item.name.split(".");
 							updateUrl += "." + nameArr[nameArr.length - 1];
 						}
-						new aliUploader({
-							region: aliRes.region,  //区域   比如杭州的云仓库  oss-cn-hangzhou
-							secure: true,//*这句话很重要！！！！！！！！！ 
-							accessKeyId: aliRes.accessKeyId,  //您的oss的访问ID
-							accessKeySecret: aliRes.accessKeySecret,  //您的oss的访问密钥
-							bucket: aliRes.bucket,    //您的 bucket
-							stsToken: aliRes.stsToken,    //您的 bucket
-						}).multipartUpload(updateUrl, item, { 
-							progress: function (p, checkpoint) {
-								requestInfo.onProgressUpdate && requestInfo.onProgressUpdate(Object.assign({}, fileData, { progress: p }));
-							},
-						}).then(function (result) {
-							fileData.url = aliRes.visitPrefix + "/" + result.name;
-							requestInfo.onEachUpdate && requestInfo.onEachUpdate({
-								url: fileData.url,
-								...fileData
-							});
-							fileList.push(fileData.url);
-							if (len - 1 > i) {
-								uploadFile(i + 1);
-							} else {
-								resolve(fileList);
+						if (item.path) {
+							let nameArr = item.path.split(".");
+							updateUrl += "." + nameArr[nameArr.length - 1];
+						}
+						console.log("----------111", {
+						  url: aliRes.visitPrefix, // 开发者服务器的URL。
+						  filePath: item.path,
+						  name: 'file', // 必须填file。
+						  formData: {
+						    key: updateUrl,
+						    policy: aliyunOssKey.policy,
+						    OSSAccessKeyId: aliyunOssKey.accessKeyId,
+						    signature: aliyunOssKey.signature,
+						  }});
+						uni.uploadFile({
+						  url: aliRes.visitPrefix, // 开发者服务器的URL。
+						  filePath: item.path,
+						  name: 'file', // 必须填file。
+						  formData: {
+						    key: updateUrl,
+						    policy: aliyunOssKey.policy,
+						    OSSAccessKeyId: aliyunOssKey.accessKeyId,
+						    signature: aliyunOssKey.signature,
+						  },
+						  success: (res) => {
+						    if (res.statusCode === 204) {
+								fileData.url = aliRes.visitPrefix + "/" + updateUrl;
+								requestInfo.onEachUpdate && requestInfo.onEachUpdate({
+									url: fileData.url,
+									...fileData
+								});
+								fileList.push(fileData.url);
+								if (len - 1 > i) {
+									uploadFile(i + 1);
+								} else {
+									resolve(fileList);
+								}
+						    } else {
+								console.log("----失败", res);
+								reject(res);
 							}
-						}).catch(function (err) {
-							reject(err);
+						  },
+						  fail: err => {
+							  console.log("----失败", err);
+						    reject(err);
+						  }
 						});
 					}
 				});

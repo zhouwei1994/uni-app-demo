@@ -284,8 +284,13 @@ export default function (shareInfo, callback) {
 		backgroundColor: 'rgba(0,0,0,0.5)'
 	});
 	alphaBg.addEventListener("click", function () { //处理遮罩层点击
-		alphaBg.close();
-		shareMenu.close();
+		alphaBg && alphaBg.close();
+		shareMenu && shareMenu.close();
+		if(showState){
+			showState = false;
+		} else {
+			showState = false;
+		}
 	});
 	let shareList = platformFilter(shareInfo);
 	shareMenu = new plus.nativeObj.View("shareMenu", { //创建底部图标菜单
@@ -357,8 +362,13 @@ export default function (shareInfo, callback) {
 	});
 	shareMenu.addEventListener("click", function (e) { //处理底部图标菜单的点击事件，根据点击位置触发不同的逻辑
 		if (e.screenY > plus.screen.resolutionHeight - 44) { //点击了底部取消按钮
-			alphaBg.close();
-			shareMenu.close();
+			alphaBg && alphaBg.close();
+			shareMenu && shareMenu.close();
+			if(showState){
+				showState = false;
+			} else {
+				showState = false;
+			}
 		} else if (e.clientX < 5 || e.clientX > screenWidth - 5 || e.clientY < 5) {
 			//屏幕左右边缘5像素及菜单顶部5像素不处理点击
 		} else { //点击了图标按钮
@@ -377,7 +387,13 @@ export default function (shareInfo, callback) {
 		close: function(){
 			alphaBg && alphaBg.close();
 			alphaBg && shareMenu.close();
-			showState = false;
+			if(showState){
+				showState = false;
+				return true
+			} else {
+				showState = false;
+				return false
+			}
 		}
 	};
 };

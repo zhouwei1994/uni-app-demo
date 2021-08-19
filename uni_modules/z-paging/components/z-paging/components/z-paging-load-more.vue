@@ -5,64 +5,66 @@
 
 <!-- 上拉加载更多view -->
 <template>
-	<view class="zp-load-more-container" :style="[config.loadingMoreCustomStyle]">
+	<view class="zp-load-more-container" :style="[zConfig.loadingMoreCustomStyle]">
 		<text
-			:class="config.defaultThemeStyle==='white'?'zp-loading-more-line zp-loading-more-line-white':'zp-loading-more-line zp-loading-more-line-black'"
-			:style="[config.loadingMoreNoMoreLineCustomStyle]"
-			v-if="config.showLoadingMoreNoMoreLine&&config.loadingStatus===2"></text>
+			:class="zConfig.defaultThemeStyle==='white'?'zp-loading-more-line zp-loading-more-line-white':'zp-loading-more-line zp-loading-more-line-black'"
+			:style="[zConfig.loadingMoreNoMoreLineCustomStyle]"
+			v-if="zConfig.showLoadingMoreNoMoreLine&&zConfig.loadingStatus===2"></text>
 		<!-- #ifndef APP-NVUE -->
-		<image v-if="config.loadingStatus===1&&config.loadingMoreLoadingIconCustomImage.length"
-			:src="config.loadingMoreLoadingIconCustomImage" class="zp-loading-more-line-loading-custom-image">
+		<image v-if="zConfig.loadingStatus===1&&zConfig.loadingMoreLoadingIconCustomImage.length"
+			:src="zConfig.loadingMoreLoadingIconCustomImage" :class="{'zp-loading-more-line-loading-custom-image':true,'zp-loading-more-line-loading-custom-image-animated':zConfig.loadingMoreLoadingAnimated}">
 		</image>
 		<image
-			v-if="config.loadingStatus===1&&config.loadingMoreLoadingIconType==='flower'&&!config.loadingMoreLoadingIconCustomImage.length"
-			class="zp-loading-more-line-loading-image" :style="[config.loadingMoreLoadingIconCustomStyle]"
-			:src="base64Flower">
+			v-if="zConfig.loadingStatus===1&&zConfig.loadingMoreLoadingIconType==='flower'&&!zConfig.loadingMoreLoadingIconCustomImage.length"
+			class="zp-loading-more-line-loading-image" :style="[zConfig.loadingMoreLoadingIconCustomStyle]"
+			:src="zConfig.defaultThemeStyle==='white'?base64FlowerWhite:base64Flower">
 		</image>
 		<!-- #endif -->
 		<!-- #ifdef APP-NVUE -->
 		<view>
-			<loading-indicator v-if="config.loadingStatus===1" :animating="true"
+			<loading-indicator v-if="zConfig.loadingStatus===1"
+				:style="[{color:zConfig.defaultThemeStyle==='white'?'white':'#777777'}]" :animating="true"
 				class="zp-loading-more-line-loading-image">
 			</loading-indicator>
 		</view>
 		<!-- #endif -->
 		<text
-			v-if="config.loadingStatus===1&&config.loadingMoreLoadingIconType==='circle'&&!config.loadingMoreLoadingIconCustomImage.length"
-			:class="config.defaultThemeStyle==='white'?'zp-loading-more-line-loading-view zp-loading-more-line-loading-view-white':'zp-loading-more-line-loading-view zp-loading-more-line-loading-view-black'"
-			:style="[config.loadingMoreLoadingIconCustomStyle]"></text>
+			v-if="zConfig.loadingStatus===1&&zConfig.loadingMoreLoadingIconType==='circle'&&!zConfig.loadingMoreLoadingIconCustomImage.length"
+			:class="zConfig.defaultThemeStyle==='white'?'zp-loading-more-line-loading-view zp-loading-more-line-loading-view-white':'zp-loading-more-line-loading-view zp-loading-more-line-loading-view-black'"
+			:style="[zConfig.loadingMoreLoadingIconCustomStyle]"></text>
 		<text
-			:class="config.defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{ownLoadingMoreText}}</text>
+			:class="zConfig.defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{ownLoadingMoreText}}</text>
 		<text
-			:class="config.defaultThemeStyle==='white'?'zp-loading-more-line zp-loading-more-line-white':'zp-loading-more-line zp-loading-more-line-black'"
-			:style="[config.loadingMoreNoMoreLineCustomStyle]"
-			v-if="config.showLoadingMoreNoMoreLine&&config.loadingStatus===2"></text>
+			:class="zConfig.defaultThemeStyle==='white'?'zp-loading-more-line zp-loading-more-line-white':'zp-loading-more-line zp-loading-more-line-black'"
+			:style="[zConfig.loadingMoreNoMoreLineCustomStyle]"
+			v-if="zConfig.showLoadingMoreNoMoreLine&&zConfig.loadingStatus===2"></text>
 	</view>
 </template>
 <script>
 	import zStatic from '../js/z-paging-static'
 	export default {
-		name: 'z-paging-refresh',
+		name: 'z-paging-load-more',
 		data() {
 			return {
 				base64Arrow: zStatic.base64Arrow,
 				base64Flower: zStatic.base64Flower,
-				loadingStatusTextMap: {
-					0: this.config.loadingMoreDefaultText,
-					1: this.config.loadingMoreLoadingText,
-					2: this.config.loadingMoreNoMoreText,
-					3: this.config.loadingMoreFailText,
-				},
+				base64FlowerWhite: zStatic.base64FlowerWhite,
 			};
 		},
-		props: ['config'],
+		props: ['zConfig'],
 		computed: {
 			ownLoadingMoreText() {
-				if (this.config.loadingMoreText.length) {
-					return this.config.loadingMoreText;
-				}
-				return this.loadingStatusTextMap[this.config.loadingStatus];
+				const loadingMoreText = this.loadingStatusTextMap[this.zConfig.loadingStatus];
+				return loadingMoreText;
 			},
+			loadingStatusTextMap() {
+				return {
+					0: this.zConfig.loadingMoreDefaultText,
+					1: this.zConfig.loadingMoreLoadingText,
+					2: this.zConfig.loadingMoreNoMoreText,
+					3: this.zConfig.loadingMoreFailText,
+				}
+			}
 		}
 	}
 </script>
@@ -72,7 +74,7 @@
 
 	.zp-load-more-container {
 		height: 80rpx;
-		font-size: 26rpx;
+		font-size: 27rpx;
 		/* #ifndef APP-NVUE */
 		clear: both;
 		display: flex;
@@ -87,6 +89,9 @@
 		margin-right: 8rpx;
 		width: 28rpx;
 		height: 28rpx;
+	}
+	
+	.zp-loading-more-line-loading-custom-image-animated{
 		/* #ifndef APP-NVUE */
 		animation: loading-circle 1s linear infinite;
 		/* #endif */
@@ -139,7 +144,7 @@
 	}
 
 	.zp-loading-more-line-white {
-		background-color: #cccccc;
+		background-color: #efefef;
 	}
 
 	@keyframes loading-circle {

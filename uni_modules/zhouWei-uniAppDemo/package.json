@@ -1,7 +1,7 @@
 {
   "id": "zhouWei-uniAppDemo",
   "displayName": "uni-app项目架构模板（适合快速开发，请下载示例）",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "一个5年的web前端开源的uni-app快速开发模板，参考学习一同进步，建议uni-app使用时间达到1年以上的程序员来学习",
   "keywords": [
     "项目模板",
@@ -17,7 +17,7 @@
   "dcloudext": {
     "category": [
         "uni-app前端模板",
-        "前端页面模板"
+        "vue 页面模板"
     ],
     "sale": {
       "regular": {

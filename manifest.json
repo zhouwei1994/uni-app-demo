@@ -32,9 +32,9 @@
             "Share" : {}
         },
         "distribute" : {
-			"apple" : {
-			    "devices" : "universal"
-			},
+            "apple" : {
+                "devices" : "universal"
+            },
             "android" : {
                 "permissionPhoneState" : {
                     "request" : "none",

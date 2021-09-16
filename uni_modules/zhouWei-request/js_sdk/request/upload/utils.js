@@ -194,16 +194,6 @@ export const aliUpload = function(requestInfo, getAliToken) {
 							let nameArr = item.path.split(".");
 							updateUrl += "." + nameArr[nameArr.length - 1];
 						}
-						console.log("----------111", {
-						  url: aliRes.visitPrefix, // 开发者服务器的URL。
-						  filePath: item.path,
-						  name: 'file', // 必须填file。
-						  formData: {
-						    key: updateUrl,
-						    policy: aliyunOssKey.policy,
-						    OSSAccessKeyId: aliyunOssKey.accessKeyId,
-						    signature: aliyunOssKey.signature,
-						  }});
 						uni.uploadFile({
 						  url: aliRes.visitPrefix, // 开发者服务器的URL。
 						  filePath: item.path,
@@ -228,12 +218,10 @@ export const aliUpload = function(requestInfo, getAliToken) {
 									resolve(fileList);
 								}
 						    } else {
-								console.log("----失败", res);
 								reject(res);
 							}
 						  },
 						  fail: err => {
-							  console.log("----失败", err);
 						    reject(err);
 						  }
 						});

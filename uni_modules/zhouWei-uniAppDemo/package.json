@@ -1,7 +1,7 @@
 {
   "id": "zhouWei-uniAppDemo",
   "displayName": "uni-app项目架构模板（适合快速开发，请下载示例）",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "一个5年的web前端开源的uni-app快速开发模板，参考学习一同进步，建议uni-app使用时间达到1年以上的程序员来学习",
   "keywords": [
     "项目模板",
@@ -73,6 +73,10 @@
         "快应用": {
           "华为": "u",
           "联盟": "u"
+        },
+        "Vue": {
+            "vue2": "y",
+            "vue3": "u"
         }
       }
     }

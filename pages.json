@@ -353,7 +353,16 @@
 				"navigationBarTitleText": "推广海报生成"
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/demo/datePopup",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "日期时间选择器",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

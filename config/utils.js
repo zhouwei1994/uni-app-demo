@@ -11,6 +11,31 @@ export const publicShare = publicShareFun;
 import appShareFun, {closeShare} from '@/uni_modules/zhouWei-APPshare/js_sdk/appShare';
 // APP分享
 export const appShare = function(data,callbcak){
+	let userInfo = store.state.userInfo;
+	if(!(userInfo && userInfo.uid)){
+		userInfo = uni.getStorageSync("userInfo");
+	}
+	let shareData = {
+		shareTitle: data.shareTitle || base.share.title,
+		shareUrl: data.shareUrl || base.share.link,
+		shareContent: data.shareContent || base.share.desc,
+		shareImg: data.shareImg || base.share.imgUrl,
+	}
+	if (userInfo && userInfo.uid) {
+		if(data.shareUrl){
+			if(data.shareUrl.indexOf("?") >= 0){
+				shareData.shareUrl = data.shareUrl + "&recommend=" + userInfo.uid
+			} else {
+				shareData.shareUrl = data.shareUrl + "?recommend=" + userInfo.uid
+			}
+		} else if(base.share && base.share.link){
+			if(base.share.link.indexOf("?") >= 0){
+				shareData.shareUrl = base.share.link + "&recommend=" + userInfo.uid
+			} else {
+				shareData.shareUrl = base.share.link + "?recommend=" + userInfo.uid
+			}
+		}
+	}
 	return appShareFun({
 		shareTitle: data.shareTitle || base.share.title,
 		shareUrl: data.shareUrl || base.share.link,

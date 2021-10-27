@@ -135,13 +135,13 @@ function onShare(item, shareInfo,callback) {
 }
 let otherShareList = [
 	{
-		icon: "/static/share/icon_copy.png",
+		icon: "/uni_modules/zhouWei-APPshare/static/icon_copy.png",
 		text: "复制",
 		provider: "copy",
 		onClick: onCopy
 	},
 	{
-		icon: "/static/share/icon_more.png",
+		icon: "/uni_modules/zhouWei-APPshare/static/icon_more.png",
 		text: "更多",
 		provider: "more",
 		onClick: onMore
@@ -154,7 +154,7 @@ uni.getProvider({
 	success: function (res) {
 		if (res.provider.includes('sinaweibo')) {
 			platformShareList = [{
-				icon: "/static/share/icon_weibo.png", 
+				icon: "/uni_modules/zhouWei-APPshare/static/icon_weibo.png", 
 				text: "新浪微博",
 				onClick: onShare,
 				provider: "sinaweibo",
@@ -163,7 +163,7 @@ uni.getProvider({
 		}
 		if (res.provider.includes('qq')) {
 			platformShareList = [{
-				icon: "/static/share/icon_qq.png",
+				icon: "/uni_modules/zhouWei-APPshare/static/icon_qq.png",
 				text: "QQ",
 				onClick: onShare,
 				provider: "qq",
@@ -172,7 +172,7 @@ uni.getProvider({
 		}
 		if (res.provider.includes('weixin')) {
 			platformShareList = [{
-				icon: "/static/share/icon_weixin.png",
+				icon: "/uni_modules/zhouWei-APPshare/static/icon_weixin.png",
 				text: "微信好友",
 				onClick: onShare,
 				provider: "weixin",
@@ -180,7 +180,7 @@ uni.getProvider({
 				type: 0
 			},
 			{
-				icon: "/static/share/icon_pengyouquan.png",
+				icon: "/uni_modules/zhouWei-APPshare/static/icon_pengyouquan.png",
 				text: "朋友圈",
 				onClick: onShare,
 				provider: "weixin",
@@ -188,7 +188,7 @@ uni.getProvider({
 				type: 0
 			},
 			{
-				icon: "/static/share/ic_xiaochengxu.png",
+				icon: "/uni_modules/zhouWei-APPshare/static/ic_xiaochengxu.png",
 				text: "小程序",
 				onClick: onShare,
 				provider: "weixin",
@@ -284,8 +284,13 @@ export default function (shareInfo, callback) {
 		backgroundColor: 'rgba(0,0,0,0.5)'
 	});
 	alphaBg.addEventListener("click", function () { //处理遮罩层点击
-		alphaBg.close();
-		shareMenu.close();
+		alphaBg && alphaBg.close();
+		shareMenu && shareMenu.close();
+		if(showState){
+			showState = false;
+		} else {
+			showState = false;
+		}
 	});
 	let shareList = platformFilter(shareInfo);
 	shareMenu = new plus.nativeObj.View("shareMenu", { //创建底部图标菜单
@@ -357,8 +362,13 @@ export default function (shareInfo, callback) {
 	});
 	shareMenu.addEventListener("click", function (e) { //处理底部图标菜单的点击事件，根据点击位置触发不同的逻辑
 		if (e.screenY > plus.screen.resolutionHeight - 44) { //点击了底部取消按钮
-			alphaBg.close();
-			shareMenu.close();
+			alphaBg && alphaBg.close();
+			shareMenu && shareMenu.close();
+			if(showState){
+				showState = false;
+			} else {
+				showState = false;
+			}
 		} else if (e.clientX < 5 || e.clientX > screenWidth - 5 || e.clientY < 5) {
 			//屏幕左右边缘5像素及菜单顶部5像素不处理点击
 		} else { //点击了图标按钮
@@ -377,7 +387,13 @@ export default function (shareInfo, callback) {
 		close: function(){
 			alphaBg && alphaBg.close();
 			alphaBg && shareMenu.close();
-			showState = false;
+			if(showState){
+				showState = false;
+				return true
+			} else {
+				showState = false;
+				return false
+			}
 		}
 	};
 };

@@ -45,7 +45,32 @@ $http.getQnToken = function(callback){
 		});
 	});
 }
-
+// 添加获取阿里云token的方法
+$http.getAliToken = function(callback){
+	//该地址需要开发者自行配置（每个后台的接口风格都不一样）
+	$http.get("api/open/v1/ali_oss_upload").then(data => {
+		/*
+		 *接口返回参数：
+		 *visitPrefix: 访问文件的域名
+		 *folderPath: 上传的文件夹
+		 *region: 地区 
+		 *bucket: 阿里云的 bucket
+		 *accessKeyId: 阿里云的访问ID
+		 *accessKeySecret: 阿里云的访问密钥
+		 *stsToken: 阿里云的访问token
+		 */
+		callback({
+			accessKeyId: data.accessKeyId,
+			accessKeySecret: data.accessKeySecret,
+			bucket: data.bucket,
+			region: data.region,
+			visitPrefix: data.visitPrefix,
+			token: data.token,
+			folderPath: data.folderPath,
+			stsToken: data.securityToken,
+		});
+	});
+}
 //当前接口请求数
 let requestNum = 0;
 //请求开始拦截器
@@ -60,19 +85,31 @@ $http.requestStart = function(options) {
 		}
 		requestNum += 1;
 	}
-	// 图片上传大小限制
-	if (options.method == "FILE" && options.maxSize) {
+	// 图片、视频上传大小限制
+	if (options.method == "FILE") {
 		// 文件最大字节: options.maxSize 可以在调用方法的时候加入参数
-		const maxSize = options.maxSize;
+		let maxSize = options.maxSize || '';
 		for (let item of options.files) {
-			if (item.size > maxSize) {
-				setTimeout(() => {
-					uni.showToast({
-						title: "图片过大，请重新上传",
-						icon: "none"
-					});
-				}, 500);
-				return false;
+			if(item.fileType == 'image'){
+				if (maxSize && item.size > maxSize) {
+					setTimeout(() => {
+						uni.showToast({
+							title: "图片过大，请重新上传",
+							icon: "none"
+						});
+					}, 500);
+					return false;
+				}
+			} else if(item.fileType == "video"){
+				if (item.duration < 3) {
+					setTimeout(() => {
+						uni.showToast({
+							title: "视频长度不足3秒，请重新上传",
+							icon: "none"
+						});
+					}, 500);
+					return false;
+				}
 			}
 		}
 	}

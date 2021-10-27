@@ -5,7 +5,7 @@
 		<!-- 遮罩层动画 -->
 		<view class="popup_mask" @click="hideOnBlur && setAnimationHide()"></view>
 		<!-- 显示信息层 -->
-		<view class="popup_container" ref="popupContainer" :class="{'popup_container_bottom': type == 'bottom' ,'popup_container_center':type == 'center', 'popup_container_top': type == 'top'}" :style="containerStyle">
+		<view class="popup_container" ref="popupContainer" :class="{'popup_container_bottom': type == 'bottom' ,'popup_container_center':type == 'center', 'popup_container_top': type == 'top'}" :style="{opacity: opacity, transform: transform}">
 			<slot></slot>
 		</view>
 	</view>
@@ -62,18 +62,6 @@
 				}
 			},
 		},
-		computed: {
-			containerStyle(){
-				let style = {
-					opacity: this.opacity
-				};
-				if(this.transform){
-					style.transform = this.transform;
-				}
-				console.log(style);
-				return style;
-			}
-		},
 		created() {
 			this.systemInfo = uni.getSystemInfoSync();
 			if (typeof this.value !== "undefined") {
@@ -114,22 +102,21 @@
 			setAnimationShow() {
 				this.currentValue = true;
 				this.$nextTick(() => {
-					setTimeout(() => {
 						this.timer && clearTimeout(this.timer);
 						this.$emit("input", true);
 						this.$emit("change", true);
 						if (this.type == "bottom") {
-							this.animationParsing({
-								translateY: 0,
-								defaulTranslateY: 1,
-								opacity: 1
-							});
 							this.popupTop = "0rpx";
 							if(this.offset > 0){
 								this.popupBottom = this.offset + "rpx";
 							} else {
 								this.popupBottom = this.getPxRpx(this.systemInfo.windowBottom) + "rpx";
 							}
+							this.animationParsing({
+								translateY: 0,
+								defaulTranslateY: 1,
+								opacity: 1
+							});
 						} else if (this.type == "center") {
 							this.popupTop = "0rpx";
 							this.popupBottom = "0rpx";
@@ -139,11 +126,6 @@
 								opacity: 1
 							});
 						} else if (this.type == "top") {
-							this.animationParsing({
-								defaulTranslateY: -1,
-								translateY: 0,
-								opacity: 1
-							});
 							this.popupBottom = "0rpx";
 							if(this.offset > 0){
 								this.popupTop = (this.offset + this.getPxRpx(this.systemInfo.statusBarHeight)) +  "rpx";
@@ -152,32 +134,28 @@
 								this.popupTop = "0rpx";
 								this.maskTop = "0rpx";
 							}
+							this.animationParsing({
+								defaulTranslateY: -1,
+								translateY: 0,
+								opacity: 1
+							});
 						}
 					});
-				});
+				
 			},
 			setAnimationHide() {
 				this.timer && clearTimeout(this.timer);
-				this.timer = setTimeout(() => {
-					this.currentValue = false;
-					this.$emit("input", false);
-					this.$emit("change", false);
-				}, 300);
 				if (this.type == "bottom") {
 					this.animationParsing({
 						defaulTranslateY: 0,
 						translateY: 1,
 						opacity: 0
 					});
-					this.timer = setTimeout(() => {
-						this.popupTop = "inherit";
-						this.popupBottom = "0rpx";
-						this.maskTop = "0rpx";
-						this.maskBottom = "0rpx";
-					},300);
+					// this.popupTop = "inherit";
+					// this.popupBottom = "0rpx";
 				} else if (this.type == "center") {
-					this.popupTop = "0rpx";
-					this.popupBottom = "0rpx";
+					// this.popupTop = "0rpx";
+					// this.popupBottom = "0rpx";
 					this.animationParsing({
 						scale: 0,
 						defaulScale: 1,
@@ -189,28 +167,31 @@
 						translateY: -1,
 						opacity: 0
 					});
-					this.timer = setTimeout(() => {
-						this.popupTop = "0rpx";
-						this.popupBottom = "inherit";
-						this.maskTop = "0rpx";
-						this.maskBottom = "0rpx";
-					}, 300);
+					// this.popupTop = "0rpx";
+					// this.popupBottom = "inherit";
 				}
+				this.timer = setTimeout(() => {
+					this.currentValue = false;
+					this.$emit("input", false);
+					this.$emit("change", false);
+				}, 300);
 			},
 			animationParsing(data){
 				// #ifndef APP-NVUE
-				let transform = "";
-				if(data.hasOwnProperty("translateX")){
-					transform += " translateX("+ (data.translateX * 100) +"%)"
-				}
-				if(data.hasOwnProperty("translateY")){
-					transform += " translateY("+ (data.translateY * 100) +"%)"
-				}
-				if(data.hasOwnProperty("scale")){
-					transform += " scale("+ data.scale +")"
-				}
-				this.opacity = data.opacity;
-				this.transform = transform;
+				setTimeout(() => {
+					let transform = "";
+					if(data.hasOwnProperty("translateX")){
+						transform += " translateX("+ (data.translateX * 100) +"%)"
+					}
+					if(data.hasOwnProperty("translateY")){
+						transform += " translateY("+ (data.translateY * 100) +"%)"
+					}
+					if(data.hasOwnProperty("scale")){
+						transform += " scale("+ data.scale +")"
+					}
+					this.opacity = data.opacity;
+					this.transform = transform;
+				},10);
 				// #endif
 				// #ifdef APP-NVUE
 				let popupContainer = this.$refs.popupContainer;

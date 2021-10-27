@@ -1,0 +1,346 @@
+// z-paging
+// github地址:https://github.com/SmileZXLee/uni-z-paging
+// dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
+// 反馈QQ群：790460711
+// 微信小程序、QQ小程序、app-vue、h5上使用wxs实现自定义下拉刷新，降低逻辑层与视图层的通信折损，提升性能
+
+var currentMoveDistance = 0;
+
+function propObserver(newValue, oldValue, ownerInstance, instance) {
+	var state = ownerInstance.getState();
+	state.currentInstance = instance;
+	var dataset = instance.getDataset();
+	var loading = dataset.loading == true;
+	if (newValue.indexOf('end') != -1) {
+		_setTransform('translateY(0px)', instance)
+		state.moveDistance = 0;
+		state.oldMoveDistance = 0;
+		currentMoveDistance = 0;
+	} else if (newValue.indexOf('begin') != -1) {
+		var refresherThreshold = instance.getDataset().refresherthreshold
+		_setTransformValue(refresherThreshold, instance, state);
+	}
+}
+
+function touchstart(e, ownerInstance) {
+	var instance = ownerInstance.getState().currentInstance;
+	var state = instance.getState();
+	var dataset = instance.getDataset();
+	var isTouchEnded = state.isTouchEnded;
+	if (_getRefresherTouchDisabled(e, instance, 0)) {
+		return;
+	}
+	state.oldMoveDistance = 0;
+	var touch = _getCommonTouch(e);
+	var loading = _getIsTrue(dataset.loading);
+	state.startY = touch.touchY;
+	state.lastRefresherTouchmove = touch;
+	if (!loading && isTouchEnded) {
+		state.isTouchmoving = false;
+	}
+	state.isTouchEnded = false;
+	ownerInstance.callMethod('_handleRefresherTouchstart', touch);
+}
+
+function touchmove(e, ownerInstance) {
+	var touch = _getCommonTouch(e);
+	var instance = ownerInstance.getState().currentInstance;
+	var dataset = instance.getDataset();
+	var refresherThreshold = dataset.refresherthreshold;
+	var state = instance.getState();
+	if (_getRefresherTouchDisabled(e, instance, 1)) {
+		_handleTouchMovePullingDown(state, ownerInstance, false);
+		return true;
+	}
+	if (!_getAngleIsInRange(e, touch, state, dataset)) {
+		_handleTouchMovePullingDown(state, ownerInstance, false);
+		return true;
+	}
+	var moveDistanceObj = _getMoveDistance(e, instance);
+	var moveDistance = moveDistanceObj.currentMoveDistance;
+	var prevent = moveDistanceObj.isDown;
+	if (moveDistance < 0) {
+		_setTransformValue(0, instance, state);
+		_handleTouchMovePullingDown(state, ownerInstance, false);
+		return true;
+	}
+	if (prevent && !state.disabledBounce) {
+		ownerInstance.callMethod('_handleScrollViewDisableBounce', {
+			bounce: false
+		});
+		state.disabledBounce = true;
+		_handleTouchMovePullingDown(state, ownerInstance, prevent);
+		return !prevent;
+	}
+	_setTransformValue(moveDistance, instance, state);
+	var oldRefresherStatus = state.refresherStatus;
+	var dataset = instance.getDataset();
+	var oldIsTouchmoving = _getIsTrue(dataset.oldistouchmoving);
+	var isTouchmoving = state.isTouchmoving;
+	if (moveDistance >= refresherThreshold) {
+		state.refresherStatus = 1;
+	} else {
+		state.refresherStatus = 0;
+	}
+	if (!isTouchmoving) {
+		state.isTouchmoving = true;
+		isTouchmoving = true;
+	}
+	if (state.isTouchEnded) {
+		state.isTouchEnded = false;
+	}
+	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus || oldIsTouchmoving !=
+		isTouchmoving) {
+		ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
+	}
+	_handleTouchMovePullingDown(state, ownerInstance, prevent);
+	return !prevent;
+}
+
+function touchend(e, ownerInstance) {
+	var touch = _getCommonTouch(e);
+	var instance = ownerInstance.getState().currentInstance;
+	var dataset = instance.getDataset();
+	var state = instance.getState();
+	if (_getRefresherTouchDisabled(e, instance, 2)) {
+		return;
+	}
+	state.refresherReachMaxAngle = true;
+	state.hitReachMaxAngleCount = 0;
+	state.disabledBounce = false;
+	state.fixedIsTopHitCount = 0;
+	//ownerInstance.callMethod('_handleScrollViewDisableBounce', {bounce:true});
+	var isTouchmoving = state.isTouchmoving;
+	if (!isTouchmoving) {
+		return;
+	}
+	var oldRefresherStatus = state.refresherStatus;
+	var oldMoveDistance = state.moveDistance;
+	var refresherThreshold = instance.getDataset().refresherthreshold
+	var moveDistance = _getMoveDistance(e, instance).currentMoveDistance;
+	if (!(moveDistance >= refresherThreshold && oldRefresherStatus === 1)) {
+		state.isTouchmoving = false;
+	}
+	ownerInstance.callMethod('_handleRefresherTouchend', moveDistance);
+	state.isTouchEnded = true;
+	if (oldMoveDistance < refresherThreshold) {
+		return;
+	}
+	var animate = false;
+	if (moveDistance >= refresherThreshold) {
+		moveDistance = refresherThreshold;
+		var isIos13 = _getIsTrue(dataset.isios13);
+		if (isIos13) {
+			animate = true;
+		}
+	}
+	_setTransformValue(moveDistance, instance, state, animate);
+}
+
+// #ifdef H5
+function isPC() {
+	var userAgentInfo = navigator.userAgent;
+	var Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+	var flag = true;
+	for (var v = 0; v < Agents.length - 1; v++) {
+		if (userAgentInfo.indexOf(Agents[v]) > 0) {
+			flag = false;
+			break;
+		}
+	}
+	return flag;
+}
+
+var movable = false;
+
+function mousedown(e, ins) {
+	if (!isPC()) return;
+	touchstart(e, ins);
+	movable = true;
+}
+
+function mousemove(e, ins) {
+	if (!isPC()) return;
+	if (!movable) return;
+	touchmove(e, ins);
+}
+
+function mouseup(e, ins) {
+	if (!isPC()) return;
+	touchend(e, ins);
+	movable = false;
+}
+
+function mouseleave(e, ins) {
+	if (!isPC()) return;
+	movable = false;
+}
+// #endif
+
+
+function _setTransformValue(value, instance, state, animate = false) {
+	value = value || 0;
+	if (state.moveDistance == value) {
+		return;
+	}
+	state.moveDistance = value;
+	_setTransform('translateY(' + value + 'px)', instance, animate);
+}
+
+function _setTransform(transform, instance, animate = false) {
+	if (transform == 'translateY(0px)') {
+		transform = 'none';
+	}
+	instance.requestAnimationFrame(function() {
+		if (animate) {
+			instance.setStyle({
+				'transform': transform,
+				'transition': 'transform .1s linear',
+			})
+		} else {
+			instance.setStyle({
+				'transform': transform
+			})
+		}
+	})
+}
+
+function _getMoveDistance(e, instance) {
+	var state = instance.getState();
+	var refresherThreshold = instance.getDataset().refresherthreshold;
+	var refresherOutRate = instance.getDataset().refresheroutrate;
+	refresherThreshold = parseFloat(refresherThreshold);
+	refresherOutRate = parseFloat(refresherOutRate);
+	var touch = _getCommonTouch(e);
+	var moveDistance = touch.touchY - state.startY;
+	var oldMoveDistance = state.oldMoveDistance || 0;
+	state.oldMoveDistance = moveDistance;
+	var diffDis = moveDistance - oldMoveDistance;
+	if (diffDis > 0) {
+		diffDis = diffDis * 0.85;
+		if (currentMoveDistance > refresherThreshold) {
+			diffDis = diffDis * (1 - refresherOutRate);
+		}
+	}
+	currentMoveDistance += diffDis;
+	if (currentMoveDistance < 0) {
+		currentMoveDistance = 0;
+	}
+	return {
+		currentMoveDistance: currentMoveDistance,
+		isDown: diffDis > 0
+	};
+}
+
+function _getCommonTouch(e) {
+	var touch = null;
+	if (e.touches && e.touches.length) {
+		touch = e.touches[0];
+	} else if (e.changedTouches && e.changedTouches.length) {
+		touch = e.changedTouches[0];
+	} else if (e.datail && e.datail !== {}) {
+		touch = e.datail;
+	} else {
+		touch = e;
+	}
+	return {
+		touchX: touch.clientX,
+		touchY: touch.clientY
+	};
+}
+
+function _getRefresherTouchDisabled(e, instance, processTag) {
+	var dataset = instance.getDataset();
+	var state = instance.getState();
+	var loading = _getIsTrue(dataset.loading);
+	var useChatRecordMode = _getIsTrue(dataset.usechatrecordmode);
+	var refresherEnabled = _getIsTrue(dataset.refresherenabled);
+	var useCustomRefresher = _getIsTrue(dataset.usecustomrefresher);
+	var usePageScroll = _getIsTrue(dataset.usepagescroll);
+	var pageScrollTop = parseFloat(dataset.pagescrolltop);
+	var scrollTop = parseFloat(dataset.scrolltop);
+	var finalScrollTop = usePageScroll ? pageScrollTop : scrollTop;
+	var fixedIsTop = false;
+	var isIos = _getIsTrue(dataset.isios);
+	if (!isIos && finalScrollTop == (state.startScrollTop || 0) && finalScrollTop <= 105) {
+		fixedIsTop = true;
+	}
+	var fixedIsTopHitCount = state.fixedIsTopHitCount || 0;
+	if (fixedIsTop) {
+		fixedIsTopHitCount++;
+		if (fixedIsTopHitCount <= 3) {
+			fixedIsTop = false;
+		}
+		state.fixedIsTopHitCount = fixedIsTopHitCount;
+	} else {
+		state.fixedIsTopHitCount = 0;
+	}
+	if (!isIos && processTag === 0) {
+		state.startScrollTop = finalScrollTop || 0;
+	}
+	if (!isIos && processTag === 2) {
+		fixedIsTop = true;
+	}
+	var res = loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || ((
+		usePageScroll && useCustomRefresher && pageScrollTop > 5) && !fixedIsTop) || ((
+		!usePageScroll && useCustomRefresher && scrollTop > 5) && !fixedIsTop);
+	return res;
+}
+
+function _getAngleIsInRange(e, touch, state, dataset) {
+	var refresherMaxAngle = dataset.refreshermaxangle;
+	var refresherAecc = _getIsTrue(dataset.refresheraecc);
+	var lastRefresherTouchmove = state.lastRefresherTouchmove;
+	var refresherReachMaxAngle = state.refresherReachMaxAngle;
+	var moveDistance = state.oldMoveDistance;
+	if (!lastRefresherTouchmove) {
+		return true;
+	}
+	if (refresherMaxAngle >= 0 && refresherMaxAngle <= 90 && lastRefresherTouchmove) {
+		if ((!moveDistance || moveDistance < 1) && !refresherAecc && refresherReachMaxAngle != null && !
+			refresherReachMaxAngle) {
+			return false;
+		}
+		var x = Math.abs(touch.touchX - lastRefresherTouchmove.touchX);
+		var y = Math.abs(touch.touchY - lastRefresherTouchmove.touchY);
+		var z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+		if ((x || y) && x > 1) {
+			var angle = Math.asin(y / z) / Math.PI * 180;
+			if (angle < refresherMaxAngle) {
+				var hitReachMaxAngleCount = state.hitReachMaxAngleCount || 0;
+				state.hitReachMaxAngleCount = ++hitReachMaxAngleCount;
+				if (state.hitReachMaxAngleCount > 2) {
+					state.lastRefresherTouchmove = touch;
+					state.refresherReachMaxAngle = false;
+				}
+				return false;
+			}
+		}
+	}
+	state.lastRefresherTouchmove = touch;
+	return true;
+}
+
+function _handleTouchMovePullingDown(state, instance, onPullingDown) {
+	var oldOnPullingDown = state.onPullingDown || false;
+	if (oldOnPullingDown != onPullingDown) {
+		instance.callMethod('_handleWxsOnPullingDown', onPullingDown);
+	}
+	state.onPullingDown = onPullingDown;
+}
+
+function _getIsTrue(value) {
+	value = (typeof(value) === 'string' ? JSON.parse(value) : value) || false;
+	return value == true || value == 'true';
+}
+
+module.exports = {
+	touchstart: touchstart,
+	touchmove: touchmove,
+	touchend: touchend,
+	mousedown: mousedown,
+	mousemove: mousemove,
+	mouseup: mouseup,
+	mouseleave: mouseleave,
+	propObserver: propObserver
+}

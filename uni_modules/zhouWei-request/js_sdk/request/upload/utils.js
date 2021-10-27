@@ -1,4 +1,5 @@
 const qiniuUploader = require("./qiniuUploader");
+const aliUploader =  require('./aliUploader');  
 //七牛云上传文件命名
 export const randomChar = function(l, url = "") {
 	const x = "0123456789qwertyuioplkjhgfdsazxcvbnm";
@@ -22,6 +23,9 @@ export const chooseImage = function(data) {
 			sizeType: data.sizeType || ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
 			sourceType: data.sourceType || ['album', 'camera'], //从相册选择
 			success: function(res) {
+				for (var i = 0; i < res.tempFiles.length; i++) {
+					res.tempFiles[i].fileType = "image"
+				}
 				resolve(res.tempFiles);
 			},
 			fail: err => {
@@ -44,7 +48,8 @@ export const chooseVideo = function(data) {
 			camera: data.camera || 'back', //'front'、'back'，默认'back'
 			success: function(res) {
 				let files = [{
-					path: res.tempFilePath
+					path: res.tempFilePath,
+					fileType: "video"
 				}];
 				// #ifdef APP-PLUS || H5 || MP-WEIXIN
 				files[0].duration = res.duration;
@@ -134,6 +139,97 @@ export const qiniuUpload = function(requestInfo, getQnToken) {
 			} else {
 				reject({
 					errMsg: "请添加七牛云回调方法：getQnToken",
+					statusCode: 0
+				});
+			}
+		} else {
+			reject({
+				errMsg: "files 必须是数组类型",
+				statusCode: 0
+			});
+		};
+	});
+}
+// 阿里云oss上传
+export const aliUpload = function(requestInfo, getAliToken) {
+	return new Promise((resolve, reject) => {
+		if (Array.isArray(requestInfo.files)) {
+			let len = requestInfo.files.length;
+			let fileList = new Array;
+			if (getAliToken) {
+				getAliToken(aliRes => {
+					/*
+					 *接口返回参数：
+					 *visitPrefix:访问文件的域名
+					 *folderPath:上传的文件夹
+					 *accessKeyId: 您的oss的访问ID
+					 *accessKeySecret: 您的oss的访问密钥
+					 * timeout: 签名过期时间（毫秒）
+					 */
+					let aliyunOssKey = aliUploader({
+						accessKeyId: aliRes.accessKeyId,
+						accessKeySecret: aliRes.accessKeySecret,
+						timeout: aliRes.timeout
+					});
+                    let prefixLen = aliRes.visitPrefix.length;
+                    if(aliRes.visitPrefix.charAt(prefixLen - 1) == '/'){
+                        aliRes.visitPrefix = aliRes.visitPrefix.substring(0, prefixLen - 1)
+                    }
+					uploadFile(0);
+
+					function uploadFile(i) {
+						let item = requestInfo.files[i];
+						let updateUrl = randomChar(10, aliRes.folderPath);
+						let fileData = {
+							fileIndex: i,
+							files: requestInfo.files,
+							...item
+						};
+						if (item.name) {
+							fileData.name = item.name;
+							let nameArr = item.name.split(".");
+							updateUrl += "." + nameArr[nameArr.length - 1];
+						}
+						if (item.path) {
+							let nameArr = item.path.split(".");
+							updateUrl += "." + nameArr[nameArr.length - 1];
+						}
+						uni.uploadFile({
+						  url: aliRes.visitPrefix, // 开发者服务器的URL。
+						  filePath: item.path,
+						  name: 'file', // 必须填file。
+						  formData: {
+						    key: updateUrl,
+						    policy: aliyunOssKey.policy,
+						    OSSAccessKeyId: aliyunOssKey.accessKeyId,
+						    signature: aliyunOssKey.signature,
+						  },
+						  success: (res) => {
+						    if (res.statusCode === 204) {
+								fileData.url = aliRes.visitPrefix + "/" + updateUrl;
+								requestInfo.onEachUpdate && requestInfo.onEachUpdate({
+									url: fileData.url,
+									...fileData
+								});
+								fileList.push(fileData.url);
+								if (len - 1 > i) {
+									uploadFile(i + 1);
+								} else {
+									resolve(fileList);
+								}
+						    } else {
+								reject(res);
+							}
+						  },
+						  fail: err => {
+						    reject(err);
+						  }
+						});
+					}
+				});
+			} else {
+				reject({
+					errMsg: "请添加阿里云回调方法：getAliToken",
 					statusCode: 0
 				});
 			}

@@ -56,6 +56,27 @@ $http.getQnToken = function(callback){
 		});
 	});
 }
+// 添加获取阿里云token的方法
+$http.getAliToken = function(callback){
+	//该地址需要开发者自行配置（每个后台的接口风格都不一样）
+	$http.get("api/open/v1/ali_oss_upload").then(data => {
+		/*
+		 *接口返回参数：
+		 *visitPrefix:访问文件的域名
+		 *folderPath:上传的文件夹
+		 *accessKeyId: 您的oss的访问ID
+		 *accessKeySecret: 您的oss的访问密钥
+		 *timeout: 签名过期时间（毫秒）默认1800000
+		 */
+		callback({
+			accessKeyId: data.accessKeyId,
+			accessKeySecret: data.accessKeySecret,
+			visitPrefix: data.visitPrefix,
+			folderPath: data.folderPath,
+			timeout: 1800000
+		});
+	});
+}
 //请求开始拦截器
 $http.requestStart = function(options) {
 	console.log("请求开始", options);
@@ -63,19 +84,31 @@ $http.requestStart = function(options) {
 		//打开加载动画
 		store.commit("setLoadingShow", true);
 	}
-	// 图片上传大小限制
-	if (options.method == "FILE" && options.maxSize) {
+	// 图片、视频上传大小限制
+	if (options.method == "FILE") {
 		// 文件最大字节: options.maxSize 可以在调用方法的时候加入参数
-		let maxSize = options.maxSize;
+		let maxSize = options.maxSize || '';
 		for (let item of options.files) {
-			if (item.size > maxSize) {
-				setTimeout(() => {
-					uni.showToast({
-						title: "图片过大，请重新上传",
-						icon: "none"
-					});
-				}, 500);
-				return false;
+			if(item.fileType == 'image'){
+				if (maxSize && item.size > maxSize) {
+					setTimeout(() => {
+						uni.showToast({
+							title: "图片过大，请重新上传",
+							icon: "none"
+						});
+					}, 500);
+					return false;
+				}
+			} else if(item.fileType == "video"){
+				if (item.duration < 3) {
+					setTimeout(() => {
+						uni.showToast({
+							title: "视频长度不足3秒，请重新上传",
+							icon: "none"
+						});
+					}, 500);
+					return false;
+				}
 			}
 		}
 	}
@@ -86,8 +119,12 @@ $http.requestStart = function(options) {
 	}
 	// #endif
 	//请求前加入token
-	if (store.state.userInfo.token) {
-		options.header['user_token'] = store.state.userInfo.token;
+	let storeUserInfo = store.state.userInfo;
+	if(!storeUserInfo.token){ // nvue页面读取不到vuex里面数据，将取缓存
+	    storeUserInfo = uni.getStorageSync("userInfo");
+	}
+	if (storeUserInfo.token) {
+		options.header['user_token'] = storeUserInfo.token;
 	};
 	return options;
 }

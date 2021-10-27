@@ -3,6 +3,7 @@ const {
 	chooseImage,
 	chooseVideo,
 	qiniuUpload,
+	aliUpload,
 	urlUpload
 } = require("./utils");
 import {
@@ -81,6 +82,81 @@ export default class fileUpload extends request {
 				}
 			}
 			let requestResult = await qiniuUpload(requestInfo, this.getQnToken);
+			return Promise.resolve(requestResult);
+		} catch (err) {
+			this.requestError && this.requestError(err);
+			return Promise.reject(err);
+		} finally {
+			this.requestEnd && this.requestEnd(requestInfo);
+		}
+	}
+	//阿里云上传图片
+	async aliImgUpload(options = {}) {
+		let files;
+		try {
+			files = await chooseImage(options);
+			// 选择完成回调
+			options.onSelectComplete && options.onSelectComplete(files);
+		} catch (err) {
+			this.requestError && this.requestError(err);
+			return Promise.reject(err);
+		}
+		if (files) {
+			return this.aliFileUpload({
+				...options,
+				files: files
+			});
+		}
+	}
+	//阿里云上传视频
+	async aliVideoUpload(options = {}) {
+		let files;
+		try {
+			files = await chooseVideo(options);
+			// 选择完成回调
+			options.onSelectComplete && options.onSelectComplete(files);
+		} catch (err) {
+			this.requestError && this.requestError(err);
+			return Promise.reject(err);
+		}
+		if (files) {
+			return this.aliFileUpload({
+				...options,
+				files: files
+			});
+		}
+	}
+	//阿里云文件上传（支持多张上传）
+	async aliFileUpload(options = {}) {
+		let requestInfo;
+		try {
+			// 数据合并
+			requestInfo = {
+				...this.config,
+				...options,
+				header: {},
+				method: "FILE"
+			};
+			//请求前回调
+			if (this.requestStart) {
+				let requestStart = this.requestStart(requestInfo);
+				if (typeof requestStart == "object") {
+					let changekeys = ["load", "files"];
+					changekeys.forEach(key => {
+						requestInfo[key] = requestStart[key];
+					});
+				} else {
+					throw {
+						errMsg: "【request】请求开始拦截器未通过",
+						statusCode: 0,
+						data: requestInfo.data,
+						method: requestInfo.method,
+						header: requestInfo.header,
+						url: requestInfo.url,
+					}
+				}
+			}
+			let requestResult = await aliUpload(requestInfo, this.getAliToken);
 			return Promise.resolve(requestResult);
 		} catch (err) {
 			this.requestError && this.requestError(err);

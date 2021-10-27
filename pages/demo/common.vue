@@ -23,6 +23,10 @@
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>地区选择</text>
 		</view>
+		<view class="nav_list" @click="onPageJump('/pages/demo/datePopup')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>日期时间选择控件</text>
+		</view>
 		<view class="nav_list" @click="onPageJump('/pages/demo/popup')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>弹窗</text>

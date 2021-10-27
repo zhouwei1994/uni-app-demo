@@ -3,6 +3,11 @@
 		<z-nav-bar backState="2000" title="新增功能"></z-nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
+		<view class="time">版本1.2.0</view>
+		<view class="nav_list" @click="onPageJump('/pages/demo/datePopup')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>日期时间选择控件</text>
+		</view>
 		<view class="time">版本1.1.1</view>
 		<view class="nav_list" @click="onPageJump('/pages/shortVideo')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>

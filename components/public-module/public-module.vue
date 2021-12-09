@@ -3,8 +3,8 @@
 		<!-- 加载动画组件 -->
 		<z-loading></z-loading>
 		<!-- #ifdef MP-WEIXIN -->
-		<!-- 小程序登录弹窗组件 -->
-		<applets-login></applets-login>
+		<!-- 小程序绑定微信头像昵称弹窗组件 -->
+		<applets-bind-userInfo></applets-bind-userInfo>
 		<!-- #endif -->
         <!-- #ifdef APP-PLUS -->
         <guide-pages></guide-pages>

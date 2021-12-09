@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<!-- 登录弹窗 -->
+		<!-- 绑定微信头像昵称弹窗 -->
 		<view class="loginMask" v-if="bindUserInfoShow" @click="closePopup"></view>
 		<view class="loginPopup" v-if="bindUserInfoShow">
 			<view class="loginBox">

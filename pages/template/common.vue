@@ -63,6 +63,7 @@ export default {
 		},
 		onTokenJump(url) {
 			this.judgeLogin(() => {
+				// 这里写登录后的代码，未登录不会到这里来，会自动提示去登录
 				uni.navigateTo({
 					url: url
 				});

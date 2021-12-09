@@ -56,7 +56,7 @@
 					</view>
 				</view>
 			</date-popup>
-			<date-popup @change="onDateChange2" shipNow :optionalDate="3" :bufferMinutes="10">
+			<z-date-popup @change="onDateChange2" shipNow :optionalDate="3" :bufferMinutes="10">
 				<view class="input_box">
 					<view class="name required">时间选择(立即配送)</view>
 					<view class="select_info">
@@ -64,13 +64,40 @@
 						<view class="select" v-else>请选择</view>
 					</view>
 				</view>
-			</date-popup>
+			</z-date-popup>
 		</view>
 	</view>
 </template>
 
 <script>
+function Console (Base) {
+  return {
+	mounted () {
+	  console.log('haha')
+	},
+	props: Base.props,
+	render (h) {
+	  const slots = Object.keys(this.$slots)
+		.reduce((arr, key) => arr.concat(this.$slots[key]), [])
+		// 手动更正 context
+		.map(vnode => {
+		  vnode.context = this._self //绑定到高阶组件上
+		  return vnode
+		})
+ 
+	  return h(Base, {
+		on: this.$listeners,
+		props: this.$props,
+		attrs: this.$attrs
+	  }, slots)
+	}
+  }
+}
+import datePopup from "@/components/date-popup/date-popup.vue"
 export default {
+	components: {
+		'z-date-popup':Console(datePopup)
+	},
 	data() {
 		return {
 			dateSeelctData: {},

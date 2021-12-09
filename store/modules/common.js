@@ -4,8 +4,8 @@ export const state = {
   loadingShow: false,
   //微信场景参数
   chatScenesInfo: {},
-  //登录弹窗状态
-  loginPopupShow: false,
+  //绑定微信头像昵称弹窗状态
+  bindUserInfoShow: false,
   //当前位置
   currentAddress: {
   	areaName: "请选择",
@@ -70,9 +70,9 @@ export const mutations = {
   		state.chatScenesInfo = Object.assign({}, state.chatScenesInfo, data);
   	}
   },
-  //登录弹窗状态
-  setLoginPopupShow(state, data) {
-  	state.loginPopupShow = data;
+  //绑定微信头像昵称弹窗状态
+  setBindUserInfoShow(state, data) {
+  	state.bindUserInfoShow = data;
   },
   //当前地址
   setCurrentAddress(state, data) {

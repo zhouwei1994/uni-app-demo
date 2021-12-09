@@ -1,23 +1,20 @@
 <template>
 	<view>
 		<!-- 登录弹窗 -->
-		<view class="loginMask" v-if="loginPopupShow" @click="closePopup"></view>
-		<view class="loginPopup" v-if="loginPopupShow">
+		<view class="loginMask" v-if="bindUserInfoShow" @click="closePopup"></view>
+		<view class="loginPopup" v-if="bindUserInfoShow">
 			<view class="loginBox">
 				<image class="logo" :src="base.logoUrl"></image>
 				<view class="platformName">{{ base.platformName }}</view>
-				<view class="description" v-if="base.description">{{ base.description }}</view>
+				<view class="description">需要获取用户头像和昵称</view>
 			</view>
-			<button type="primary" hover-class="active" open-type="getUserInfo" @getuserinfo="onAuthorization">授权登录</button>
+			<button type="primary" @click="onAuthorization">授权</button>
 		</view>
 	</view>
 </template>
 <script>
 import { mapState, mapMutations } from 'vuex';
 import base from '@/config/baseUrl';
-// #ifdef MP-WEIXIN
-import { getUserInfo } from '@/config/login';
-// #endif
 let clear;
 export default {
 	data() {
@@ -26,26 +23,35 @@ export default {
 		};
 	},
 	computed: {
-		...mapState(['userInfo', 'loginPopupShow'])
+		...mapState(['userInfo', 'bindUserInfoShow'])
 	},
 	methods: {
-		...mapMutations(['setUserInfo', 'setLoginPopupShow']),
+		...mapMutations(['setUserInfo', 'setBindUserInfoShow']),
 		//授权登录
-		onAuthorization: function(e) {
-			if (e.detail.errMsg == 'getUserInfo:ok') {
-				var userInfo = e.detail;
-				this.setLoginPopupShow(false);
-				getUserInfo(userInfo, 'authorized');
-			}
+		onAuthorization() {
+			uni.getUserProfile({
+			  desc: '用于完善用户资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+			  success: (res) => {
+				this.setBindUserInfoShow(false);
+				this.$http.post("api/mine/v1/sync_wx_info", {
+					...res.userInfo
+				}).then(res => {
+					this.setUserInfo({
+						nickname: res.userInfo.nickName,
+						headImg: res.userInfo.avatarUrl,
+					});
+				})
+			  }
+			});
 		},
 		closeLogin() {
-			if (this.loginPopupShow && this.userInfo.token) {
-				this.setLoginPopupShow(false);
+			if (this.bindUserInfoShow && this.userInfo.token) {
+				this.setBindUserInfoShow(false);
 			}
 		},
 		//关闭弹窗
 		closePopup() {
-			this.setLoginPopupShow(false);
+			this.setBindUserInfoShow(false);
 		}
 	}
 };

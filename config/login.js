@@ -14,7 +14,6 @@ let lastPageUrl = "";
 function onLogin(type = "judge",callback) {
 	//判断登录状态
 	if (loginStart) {
-		lastPageUrl = "";
 		loginStart = false;
 		const _this = this;
 		let platform;
@@ -31,64 +30,41 @@ function onLogin(type = "judge",callback) {
 			provider: platform,
 			success: function(loginRes) {
 				if (loginRes.errMsg == 'login:ok') {
-					code = loginRes.code;
 					// 获取用户信息
 					uni.getUserInfo({
 						provider: platform,
 						success: function(infoRes) {
-							getUserInfo(infoRes, "", callback);
-						},
-						fail() {
-							if(type != "try"){
-								store.commit('setLoginPopupShow', true);
-								Object.defineProperty(userInfo, "token", {
-									get: function(val) {
-										return {};
-									},
-									set: function(newVal) {
-										callback && callback();
-									}
-								});
-								setTimeout(() => {
-									loginStart = true;
-								}, 2000);
-							}else{
-								loginStart = true;
+							let httpData = {
+								wxSmallCode: loginRes.code, //小程序code
+								iv: infoRes.iv, //小程序加密算法的初始向量
+								encryptedData: infoRes.encryptedData //包括敏感数据在内的完整用户信息的加密数据
+							};
+							// store.state.chatScenesInfo里面是小程序二维码附带的信息
+							if(store.state.chatScenesInfo.invite){
+								// 推荐码
+								httpData.invite = store.state.chatScenesInfo.invite;
 							}
+							$http.post('api/open/v1/login', httpData).then(res => {
+									loginStart = true;
+									store.commit('setUserInfo', res);
+									callback && callback();
+									if (res.nullUserInfo) {
+										// 没有绑定过微信的头像或者昵称弹出授权获取头像昵称的弹窗
+										store.commit('setBindUserInfoShow', true);
+									} else {
+										uni.showToast({
+											title: "登录成功"
+										});
+									}
+								}, err => {
+									loginStart = true;
+								});
 						}
 					});
 				}
 			}
 		});
 	}
-}
-//微信小程序获取用户信息
-function getUserInfo(info, type, callback) {
-	let httpData = {
-		wxSmallCode: code, //小程序code
-		iv: info.iv, //小程序加密算法的初始向量
-		encryptedData: info.encryptedData //包括敏感数据在内的完整用户信息的加密数据
-	};
-	// store.state.chatScenesInfo里面是小程序二维码附带的信息
-	if(store.state.chatScenesInfo.recommendCode){
-		// 推荐码
-		httpData.recommendUid = store.state.chatScenesInfo.recommendCode;
-	}
-	$http.post('api/open/v1/login', httpData).then(res => {
-			loginStart = true;
-			store.commit('setUserInfo', res);
-			if (type == "authorized") {
-				userInfo.token = res.token;
-				store.commit('setLoginPopupShow', false);
-			}else{
-				callback && callback();
-			}
-			uni.showToast({
-				title: "登录成功"
-			});
-		}, err => {
-			loginStart = true;
-		});
 }
 //判断是否登录（所有端）
 function judgeLogin(callback, type = "judge"){

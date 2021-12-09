@@ -1,17 +1,17 @@
 <template>
 	<view class="page">
 		<z-nav-bar></z-nav-bar>
-		<!-- 公共组件-每个页面必须引入 -->
-		<public-module></public-module>
+        <!-- 公共组件-每个页面必须引入 -->
+        <public-module></public-module>
 		<view class="title">注册</view>
-		<view class="input_box"><input type="text" v-model="email" placeholder="请输入邮箱" /></view>
+		<view class="input_box"><input type="number" maxlength="11" v-model="phone" placeholder="请输入手机号" /></view>
 		<view class="input_box">
-			<input type="number" v-model="code" placeholder="请输入邮箱验证码" />
+			<input type="number" v-model="code" placeholder="请输入验证码" />
 			<button @click="getCode">{{codeText}}</button>
 		</view>
-		<view class="input_box"><input type="password" v-model="password" placeholder="请输入密码" /></view>
-		<view class="input_box"><input type="password" v-model="confirmPassword" placeholder="请确认密码"/></view>
-		<!-- <view class="input_box"><input type="number" v-model="recommendCode" placeholder="推荐人邮箱码（非必填）" @confirm="onSubmit"/></view> -->
+		<view class="input_box"><input password v-model="password" placeholder="请输入密码" /></view>
+		<view class="input_box"><input password v-model="confirmPassword" placeholder="请确认密码"/></view>
+		<view class="input_box"><input type="text" v-model="recommendCode" placeholder="推荐码（非必填）" @confirm="onSubmit"/></view>
 		<view class="btn_box"><button @click="onSubmit">注册</button></view>
 		<view class="protocol">
 			注册代表您已同意
@@ -25,8 +25,8 @@ var clear;
 export default {
 	data() {
 		return {
-			//邮箱
-			email: '',
+			//手机号
+			phone: '',
 			// 密码
 			password: '',
 			//验证码
@@ -61,24 +61,24 @@ export default {
 				});
 				return;
 			}
-			if (!this.email) {
+			if (!this.phone) {
 				uni.showToast({
-					title: '请输入邮箱',
+					title: '请输入手机号',
 					icon: 'none'
 				});
 				return;
 			}
-			if (!this.$base.mailRegular.test(this.email)) {
+			if (!this.$base.phoneRegular.test(this.phone)) {
 				uni.showToast({
-					title: '请输入正确的邮箱',
+					title: '请输入正确的手机号',
 					icon: 'none'
 				});
 				return;
 			}
 			this.$http
-				.post('api/common/v1/send_sms', {
-					email: this.email,
-					type: 1000
+				.post('api/open/v1/send_sms', {
+					phone: this.phone,
+					type: 3101
 				})
 				.then(res => {
 					this.getCodeState();
@@ -101,16 +101,16 @@ export default {
 			}, 1000);
 		},
 		onSubmit() {
-			if (!this.email) {
+			if (!this.phone) {
 				uni.showToast({
-					title: '请输入邮箱',
+					title: '请输入手机号',
 					icon: 'none'
 				});
 				return;
 			}
-			if (!this.$base.mailRegular.test(this.email)) {
+			if (!this.$base.phoneRegular.test(this.phone)) {
 				uni.showToast({
-					title: '请输入正确的邮箱',
+					title: '请输入正确的手机号',
 					icon: 'none'
 				});
 				return;
@@ -144,7 +144,7 @@ export default {
 				return;
 			}
 			let httpData =  {
-				email: this.email,
+				phone: this.phone,
 				code:this.code,
 				password: md5(this.password),
 			};
@@ -152,11 +152,11 @@ export default {
 				httpData.recommendCode = this.recommendCode;
 			}
 			this.$http
-				.post('api/common/v1/register',httpData)
+				.post('api/open/v1/register',httpData)
 				.then(res => {
 					uni.showModal({
 						title:"提示",
-						content:"注册成功，去登录！",
+						content:"注册成功！",
 						showCancel:false,
 						success: (res) => {
 							uni.navigateBack();
@@ -183,29 +183,29 @@ export default {
 @import '@/style/mixin.scss';
 .page {
 	background-color: #FFF;
-	padding: 0 65upx;
+	padding: 0 65rpx;
 	min-height: 100vh;
 	.title {
-		padding: 60upx 0 40upx 0;
-		font-size: 60upx;
+		padding: 60rpx 0 40rpx 0;
+		font-size: 60rpx;
 		color: #333333;
 	}
 	.input_box {
 		display: flex;
 		justify-content: space-between;
-		height: 100upx;
-		padding-top: 20upx;
-		border-bottom: 1upx solid #eeeeee;
+		height: 100rpx;
+		padding-top: 20rpx;
+		border-bottom: 1rpx solid #eeeeee;
 		input {
 			flex: 1;
-			height: 80upx;
-			line-height: 80upx;
-			font-size: 30upx;
+			height: 80rpx;
+			line-height: 80rpx;
+			font-size: 30rpx;
 		}
 		button {
-			height: 78upx;
-			line-height: 78upx;
-			font-size: 30upx;
+			height: 78rpx;
+			line-height: 78rpx;
+			font-size: 30rpx;
 			color: $themeColor;
 			&:active {
 				background-color: transparent;
@@ -213,20 +213,20 @@ export default {
 		}
 	}
 	.btn_box {
-		margin-top: 70upx;
+		margin-top: 70rpx;
 		button {
-			height: 86upx;
-			@include theme("btn_bg");
-			border-radius: 43upx;
-			font-size: 36upx;
+			height: 86rpx;
+			background-color: $themeColor;
+			border-radius: 43rpx;
+			font-size: 36rpx;
 			color: #ffffff;
 		}
 	}
 	.protocol {
-		font-size: 24upx;
+		font-size: 24rpx;
 		color: #999999;
 		text-align: center;
-		margin-top: 20upx;
+		margin-top: 20rpx;
 		text {
 			color: $themeColor;
 		}

@@ -1,0 +1,15 @@
+{
+	"name": "router",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"uni-captcha": "file:../../../uni_modules/uni-captcha/uniCloud/cloudfunctions/common/uni-captcha",
+		"uni-id": "file:../../../uni_modules/uni-id/uniCloud/cloudfunctions/common/uni-id"
+	}
+}

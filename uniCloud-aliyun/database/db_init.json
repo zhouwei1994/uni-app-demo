@@ -1,0 +1,559 @@
+// 在本文件中可配置云数据库初始化，数据格式见：https://uniapp.dcloud.io/uniCloud/cf-database?id=db_init
+
+// 编写完毕后对本文件点右键，可按配置规则创建表和添加数据
+
+{
+	"uni-id-users": {
+		"data": [],
+		"schema": {
+			"bsonType": "object",
+			"required": [],
+			"properties": {
+				"_id": {
+					"description": "存储文档 ID（用户 ID），系统自动生成"
+				},
+				"username": {
+					"bsonType": "string",
+					"title": "用户名",
+					"description": "用户名，不允许重复",
+					"trim": "both"
+				},
+				"password": {
+					"bsonType": "password",
+					"title": "密码",
+					"description": "密码，加密存储",
+					"trim": "both"
+				},
+				"password_secret_version": {
+					"bsonType": "int",
+					"title": "passwordSecret",
+					"description": "密码使用的passwordSecret版本"
+				},
+				"nickname": {
+					"bsonType": "string",
+					"title": "昵称",
+					"description": "用户昵称",
+					"trim": "both"
+				},
+				"gender": {
+					"bsonType": "int",
+					"title": "性别",
+					"description": "用户性别：0 未知 1 男性 2 女性",
+					"defaultValue": 0,
+					"enum": [{
+						"text": "未知",
+						"value": 0
+					}, {
+						"text": "男",
+						"value": 1
+					}, {
+						"text": "女",
+						"value": 2
+					}]
+				},
+				"status": {
+					"bsonType": "int",
+					"description": "用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝",
+					"title": "用户状态",
+					"defaultValue": 0,
+					"enum": [{
+						"text": "正常",
+						"value": 0
+					}, {
+						"text": "禁用",
+						"value": 1
+					}, {
+						"text": "审核中",
+						"value": 2
+					}, {
+						"text": "审核拒绝",
+						"value": 3
+					}]
+				},
+				"mobile": {
+					"bsonType": "string",
+					"title": "手机号码",
+					"description": "手机号码",
+					"pattern": "^\\+?[0-9-]{3,20}$",
+					"trim": "both"
+				},
+				"mobile_confirmed": {
+					"bsonType": "int",
+					"description": "手机号验证状态：0 未验证 1 已验证",
+					"title": "手机号验证状态",
+					"defaultValue": 0,
+					"enum": [{
+						"text": "未验证",
+						"value": 0
+					}, {
+						"text": "已验证",
+						"value": 1
+					}]
+				},
+				"email": {
+					"bsonType": "string",
+					"format": "email",
+					"title": "邮箱",
+					"description": "邮箱地址",
+					"trim": "both"
+				},
+				"email_confirmed": {
+					"bsonType": "int",
+					"description": "邮箱验证状态：0 未验证 1 已验证",
+					"title": "邮箱验证状态",
+					"defaultValue": 0,
+					"enum": [{
+						"text": "未验证",
+						"value": 0
+					}, {
+						"text": "已验证",
+						"value": 1
+					}]
+				},
+				"avatar": {
+					"bsonType": "string",
+					"title": "头像地址",
+					"description": "头像地址",
+					"trim": "both"
+				},
+				"department_id": {
+					"bsonType": "array",
+					"description": "部门ID",
+					"title": "部门",
+					"enumType": "tree",
+					"enum": {
+						"collection": "opendb-department",
+						"orderby": "name asc",
+						"field": "_id as value, name as text"
+					}
+				},
+				"role": {
+					"bsonType": "array",
+					"title": "角色",
+					"description": "用户角色",
+					"enum": {
+						"collection": "uni-id-roles",
+						"field": "role_id as value, role_name as text"
+					},
+					"foreignKey": "uni-id-roles.role_id",
+					"permission": {
+						"write": false
+					}
+				},
+				"wx_unionid": {
+					"bsonType": "string",
+					"description": "微信unionid"
+				},
+				"wx_openid": {
+					"bsonType": "object",
+					"description": "微信各个平台openid",
+					"properties": {
+						"app-plus": {
+							"bsonType": "string",
+							"description": "app平台微信openid"
+						},
+						"mp-weixin": {
+							"bsonType": "string",
+							"description": "微信小程序平台openid"
+						}
+					}
+				},
+				"ali_openid": {
+					"bsonType": "string",
+					"description": "支付宝平台openid"
+				},
+				"apple_openid": {
+					"bsonType": "string",
+					"description": "苹果登录openid"
+				},
+				"comment": {
+					"bsonType": "string",
+					"title": "备注",
+					"description": "备注",
+					"trim": "both"
+				},
+				"realname_auth": {
+					"bsonType": "object",
+					"description": "实名认证信息",
+					"required": [
+						"type",
+						"auth_status"
+					],
+					"properties": {
+						"type": {
+							"bsonType": "int",
+							"minimum": 0,
+							"maximum": 1,
+							"description": "用户类型：0 个人用户 1 企业用户"
+						},
+						"auth_status": {
+							"bsonType": "int",
+							"minimum": 0,
+							"maximum": 3,
+							"description": "认证状态：0 未认证 1 等待认证 2 认证通过 3 认证失败"
+						},
+						"auth_date": {
+							"bsonType": "timestamp",
+							"description": "认证通过时间"
+						},
+						"real_name": {
+							"bsonType": "string",
+							"description": "真实姓名/企业名称"
+						},
+						"identity": {
+							"bsonType": "string",
+							"description": "身份证号码/营业执照号码"
+						},
+						"id_card_front": {
+							"bsonType": "string",
+							"description": "身份证正面照 URL"
+						},
+						"id_card_back": {
+							"bsonType": "string",
+							"description": "身份证反面照 URL"
+						},
+						"in_hand": {
+							"bsonType": "string",
+							"description": "手持身份证照片 URL"
+						},
+						"license": {
+							"bsonType": "string",
+							"description": "营业执照 URL"
+						},
+						"contact_person": {
+							"bsonType": "string",
+							"description": "联系人姓名"
+						},
+						"contact_mobile": {
+							"bsonType": "string",
+							"description": "联系人手机号码"
+						},
+						"contact_email": {
+							"bsonType": "string",
+							"description": "联系人邮箱"
+						}
+					}
+				},
+				"register_date": {
+					"bsonType": "timestamp",
+					"description": "注册时间",
+					"forceDefaultValue": {
+						"$env": "now"
+					}
+				},
+				"register_ip": {
+					"bsonType": "string",
+					"description": "注册时 IP 地址",
+					"forceDefaultValue": {
+						"$env": "clientIP"
+					}
+				},
+				"last_login_date": {
+					"bsonType": "timestamp",
+					"description": "最后登录时间"
+				},
+				"last_login_ip": {
+					"bsonType": "string",
+					"description": "最后登录时 IP 地址"
+				},
+				"token": {
+					"bsonType": "array",
+					"description": "用户token"
+				},
+				"inviter_uid": {
+					"bsonType": "array",
+					"description": "用户全部上级邀请者",
+					"trim": "both"
+				},
+				"my_invite_code": {
+					"bsonType": "string",
+					"description": "用户自身邀请码"
+				}
+			}
+		},
+		"index": [{
+				"IndexName": "username",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "username",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			},
+			{
+				"IndexName": "mobile",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "mobile",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			},
+			{
+				"IndexName": "email",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "email",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			},
+			{
+				"IndexName": "wx_openid.app-plus",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "wx_openid.app-plus",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			},
+			{
+				"IndexName": "wx_openid.mp-weixin",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "wx_openid.mp-weixin",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			},
+			{
+				"IndexName": "wx_unionid",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "wx_unionid",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			},
+			{
+				"IndexName": "ali_openid",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "ali_openid",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			},
+			{
+				"IndexName": "apple_openid",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "apple_openid",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			},
+			{
+				"IndexName": "my_invite_code",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "my_invite_code",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			},
+			{
+				"IndexName": "inviter_uid",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "inviter_uid",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			},
+			{
+				"IndexName": "invite_time",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "invite_time",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			},
+			{
+				"IndexName": "role",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "role",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			},
+			{
+				"IndexName": "department",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "department_id",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			}
+		]
+	},
+	"uni-id-log": {
+		"data": [],
+		"schema": {
+			"bsonType": "object",
+			"required": [],
+			"properties": {
+				"_id": {
+					"description": "ID，系统自动生成"
+				},
+				"user_id": {
+					"bsonType": "string",
+					"description": "用户id，参考uni-id-users表"
+				},
+				"ua": {
+					"bsonType": "string",
+					"description": "userAgent"
+				},
+				"device_uuid": {
+					"bsonType": "string",
+					"description": "设备唯一标识"
+				},
+				"type": {
+					"bsonType": "string",
+					"enum": [
+						"login",
+						"logout"
+					],
+					"description": "登录类型"
+				},
+				"state": {
+					"bsonType": "int",
+					"description": "结果：0 失败、1 成功"
+				},
+				"ip": {
+					"bsonType": "string",
+					"description": "ip地址"
+				},
+				"create_date": {
+					"bsonType": "timestamp",
+					"description": "创建时间",
+					"forceDefaultValue": {
+						"$env": "now"
+					}
+				}
+			}
+		},
+		"index": [{
+				"IndexName": "user_id",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "user_id",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			},
+			{
+				"IndexName": "device_uuid",
+				"MgoKeySchema": {
+					"MgoIndexKeys": [{
+						"Name": "device_uuid",
+						"Direction": "1"
+					}],
+					"MgoIsUnique": false
+				}
+			}
+		]
+	},
+	"opendb-verify-codes": {
+		"data": [],
+		"schema": {
+			"bsonType": "object",
+			"required": [],
+			"properties": {
+				"_id": {
+					"description": "ID，系统自动生成"
+				},
+				"mobile": {
+					"bsonType": "string",
+					"description": "手机号码"
+				},
+				"email": {
+					"bsonType": "string",
+					"description": "邮箱"
+				},
+				"device_uuid": {
+					"bsonType": "string",
+					"description": "设备UUID，常用于图片验证码"
+				},
+				"code": {
+					"bsonType": "string",
+					"description": "验证码"
+				},
+				"scene": {
+					"bsonType": "string",
+					"description": "使用验证码的场景，如：login, bind, unbind, pay"
+				},
+				"state": {
+					"bsonType": "int",
+					"description": "验证状态：0 未验证、1 已验证、2 已作废"
+				},
+				"ip": {
+					"bsonType": "string",
+					"description": "请求时客户端IP地址"
+				},
+				"create_date": {
+					"bsonType": "timestamp",
+					"description": "创建时间"
+				},
+				"expired_date": {
+					"bsonType": "timestamp",
+					"description": "过期时间"
+				}
+			}
+		},
+		"index": [{
+			"IndexName": "mobile_code_",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "mobile",
+					"Direction": "1"
+				}, {
+					"Name": "code",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		}, {
+			"IndexName": "email_code_",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "email",
+					"Direction": "1"
+				}, {
+					"Name": "code",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		}, {
+			"IndexName": "device_uuid_code_",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "device_uuid",
+					"Direction": "1"
+				}, {
+					"Name": "code",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		}]
+	}
+}

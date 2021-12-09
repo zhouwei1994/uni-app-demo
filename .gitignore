@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
-unpackage
+unpackage/dist
+unpackage/release
+unpackage/cache
 /dist
 vue.config
 

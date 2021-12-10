@@ -129,6 +129,5 @@ function judgeLogin(callback, type = "judge"){
 }
 export {
 	onLogin,
-	getUserInfo,
 	judgeLogin
 }

@@ -216,7 +216,9 @@
 						duration: 2000,
 						success: () => {
 							setTimeout(() => {
-								uni.navigateBack();
+								uni.switchTab({
+									url: 'pages/template/addTemplate'
+								});
 							}, 2000);
 						}
 					});

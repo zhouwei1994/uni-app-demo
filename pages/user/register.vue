@@ -4,7 +4,7 @@
         <!-- 公共组件-每个页面必须引入 -->
         <public-module></public-module>
 		<view class="title">注册</view>
-		<view class="input_box"><input type="number" maxlength="11" v-model="phone" placeholder="请输入手机号" /></view>
+		<view class="input_box"><input type="text" v-model="email" placeholder="请输入邮箱账号" /></view>
 		<view class="input_box">
 			<input type="number" v-model="code" placeholder="请输入验证码" />
 			<button @click="getCode">{{codeText}}</button>
@@ -12,11 +12,14 @@
 		<view class="input_box"><input password v-model="password" placeholder="请输入密码" /></view>
 		<view class="input_box"><input password v-model="confirmPassword" placeholder="请确认密码"/></view>
 		<view class="input_box"><input type="text" v-model="recommendCode" placeholder="推荐码（非必填）" @confirm="onSubmit"/></view>
-		<view class="btn_box"><button @click="onSubmit">注册</button></view>
-		<view class="protocol">
-			注册代表您已同意
-			<text  @click="onJumpPage('/pages/user/protocol')">《用户协议》</text>
+		<view class="protocol_box">
+			<view class="select" :class="{active: agree}" @click="agree = !agree"></view>
+			我已同意
+			<text @click="onPageJump('/pages/user/protocol')">《用户协议》</text>
+			和
+			<text @click="onPageJump('/pages/user/protocol')">《隐私协议》</text>
 		</view>
+		<view class="btn_box"><button @click="onSubmit">注册</button></view>
 	</view>
 </template>
 <script>
@@ -25,8 +28,8 @@ var clear;
 export default {
 	data() {
 		return {
-			//手机号
-			phone: '',
+			//邮箱
+			email: '',
 			// 密码
 			password: '',
 			//验证码
@@ -38,7 +41,8 @@ export default {
 			//验证码
 			codeText: '获取验证码',
 			//验证码已发
-			readonly: false
+			readonly: false,
+			agree: false,
 		};
 	},
 	//第一次加载
@@ -61,24 +65,24 @@ export default {
 				});
 				return;
 			}
-			if (!this.phone) {
+			if (!this.email) {
 				uni.showToast({
-					title: '请输入手机号',
+					title: '请输入邮箱',
 					icon: 'none'
 				});
 				return;
 			}
-			if (!this.$base.phoneRegular.test(this.phone)) {
+			if (!this.$base.mailRegular.test(this.email)) {
 				uni.showToast({
-					title: '请输入正确的手机号',
+					title: '请输入正确的邮箱',
 					icon: 'none'
 				});
 				return;
 			}
 			this.$http
-				.post('api/open/v1/send_sms', {
-					phone: this.phone,
-					type: 3101
+				.post('api/common/v1/send_sms', {
+					email: this.email,
+					type: 1000
 				})
 				.then(res => {
 					this.getCodeState();
@@ -101,16 +105,23 @@ export default {
 			}, 1000);
 		},
 		onSubmit() {
-			if (!this.phone) {
+			if (!this.agree) {
 				uni.showToast({
-					title: '请输入手机号',
+					title: '请先同意《用户协议》和《隐私协议》',
 					icon: 'none'
 				});
 				return;
 			}
-			if (!this.$base.phoneRegular.test(this.phone)) {
+			if (!this.email) {
 				uni.showToast({
-					title: '请输入正确的手机号',
+					title: '请输入邮箱',
+					icon: 'none'
+				});
+				return;
+			}
+			if (!this.$base.mailRegular.test(this.email)) {
+				uni.showToast({
+					title: '请输入正确的邮箱',
 					icon: 'none'
 				});
 				return;
@@ -144,7 +155,7 @@ export default {
 				return;
 			}
 			let httpData =  {
-				phone: this.phone,
+				email: this.email,
 				code:this.code,
 				password: md5(this.password),
 			};
@@ -152,7 +163,7 @@ export default {
 				httpData.recommendCode = this.recommendCode;
 			}
 			this.$http
-				.post('api/open/v1/register',httpData)
+				.post('api/common/v1/register',httpData)
 				.then(res => {
 					uni.showModal({
 						title:"提示",
@@ -213,21 +224,37 @@ export default {
 		}
 	}
 	.btn_box {
-		margin-top: 70rpx;
+		margin-top: 40rpx;
 		button {
-			height: 86rpx;
-			background-color: $themeColor;
-			border-radius: 43rpx;
-			font-size: 36rpx;
-			color: #ffffff;
+			font-size: 32rpx;
+			@include theme('btn_bg')
+			color: #fff;
+			height: 100rpx;
+			line-height: 100rpx;
+			border-radius: 8rpx;
 		}
 	}
-	.protocol {
-		font-size: 24rpx;
-		color: #999999;
-		text-align: center;
-		margin-top: 20rpx;
-		text {
+	.protocol_box {
+		margin-top: 40rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		font-size: 28rpx;
+		color: #333333;
+		.select {
+			width: 36rpx;
+			height: 36rpx;
+			background-image: url("../../static/icon/ic_gender_unselected.png");
+			background-position: center center;
+			background-repeat: no-repeat;
+			background-size: 100% auto;
+			margin-right: 15rpx;
+			&.active {
+				background-image: url("../../static/icon/ic_agreed.png");
+			}
+		}
+		>text {
 			color: $themeColor;
 		}
 	}

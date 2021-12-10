@@ -9,7 +9,7 @@
 		<scroll-view scroll-y="true" class="comment_popup_scroll">
 			<view>
 				<view class="comment_item" v-for="(item,index) of 6" :key="index">
-					<image class="comment_item_image" src="../../static/icon/WeChatIcon.png" mode="aspectFill"></image>
+					<image class="comment_item_image" src="../../static/demo/5.jpg" mode="aspectFill"></image>
 					<view class="comment_item_info">
 						<view class="name_like_box">
 							<text class="comment_item_name">采蘑菇的小红帽</text>
@@ -23,7 +23,7 @@
 						</text>
 						<view class="unfold_comment_box">
 							<view class="unfold_comment_item" v-for="(childItem,childIndex) of 3" :key="childIndex">
-								<image class="unfold_comment_item_image" src="../../static/icon/WeChatIcon.png" mode="aspectFill"></image>
+								<image class="unfold_comment_item_image" src="../../static/demo/5.jpg" mode="aspectFill"></image>
 								<view class="unfold_comment_item_info">
 									<text class="comment_item_name">采蘑菇的小红帽</text>
 									<text class="comment_item_time">刚刚</text>

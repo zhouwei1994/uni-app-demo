@@ -4,7 +4,7 @@
         <!-- 公共组件-每个页面必须引入 -->
         <public-module></public-module>
 		<view class="title">忘记密码</view>
-		<view class="input_box"><input type="number" maxlength="11" v-model="phone" placeholder="请输入手机号" /></view>
+		<view class="input_box"><input type="text" v-model="email" placeholder="请输入邮箱账号" /></view>
 		<view class="input_box">
 			<input type="number" v-model="code" placeholder="请输入验证码" />
 			<button @click="getCode">{{codeText}}</button>
@@ -20,8 +20,8 @@ var clear;
 export default {
 	data() {
 		return {
-			//手机号
-			phone: '',
+			//邮箱账号
+			email: '',
 			// 密码
 			password: '',
 			//验证码
@@ -49,24 +49,24 @@ export default {
 				});
 				return;
 			}
-			if (!this.phone) {
+			if (!this.email) {
 				uni.showToast({
-					title: '请输入手机号',
+					title: '请输入邮箱账号',
 					icon: 'none'
 				});
 				return;
 			}
-			if (!this.$base.phoneRegular.test(this.phone)) {
+			if (!this.$base.mailRegular.test(this.email)) {
 				uni.showToast({
-					title: '请输入正确的手机号',
+					title: '请输入正确的邮箱账号',
 					icon: 'none'
 				});
 				return;
 			}
 			this.$http
-				.post('api/open/v1/send_sms', {
-					phone: this.phone,
-					type: 3102
+				.post('api/common/v1/send_sms', {
+					email: this.email,
+					type: 3000
 				})
 				.then(res => {
 					this.getCodeState();
@@ -89,16 +89,16 @@ export default {
 			}, 1000);
 		},
 		onSubmit() {
-			if (!this.phone) {
+			if (!this.email) {
 				uni.showToast({
-					title: '请输入手机号',
+					title: '请输入邮箱账号',
 					icon: 'none'
 				});
 				return;
 			}
-			if (!this.$base.phoneRegular.test(this.phone)) {
+			if (!this.$base.mailRegular.test(this.email)) {
 				uni.showToast({
-					title: '请输入正确的手机号',
+					title: '请输入正确的邮箱账号',
 					icon: 'none'
 				});
 				return;
@@ -132,8 +132,8 @@ export default {
 				return;
 			}
 			this.$http
-				.post('api/open/v1/forget_password', {
-					phone: this.phone,
+				.post('api/common/v1/forget_password', {
+					email: this.email,
 					code:this.code,
 					password: md5(this.password),
 				})
@@ -199,11 +199,12 @@ export default {
 	.btn_box {
 		margin-top: 70rpx;
 		button {
-			height: 86rpx;
-			background-color: $themeColor;
-			border-radius: 43rpx;
-			font-size: 36rpx;
-			color: #ffffff;
+			font-size: 32rpx;
+			@include theme('btn_bg')
+			color: #fff;
+			height: 100rpx;
+			line-height: 100rpx;
+			border-radius: 8rpx;
 		}
 	}
 	.protocol {

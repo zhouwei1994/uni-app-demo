@@ -10,11 +10,11 @@
 			<view class="title" :class="{ active: type == 1000 }" @click="type = 1000">账号登录</view>
 			<view class="title" :class="{ active: type == 2000 }" @click="type = 2000">验证码登录</view>
 		</view>
-		<view class="input_box triangle" :class="[type == 1000 ? 'left_triangle': 'right_triangle']"><input type="number" v-model="phone" @input="onInput" placeholder="请输入您的手机号码"
-			 placeholder-class="grey" maxlength="11" /></view>
+		<view class="input_box triangle" :class="[type == 1000 ? 'left_triangle': 'right_triangle']">
+			<input type="text" v-model="email" @input="onInput" placeholder="请输入您的邮箱" placeholder-class="grey" />
+		</view>
 		<view class="input_box" v-if="type == 2000">
-			<input type="number" v-model="code" placeholder="请输入您的手机验证码" placeholder-class="grey" @input="onInput" maxlength="6"
-			 @confirm="onSubmit" />
+			<input type="number" v-model="code" placeholder="请输入您的邮箱验证码" placeholder-class="grey" @input="onInput" maxlength="6" @confirm="onSubmit" />
 			<button class="active" @click="onSetCode">{{ codeText }}</button>
 		</view>
 		<view class="input_box" v-if="type == 1000">
@@ -22,8 +22,14 @@
 			<image v-if="isSee" src="../../static/icon/ic_logon_display.png" mode="aspectFit" @click="isSee = false"></image>
 			<image v-else-if="!isSee" src="../../static/icon/ic_logon_hide.png" mode="aspectFit" @click="isSee = true"></image>
 		</view>
-		<!-- <view class="forget_password" @click="onPageJump('/pages/user/forget?userType=' + userType)" v-if="type == 2000">忘记密码？</view> -->
-		<view class="btn_box change">
+		<view class="protocol_box">
+			<view class="select" :class="{active: agree}" @click="agree = !agree"></view>
+			我已同意
+			<text @click="onPageJump('/pages/user/protocol')">《用户协议》</text>
+			和
+			<text @click="onPageJump('/pages/user/protocol')">《隐私协议》</text>
+		</view>
+		<view class="btn_box">
 			<button @click="onSubmit" class="active" v-if="btnShow">登录</button>
 			<button v-else>登录</button>
 		</view>
@@ -31,23 +37,15 @@
 			<text @click="onPageJump('/pages/user/register')">注册账号</text>
 			<text v-if="type == 1000" @click="onPageJump('/pages/user/forget')">忘记密码？</text>
 		</view>
-		<view class="station" v-if="!isIos"></view>
 		<!-- #ifdef APP-PLUS -->
-		<view class="third_party_login_box" v-if="!isIos">
+		<view class="third_party_login_box" v-if="isWeixin || (isIos && system >= 13)">
 			<view class="third_party_title"><text>第三方登录</text></view>
 			<view class="third_party_content">
-				<image src="../../static/icon/wechat.png" @click="onWxAppLogin" mode="aspectFit"></image>
+				<image src="../../static/icon/ic_login_weixin.png" v-if="isWeixin" @click="onWxAppLogin" mode="aspectFit"></image>
+				<image src="../../static/icon/ic_login_ios.png" v-if="isIos && system >= 13" @click="onAppleLogin" mode="aspectFit"></image>
 			</view>
 		</view>
 		<!-- #endif -->
-		<view class="nav_box">
-			<view class="agreement">
-				登录/注册即代表您已同意
-				<text @click="onPageJump('/pages/user/protocol')">《用户协议》</text>
-				和
-				<text @click="onPageJump('/pages/user/protocol?type=1206')">《隐私协议》</text>
-			</view>
-		</view>
 	</view>
 </template>
 
@@ -65,15 +63,19 @@
 				type: 1000,
 				isSee: false,
 				code: '',
-				phone: '',
+				email: '',
 				password: '',
 				//验证码
 				codeText: '获取验证码',
 				//验证码已发
 				readonly: false,
 				btnShow: false,
+				logo: "",
+				agree: false,
 				isIos: true,
-				logo: ""
+				isWeixin: true,
+				system: 13,
+				clearTime: null
 			};
 		},
 		//第一次加载
@@ -81,6 +83,12 @@
 			this.logo = this.$base.logoUrl;
 			// #ifdef APP-PLUS
 			this.isIos = (plus.os.name == "iOS");
+			let systemInfo = uni.getSystemInfoSync();
+			this.system = parseFloat(systemInfo['system'].replace(/[a-zA-Z]/g, ""));
+			this.isWeixin = plus.runtime.isApplicationExist({
+				pname:'com.tencent.mm',
+				action: "weixin://"
+			});
 			// #endif
 		},
 		//页面显示
@@ -94,21 +102,22 @@
 				});
 			},
 			onInput() {
-				setTimeout(() => {
+				this.clearTime && clearTimeout(this.clearTime)
+				this.clearTime = setTimeout(() => {
 					if (this.type == 2000) {
-						if (this.phone && this.code) {
+						if (this.email && this.code) {
 							this.btnShow = true;
 						} else {
 							this.btnShow = false;
 						}
 					} else {
-						if (this.phone && this.password) {
+						if (this.email && this.password) {
 							this.btnShow = true;
 						} else {
 							this.btnShow = false;
 						}
 					}
-				});
+				}, 500);
 			},
 			//验证码按钮文字状态
 			getCodeState() {
@@ -132,46 +141,53 @@
 				if (this.readonly) {
 					return;
 				}
-				if (!this.phone) {
+				if (!this.email) {
 					uni.showToast({
-						title: '请输入手机号',
+						title: '请输入邮箱',
 						icon: 'none'
 					});
 					return;
 				}
-				if (!this.$base.phoneRegular.test(this.phone)) {
+				if (!this.$base.mailRegular.test(this.email)) {
 					uni.showToast({
-						title: '手机号格式不正确',
+						title: '邮箱格式不正确',
 						icon: 'none'
 					});
 					return;
 				}
 				this.$http
-					.post('api/open/v1/send_sms', {
-						phone: this.phone,
-						type: 3103
+					.post('api/common/v1/send_sms', {
+						email: this.email,
+						type: 2000
 					})
 					.then(res => {
 						this.getCodeState();
 					});
 			},
 			onSubmit() {
-				if (!this.phone) {
+				if (!this.agree) {
 					uni.showToast({
-						title: '请输入手机号',
+						title: '请先同意《用户协议》和《隐私协议》',
 						icon: 'none'
 					});
 					return;
 				}
-				if (!this.$base.phoneRegular.test(this.phone)) {
+				if (!this.email) {
 					uni.showToast({
-						title: '手机号格式不正确',
+						title: '请输入邮箱',
+						icon: 'none'
+					});
+					return;
+				}
+				if (!this.$base.mailRegular.test(this.email)) {
+					uni.showToast({
+						title: '邮箱格式不正确',
 						icon: 'none'
 					});
 					return;
 				}
 				let httpData = {
-					phone: this.phone
+					email: this.email
 				};
 				if (this.type == 2000) {
 					if (!this.code) {
@@ -190,9 +206,9 @@
 						});
 						return;
 					}
-					httpData.md5Password = md5(this.password);
+					httpData.password = md5(this.password);
 				}
-				this.$http.post('api/open/v1/login', httpData).then(res => {
+				this.$http.post('api/common/v1/login', httpData).then(res => {
 					this.setUserInfo(res);
 					socket.init();
 					uni.showToast({
@@ -206,113 +222,125 @@
 					});
 				});
 			},
-            sfLogin(data){
-				uni.request({
-					url: this.$base.authUrl + '/apis-auth/login/auth',
-					method: "POST",
-					data: data,
-					success: (res) => {
-						if (res.data.success) {
-							uni.setStorageSync('tokenSf', res.data.obj.token);
-							this.$http.post('api/open/v1/login/sf_ticket', {
-								phone: data.userName,
-								sfUserType: data.userType
-							}, {
-								header: {
-									"token": res.data.obj.token
-								}
-							}).then(res2 => {
-								this.setUserInfo(res2);
-								socket.init();
-								uni.showToast({
-									title: '登录成功',
-									duration: 2000,
-									success: () => {
-										setTimeout(() => {
-                                            let currentPages = getCurrentPages();
-                                            let pageLen = currentPages.length;
-                                            if(pageLen == 1){
-                                                uni.switchTab({
-                                                	url: this.$base.homePath
-                                                });
-                                            } else {
-                                                uni.navigateBack();
-                                            }
-										}, 2000);
-									}
-								});
-							});
-						} else {
-							setTimeout(() => {
-								uni.showToast({
-									title: res.data.errorMessage,
-									icon: "none"
-								});
-							},500);
-						}
-					},
-					fail: (err) => {
-						setTimeout(() => {
-						    uni.showToast({
-						    	title: "网络错误，请检查一下网络",
-						    	icon: "none"
-						    });
-						},500);
-					}
-				});
-            },
 			// 微信APP登录
 			onWxAppLogin() {
 				uni.login({
 					provider: 'weixin',
 					success: res => {
-						if (res.authResult.openid && res.authResult.unionid) {
-							this.$http
-								.post('api/open/v1/login', {
-									wxAppOpenId: res.authResult.openid,
-									unionid: res.authResult.unionid
-								})
-								.then(data => {
-									this.setUserInfo({
-										openId: res.authResult.openid,
-										unionid: res.authResult.unionid,
-										...data,
-									});
-									if (data.thirdLoginSuccess) {
-										socket.init();
-										uni.showToast({
-											title: '登录成功',
-											duration: 2000,
-											success: () => {
+						uni.getUserInfo({
+							success: (info) => {
+								this.userInfo = info.userInfo;
+								if (res.authResult.openid && res.authResult.unionid) {
+									this.$http
+										.post('api/open/v1/login', {
+											wxAppOpenId: res.authResult.openid,
+											unionid: res.authResult.unionid,
+											nickname: this.userInfo.nickName,
+											headImg: this.userInfo.avatarUrl
+										})
+										.then(data => {
+											this.setUserInfo({
+												openId: res.authResult.openid,
+												unionid: res.authResult.unionid,
+												...data,
+											});
+											if (data.thirdLoginSuccess) {
+												socket.init();
+												uni.showToast({
+													title: '登录成功',
+													duration: 2000
+												});
 												setTimeout(() => {
-													uni.navigateBack();
-												}, 2000);
-											}
-										});
-									} else {
-										uni.showModal({
-											title: '提示',
-											content: '您还未绑定手机号，请先绑定~',
-											confirmText: '去绑定',
-											cancelText: '再逛会',
-											success: res => {
-												if (res.confirm) {
-													uni.redirectTo({
-														url: '/pages/user/bindPhone'
+													uni.switchTab({
+														url: "/pages/home/home"
 													});
-												}
+												}, 2000);
+											} else {
+												uni.showModal({
+													title: '提示',
+													content: '您还未绑定手机号，请先绑定~',
+													confirmText: '去绑定',
+													cancelText: '再逛会',
+													success: res => {
+														if (res.confirm) {
+															uni.redirectTo({
+																url: '/pages/user/bindPhone'
+															});
+														}
+													}
+												});
 											}
 										});
-									}
-								});
-						} else {
-							uni.showToast({
-								title: '点击无效，请再次点击',
-								icon: "none"
-							});
-						}
+								} else {
+									uni.showToast({
+										title: '点击无效，请再次点击',
+										icon: "none"
+									});
+								}
+							},
+							fail: () => {
+								console.log("未授权");
+							}
+						})
+					},
+					fail(err) {
+						console.log(err);
 					}
 				});
+			},
+			// 苹果登录
+			onAppleLogin() {
+				uni.login({
+					provider: 'apple',
+					success: loginRes => {
+						uni.getUserInfo({
+							provider: 'apple',
+							success: userInfoRes => {
+								if(userInfoRes.userInfo.identityToken){
+									this.$http
+									.post('api/open/v1/ios_login', {
+										identityToken: userInfoRes.userInfo.identityToken
+									})
+									.then(data => {
+										this.setUserInfo(data);
+										if (data.thirdLoginSuccess) {
+											socket.init();
+											uni.showToast({
+												title: '登录成功',
+												duration: 2000
+											});
+											setTimeout(() => {
+												uni.switchTab({
+													url: "/pages/home/home"
+												});
+											}, 2000);
+										} else {
+											uni.showModal({
+												title: '提示',
+												content: '您还未绑定手机号，请先绑定~',
+												confirmText: '去绑定',
+												cancelText: '再逛会',
+												success: res => {
+													if (res.confirm) {
+														uni.redirectTo({
+															url: '/pages/user/bindPhone'
+														});
+													}
+												}
+											});
+										}
+									});
+								}
+							}
+						})
+					},
+					fail: err => {
+						uni.showToast({
+							title:'登录失败',
+							icon:'none'
+						})
+					}
+				})
 			}
 		},
 		//页面隐藏
@@ -332,7 +360,7 @@
 <style lang="scss" scoped>
 	@import '@/style/mixin.scss';
 	.register_page {
-		padding: calc(var(--status-bar-height) + 70rpx) 50rpx 50rpx 50rpx;
+		padding: calc(var(--status-bar-height) + 30rpx) 50rpx 50rpx 50rpx;
 		background-color: #fff;
 		min-height: 100vh;
 		position: relative;
@@ -349,7 +377,7 @@
 			display: flex;
 			justify-content: space-between;
 			padding: 0 96rpx;
-			padding-bottom: 40rpx;
+			padding-bottom: 20rpx;
 
 			.title {
 				font-size: 32rpx;
@@ -422,9 +450,7 @@
 			border-radius: 8rpx;
 			border: solid 2rpx #efeef4;
 			padding: 30rpx 40rpx;
-			//padding-left: 40rpx;
 			margin-top: 20rpx;
-
 			image {
 				width: 36rpx;
 				height: 24rpx;
@@ -464,48 +490,20 @@
 			}
 		}
 
-		.forget_password {
-			margin-top: 32rpx;
-			text-align: right;
-			font-size: 28rpx;
-			color: #333333;
-		}
-
-		.nophone {
-			margin-top: 24rpx;
-			font-size: 24rpx;
-			color: #dc1e32;
-		}
-
 		.btn_box {
-			margin-top: 80rpx;
-
+			margin-top: 40rpx;
 			button {
 				font-size: 32rpx;
 				background-color: #e5e5e5;
 				color: #fff;
-				height: 104rpx;
-				line-height: 104rpx;
+				height: 100rpx;
+				line-height: 100rpx;
 				border-radius: 8rpx;
 
 				&.active {
-					@include theme('gradient_bg')
+					@include theme('btn_bg')
 					color: #fff;
 				}
-			}
-
-			&.change {
-				margin-top: 60rpx;
-			}
-		}
-
-		.agreement {
-			font-size: 24rpx;
-			color: #333333;
-
-			>text {
-				text-decoration: underline;
-				color: $themeColor;
 			}
 		}
 
@@ -522,22 +520,28 @@
 			}
 		}
 
-		.nav_box {
+		.protocol_box {
+			margin-top: 40rpx;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			position: absolute;
-			bottom: 60rpx;
-			left: 0;
 			width: 100%;
-			>text {
-				font-size: 24rpx;
-				color: #333333;
-
-				&.color {
-					color: $themeColor;
-					text-decoration: underline;
+			font-size: 28rpx;
+			color: #333333;
+			.select {
+				width: 36rpx;
+				height: 36rpx;
+				background-image: url("../../static/icon/ic_gender_unselected.png");
+				background-position: center center;
+				background-repeat: no-repeat;
+				background-size: 100% auto;
+				margin-right: 15rpx;
+				&.active {
+					background-image: url("../../static/icon/ic_agreed.png");
 				}
+			}
+			>text {
+				color: $themeColor;
 			}
 		}
 	}
@@ -547,11 +551,10 @@
 	}
 
 	.third_party_login_box {
-		position: absolute;
-		bottom: 80rpx;
+		position: fixed;
+		bottom: 60rpx;
 		width: 100%;
 		left: 0;
-		height: 230rpx;
 		padding: 0 30rpx;
 
 		.third_party_title {
@@ -575,14 +578,15 @@
 		}
 
 		.third_party_content {
-			height: 200rpx;
+			margin-top: 60rpx;
 			display: flex;
 			justify-content: center;
 			align-items: center;
 
 			image {
-				width: 60rpx;
-				height: 52rpx;
+				width: 80upx;
+				height: 80upx;
+				margin: 0 20rpx;
 			}
 		}
 	}
